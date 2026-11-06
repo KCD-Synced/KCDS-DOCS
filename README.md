@@ -14,6 +14,8 @@ CC BY-ND 4.0 and the code examples are free to use in your resources (MIT-0): se
 - [Project structure](project-structure.md), [TypeScript](typescript.md), <!-- without lua cs -->
 - [Project structure](project-structure.md), [TypeScript](typescript.md), [Lua](lua.md), [C#](csharp.md), <!-- only lua cs -->
   [Trying code quickly](playground.md), [Debugging resources](debugging.md)
+- Writing resources with an AI assistant: [CLAUDE.md](CLAUDE.md) for Claude Code, [CODEX.md](CODEX.md) for Codex
+  and assistants that read `AGENTS.md`
 
 ## Hosting
 
