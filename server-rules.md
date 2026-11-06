@@ -27,6 +27,11 @@ kcds.players.Interactions.set('horseWhistle', true);
 player.setInteraction('playerTalk', true); // this player only; null returns to the server setting
 ```
 
+```ts
+kcds.players.Interactions.set('horseWhistle', true);
+player.setInteraction('playerTalk', true); // this player only; null returns to the server setting
+```
+
 ```lua
 kcds.players.Interactions.set("horseWhistle", true)
 player:setInteraction("playerTalk", true) -- this player only; null returns to the server setting
@@ -48,6 +53,12 @@ a player inside ("You're in a private area!", "You are trespassing"). If you all
 warning stays off and the game's AI is told not to react to them.
 
 ```js
+guard.setTrespassAllowed(true); // this player only
+guard.setTrespassAllowed(null); // back to the server setting
+kcds.players.Interactions.set('trespass', true); // everyone without their own setting
+```
+
+```ts
 guard.setTrespassAllowed(true); // this player only
 guard.setTrespassAllowed(null); // back to the server setting
 kcds.players.Interactions.set('trespass', true); // everyone without their own setting
@@ -78,6 +89,11 @@ kcds.ui.ThirdPerson.setMode('disabled'); // 'allowed' is the default (F5 switche
 kcds.ui.Freecam.setEnabled(false); // the game's photo mode on F1
 ```
 
+```ts
+kcds.ui.ThirdPerson.setMode('disabled'); // 'allowed' is the default (F5 switches), or 'forced'
+kcds.ui.Freecam.setEnabled(false); // the game's photo mode on F1
+```
+
 ```lua
 kcds.ui.ThirdPerson.setMode("disabled") -- "allowed" is the default (F5 switches), or "forced"
 kcds.ui.Freecam.setEnabled(false) -- the game's photo mode on F1
@@ -91,6 +107,19 @@ Freecam.SetEnabled(false); // the game's photo mode on F1
 A scripted shot moves one player's camera to a point and later returns it:
 
 ```js
+const { Vector3 } = kcds.math;
+
+kcds.ui.Camera.startShot(player, {
+  position: new Vector3(100, 200, 25),
+  lookAt: new Vector3(110, 210, 12),
+  fov: 50,
+  seconds: 3,
+});
+
+setTimeout(() => kcds.ui.Camera.endShot(player), 8000);
+```
+
+```ts
 const { Vector3 } = kcds.math;
 
 kcds.ui.Camera.startShot(player, {

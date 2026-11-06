@@ -18,6 +18,20 @@ kcds.core.Events.on('worldDayChange', (day) => {
 });
 ```
 
+```ts
+const { World } = kcds.world;
+
+World.setTimeScale(30);
+World.setHour(18); // the next 18:00, which may be tomorrow
+World.setWeather('cloudless_sunny', 60); // fade over 60 game seconds
+World.setRain(0.5);
+World.setWind({ x: 3, y: 0, z: 0 });
+
+kcds.core.Events.on('worldDayChange', (day) => {
+  console.info(`Day ${day} begins`);
+});
+```
+
 ```lua
 local World = kcds.world.World
 
@@ -88,6 +102,10 @@ You can also remove these items altogether:
 kcds.world.World.setLevelItemsEnabled(false); // hidden for all, nothing can be picked up
 ```
 
+```ts
+kcds.world.World.setLevelItemsEnabled(false); // hidden for all, nothing can be picked up
+```
+
 ```lua
 kcds.world.World.setLevelItemsEnabled(false) -- hidden for all, nothing can be picked up
 ```
@@ -106,6 +124,14 @@ class name or GUID, takes only that class. The returned handle's `restore()` bri
 last until then or until the server restarts, up to 1024 at once.
 
 ```js
+const { World } = kcds.world;
+
+const apples = World.removeLevelItems({ position: stall, radius: 2, item: 'apple' });
+// later
+apples.restore();
+```
+
+```ts
 const { World } = kcds.world;
 
 const apples = World.removeLevelItems({ position: stall, radius: 2, item: 'apple' });
@@ -136,6 +162,17 @@ entities are near and hide those with a level edit. `World.levelEntitiesAround(p
 in, so ask a player standing near it:
 
 ```js
+const { World, LevelEdit } = kcds.world;
+
+const { entities } = await World.levelEntitiesAround(player, rack, 2);
+for (const found of entities) {
+  if (found.name.startsWith('sausage') && found.levelObject) {
+    LevelEdit.apply({ ...found.levelObject, hidden: true });
+  }
+}
+```
+
+```ts
 const { World, LevelEdit } = kcds.world;
 
 const { entities } = await World.levelEntitiesAround(player, rack, 2);
@@ -187,6 +224,10 @@ foreach (var found in around["entities"])
 restores the game's name. `World.places()` lists the ids.
 
 ```js
+kcds.world.World.setPlaceName('troskovice', 'Zahradka');
+```
+
+```ts
 kcds.world.World.setPlaceName('troskovice', 'Zahradka');
 ```
 

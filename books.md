@@ -7,6 +7,11 @@ The game's book and letter screen shows your texts to this player:
 kcds.ui.Book.open({ style: 'letter', pages: ['To the burgrave,\nthe grain did not arrive.'] });
 ```
 
+```ts
+// client
+kcds.ui.Book.open({ style: 'letter', pages: ['To the burgrave,\nthe grain did not arrive.'] });
+```
+
 ```lua
 -- client
 kcds.ui.Book.open({ style = "letter", pages = { "To the burgrave,\nthe grain did not arrive." } })

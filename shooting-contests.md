@@ -11,6 +11,13 @@ kcds.core.Events.fromClient('archery:join', (player) => {
 });
 ```
 
+```ts
+// server
+kcds.core.Events.fromClient('archery:join', (player) => {
+  player.emit('archery:start', { rival: 'Jindra', arrows: 5 });
+});
+```
+
 ```lua
 -- server
 kcds.core.Events.fromClient("archery:join", function(player)
@@ -27,6 +34,26 @@ Events.FromClient("archery:join", (Player player) =>
 ```
 
 ```js
+// client
+const { Hud } = kcds.ui;
+
+kcds.core.Events.on('archery:start', (contest) => {
+  Hud.showShootingContest({
+    player: { name: 'You', arrows: contest.arrows },
+    opponents: [{ name: contest.rival, arrows: contest.arrows }],
+  });
+});
+kcds.core.Events.on('archery:shot', (shot) => {
+  Hud.showShootingHit(shot.x, shot.y);
+  Hud.updateShootingContest({
+    player: { arrows: shot.arrows, points: shot.points },
+    opponents: [{ arrows: shot.rivalArrows, points: shot.rivalPoints }],
+  });
+});
+kcds.core.Events.on('archery:end', () => Hud.hideShootingContest());
+```
+
+```ts
 // client
 const { Hud } = kcds.ui;
 

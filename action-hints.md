@@ -12,6 +12,16 @@ kcds.ui.ActionHint.create(
 );
 ```
 
+```ts
+// client
+kcds.ui.ActionHint.create(
+  { key: 'primary_action', text: 'Ring the bell', mode: 'hold', holdDuration: 2 },
+  () => {
+    kcds.core.Events.toServer('ringBell');
+  },
+);
+```
+
 ```lua
 -- client
 kcds.ui.ActionHint.create(
@@ -68,6 +78,20 @@ ActionHint.create(
 );
 ```
 
+```ts
+// client
+const { ActionHint } = kcds.ui;
+const { Events } = kcds.core;
+
+ActionHint.create({ key: 'companion_interaction', text: 'Untie' }, () => {
+  Events.toServer('untie');
+});
+ActionHint.create(
+  { key: 'companion_interaction', text: 'Lead on a rope', mode: 'hold', holdDuration: 1 },
+  () => Events.toServer('lead'),
+);
+```
+
 ```lua
 -- client
 local ActionHint = kcds.ui.ActionHint
@@ -101,6 +125,15 @@ tell which keys a hint is waiting on, and `actionHintsChanged` fires when the se
 game's hints and draw its own:
 
 ```js
+// client
+kcds.ui.Hud.setHudPart('Hints', false);
+
+kcds.core.Events.on('actionHintsChanged', () => {
+  console.log(JSON.stringify(kcds.ui.ActionHint.shown()));
+});
+```
+
+```ts
 // client
 kcds.ui.Hud.setHudPart('Hints', false);
 

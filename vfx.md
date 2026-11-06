@@ -18,6 +18,18 @@ glow.strength = 0.5; // rebuilds the effect
 Vfx.burst('WH_Particels.other.gravel', new Vector3(100, 200, 10), { durationMs: 1500 });
 ```
 
+```ts
+const { Vfx } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const available = Vfx.list('WH_Particels.other');
+
+const glow = Vfx.spawn('WH_Particels.other.magic', new Vector3(100, 200, 10), { scale: 2 });
+glow.strength = 0.5; // rebuilds the effect
+
+Vfx.burst('WH_Particels.other.gravel', new Vector3(100, 200, 10), { durationMs: 1500 });
+```
+
 ```lua
 local Vfx = kcds.world.Vfx
 local Vector3 = kcds.math.Vector3
@@ -103,6 +115,17 @@ barely visible and leave nothing behind.
 Attach them to a body instead, and use a decal for blood that stays on the ground:
 
 ```js
+const { Vfx, Marker } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const wound = Vfx.spawn('cinematics.blood.blood_leaking', new Vector3(0, 0, 0), {
+  entity: player,
+  joint: 'Head',
+});
+const pool = Marker.place('materials/decals/decal_blood_a', player.position);
+```
+
+```ts
 const { Vfx, Marker } = kcds.world;
 const { Vector3 } = kcds.math;
 

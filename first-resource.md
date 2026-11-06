@@ -68,6 +68,28 @@ Events.on('playerCommand', (player, command, args) => {
 });
 ```
 
+```ts
+const { Events, Chat } = kcds.core;
+const { Color } = kcds.math;
+
+// Runs when a player has joined and loaded the world.
+Events.on('playerReady', (player) => {
+  Chat.sendToPlayer(player, `Welcome, ${player.nickname}!`, { author: 'Server' });
+});
+
+// Runs for "/hello" or "/hello some words" in the chat.
+Events.on('playerCommand', (player, command, args) => {
+  if (command.toLowerCase() !== 'hello') {
+    return;
+  }
+  const reply = args.length > 0 ? args.join(' ') : 'Hello!';
+  Chat.sendToPlayer(player, reply, {
+    author: 'Server',
+    color: Color.fromRGB(255, 210, 77),
+  });
+});
+```
+
 ```lua
 local Events, Chat = kcds.core.Events, kcds.core.Chat
 local Color = kcds.math.Color
@@ -157,6 +179,25 @@ Events.on('hello:count', (data) => {
 });
 ```
 
+```ts
+// client
+const { Events } = kcds.core;
+const { Hud, Key } = kcds.ui;
+
+Events.on('playerReady', () => {
+  Hud.showNotification('The hello resource is running.');
+});
+
+// F7 asks the server how many players are online.
+Key.bind('f7', () => {
+  Events.toServer('hello:count');
+});
+
+Events.on('hello:count', (data) => {
+  Hud.showNotification(`${data.players} players online`);
+});
+```
+
 ```lua
 -- client
 local Events = kcds.core.Events
@@ -200,6 +241,12 @@ Events.On("hello:count", (JsValue data) =>
 The client sends `hello:count` to the server. Add the answer to `server.js`:
 
 ```js
+kcds.core.Events.fromClient('hello:count', (player) => {
+  player.emit('hello:count', { players: kcds.players.Player.all().length });
+});
+```
+
+```ts
 kcds.core.Events.fromClient('hello:count', (player) => {
   player.emit('hello:count', { players: kcds.players.Player.all().length });
 });

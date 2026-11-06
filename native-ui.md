@@ -41,6 +41,41 @@ board.on('input', (action, phase) => {
 });
 ```
 
+```ts
+// client
+const board = kcds.ui.NativeUI.createScreen();
+
+board.on('ready', () => {
+  const panel = board.root.createClip();
+  if (!panel) {
+    return;
+  }
+  panel.draw([
+    ['beginFill', 0x15130f, 80],
+    ['moveTo', 0, 0],
+    ['lineTo', 400, 0],
+    ['lineTo', 400, 200],
+    ['lineTo', 0, 200],
+    ['endFill'],
+  ]);
+
+  const heading = panel.createText({ x: 20, y: 20, width: 360, height: 40, text: 'Town board' });
+  heading?.setTextStyle({ font: 'DisplayFont', size: 24 });
+
+  const closeLabel = panel.createText({ x: 20, y: 150, width: 120, height: 30, text: 'Close' });
+  closeLabel?.on('press', () => board.close());
+
+  board.setVisible(true);
+  board.focus();
+});
+
+board.on('input', (action, phase) => {
+  if (action === 'kcds_ui_back' && phase === 'press') {
+    board.close();
+  }
+});
+```
+
 ```lua
 -- client
 local board = kcds.ui.NativeUI.createScreen()
@@ -139,6 +174,12 @@ const hud = kcds.ui.NativeUI.element('HUD');
 hud.call('ShowInfoText', ['Hello', 0, 3000, false]);
 ```
 
+```ts
+// client
+const hud = kcds.ui.NativeUI.element('HUD');
+hud.call('ShowInfoText', ['Hello', 0, 3000, false]);
+```
+
 ```lua
 -- client
 local hud = kcds.ui.NativeUI.element("HUD")
@@ -160,6 +201,11 @@ An element ([NativeElement](/docs/api/nativeelement)) has `call`, `setVariable`,
 `'inventory'`, `'player'`, `'map'`, `'codex'` and `'journal'`:
 
 ```js
+// client
+kcds.ui.NativeUI.setMenuEnabled('map', false);
+```
+
+```ts
 // client
 kcds.ui.NativeUI.setMenuEnabled('map', false);
 ```
@@ -186,6 +232,18 @@ const settingsButton = kcds.ui.NativeUI.addMenuButton('Server settings', () => {
 
 // When you no longer need it:
 kcds.ui.NativeUI.removeMenuButton(settingsButton);
+```
+
+```ts
+// client
+const settingsButton = kcds.ui.NativeUI.addMenuButton('Server settings', () => {
+  kcds.core.Events.toServer('settings:open');
+});
+
+// When you no longer need it:
+if (settingsButton !== null) {
+  kcds.ui.NativeUI.removeMenuButton(settingsButton);
+}
 ```
 
 ```lua

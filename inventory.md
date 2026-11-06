@@ -16,6 +16,12 @@ const { Items } = kcds.players;
 kcds.world.Prop.spawn(Items.model('longSwordDuel'), position, undefined, undefined, 'none');
 ```
 
+```ts
+const { Items } = kcds.players;
+
+kcds.world.Prop.spawn(Items.model('longSwordDuel'), position, undefined, undefined, 'none');
+```
+
 ```lua
 local Items = kcds.players.Items
 
@@ -33,6 +39,17 @@ Each change is all or nothing, and answers `{ ok, code, revision, items }`. A re
 `staleRevision`.
 
 ```js
+const answer = kcds.players.Inventory.add(player, { item: 'apple', amount: 3 });
+if (!answer.ok) {
+  console.log(`refused: ${answer.code}`);
+}
+
+// Shorter forms:
+player.giveItem('bread', 2);
+player.takeItem('apple', 1);
+```
+
+```ts
 const answer = kcds.players.Inventory.add(player, { item: 'apple', amount: 3 });
 if (!answer.ok) {
   console.log(`refused: ${answer.code}`);
@@ -91,6 +108,15 @@ if (first) {
 }
 ```
 
+```ts
+const { Inventory } = kcds.players;
+
+const [first] = Inventory.get(player)?.items ?? [];
+if (first) {
+  Inventory.editCustom(player, { id: first.id, name: 'Oathkeeper', description: 'Sworn steel of the Rattay guard.' });
+}
+```
+
 ```lua
 local Inventory = kcds.players.Inventory
 
@@ -123,6 +149,22 @@ script saving the inventory at that point never saves it. It always gets its own
 `metadata.transient`. If you save at another time, you can leave such rows out yourself.
 
 ```js
+const { Inventory } = kcds.players;
+
+// A sack over the prisoner's head, gone if they leave the server.
+Inventory.add(prisoner, {
+  item: 'BagOverHead_m01',
+  amount: 1,
+  metadata: { transient: true },
+});
+
+kcds.core.Events.on('playerDisconnect', (player) => {
+  // The sack is not in what gets saved here.
+  console.info(JSON.stringify(Inventory.get(player)?.items));
+});
+```
+
+```ts
 const { Inventory } = kcds.players;
 
 // A sack over the prisoner's head, gone if they leave the server.
@@ -202,6 +244,24 @@ kcds.core.Events.on('playerCustomItemUse', (player, row, revision) => {
 });
 ```
 
+```ts
+const { Items } = kcds.players;
+
+const sealedLetter = Items.register('myres:sealed_letter', {
+  name: 'Sealed letter',
+  description: 'A letter with the seal of the burgrave.',
+  visual: 'crime_letterOfRecognition',
+  weight: 0.1,
+  usable: true,
+  useLabel: 'Break the seal',
+});
+player.giveItem(sealedLetter);
+
+kcds.core.Events.on('playerCustomItemUse', (player, row, revision) => {
+  kcds.core.Chat.sendToPlayer(player, 'The seal breaks.');
+});
+```
+
 ```lua
 local Items = kcds.players.Items
 
@@ -262,6 +322,14 @@ Inventory.overrideStats('SkullCap02_m02_C2', { defenseStab: 150, noise: 0.1 });
 Inventory.overrideStats('longSwordDuel', null); // back to the game's numbers
 ```
 
+```ts
+const { Inventory } = kcds.players;
+
+Inventory.overrideStats('longSwordDuel', { attack: 210, strReq: 12 });
+Inventory.overrideStats('SkullCap02_m02_C2', { defenseStab: 150, noise: 0.1 });
+Inventory.overrideStats('longSwordDuel', null); // back to the game's numbers
+```
+
 ```lua
 local Inventory = kcds.players.Inventory
 
@@ -286,6 +354,19 @@ does.
 that land become ground items too.
 
 ```js
+const { GroundItem } = kcds.world;
+
+GroundItem.spawn('apple', player.position, {}, 5);
+GroundItem.spawn('bread', player.position, {}, 1, undefined, { name: 'harvest_table' });
+
+const breadStack = GroundItem.all().find((stack) => stack.name === 'harvest_table');
+
+kcds.core.Events.on('groundItemPickup', (stack, player) => {
+  console.info(`${player.nickname} took it`);
+});
+```
+
+```ts
 const { GroundItem } = kcds.world;
 
 GroundItem.spawn('apple', player.position, {}, 5);
@@ -346,6 +427,18 @@ kcds.core.Events.on('groundItemResting', (landed) => {
 });
 ```
 
+```ts
+const { GroundItem } = kcds.world;
+
+const droppedApple = GroundItem.spawn('apple', { x: 1650, y: 2151, z: 40 });
+
+kcds.core.Events.on('groundItemResting', (landed) => {
+  if (landed === droppedApple) {
+    console.info(`the apple landed at ${landed.position.z.toFixed(2)}`);
+  }
+});
+```
+
 ```lua
 local GroundItem = kcds.world.GroundItem
 
@@ -380,6 +473,12 @@ previews for a customer. `showOnlyTo(null)` shows it to everyone again. If that 
 until it is shown to someone else.
 
 ```js
+const preview = kcds.world.GroundItem.spawn('longSwordDuel', counter, {}, 1, undefined, {
+  visibleTo: player,
+});
+```
+
+```ts
 const preview = kcds.world.GroundItem.spawn('longSwordDuel', counter, {}, 1, undefined, {
   visibleTo: player,
 });

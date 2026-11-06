@@ -20,6 +20,19 @@ Hud.showTutorialHint({
 });
 ```
 
+```ts
+// client
+const { Hud } = kcds.ui;
+
+Hud.showNotification('The gates close at dusk.');
+Hud.showBanner('Welcome to Kuttenberg', 5000);
+Hud.showTutorialHint({
+  title: 'Fishing',
+  text: 'Stand at the water and cast.',
+  durationMs: 10000,
+});
+```
+
 ```lua
 -- client
 local Hud = kcds.ui.Hud
@@ -56,6 +69,11 @@ or during a level load.
 kcds.ui.Hud.setHudPart('Compass', false);
 ```
 
+```ts
+// client
+kcds.ui.Hud.setHudPart('Compass', false);
+```
+
 ```lua
 -- client
 kcds.ui.Hud.setHudPart("Compass", false)
@@ -73,6 +91,18 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 ## Screen effects
 
 ```js
+// client
+const { Hud } = kcds.ui;
+
+Hud.startEffect(
+  'screenBlood',
+  { amount: 0.6 },
+  { fadeInMs: 200, durationMs: 1500, fadeOutMs: 800 },
+);
+Hud.startEffect('colorGrade', { saturation: 0.3, brightness: 0.9 }); // grey and gloomy
+```
+
+```ts
 // client
 const { Hud } = kcds.ui;
 

@@ -23,6 +23,22 @@ chest.locked = true;
 chest.canBePicked = true;
 ```
 
+```ts
+const { Stash } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const bank = Stash.createStorage();
+bank.addItem({ item: 'apple', amount: 3 });
+
+kcds.core.Events.on('playerReady', (player) => {
+  bank.open(player); // opens the transfer screen
+});
+
+const chest = Stash.spawn(new Vector3(100, 200, 10));
+chest.locked = true;
+chest.canBePicked = true;
+```
+
 ```lua
 local Stash = kcds.world.Stash
 local Vector3 = kcds.math.Vector3
@@ -73,6 +89,16 @@ Pass `options.model` to `Stash.spawn` to make a container look like something el
 with the game's Search prompt, and `stash.model` reads the path.
 
 ```js
+const { Stash } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const cabinet = Stash.spawn(new Vector3(100, 202, 10), {}, undefined, {
+  model: 'objects/manmade/common_furniture/cabinets/cabinet_fancy_d.cgf',
+});
+cabinet.addItem({ item: 'apple', amount: 2 });
+```
+
+```ts
 const { Stash } = kcds.world;
 const { Vector3 } = kcds.math;
 
@@ -138,6 +164,10 @@ translate:
 kcds.core.Locales.set('czech', { 'stash.inUse': 'Tuhle truhlu právě používá někdo jiný' });
 ```
 
+```ts
+kcds.core.Locales.set('czech', { 'stash.inUse': 'Tuhle truhlu právě používá někdo jiný' });
+```
+
 ```lua
 kcds.core.Locales.set("czech", { ["stash.inUse"] = "Tuhle truhlu právě používá někdo jiný" })
 ```
@@ -166,6 +196,19 @@ as the level says.
 - `destroy()` hands it back to the game.
 
 ```js
+const { Stash } = kcds.world;
+
+// This chest opens only with its own key.
+const [closest] = Stash.levelChests(player.position, 3);
+const chest = closest && Stash.adopt(closest.placedGuid);
+if (chest) {
+  chest.keyClass = kcds.players.Items.effective('key_custom')?.id ?? '';
+  chest.canBePicked = false;
+  chest.locked = true;
+}
+```
+
+```ts
 const { Stash } = kcds.world;
 
 // This chest opens only with its own key.
@@ -224,6 +267,12 @@ satchelHorse.giveTo(player);
 satchelHorse.storage.addItem({ item: 'apple', amount: 3 });
 ```
 
+```ts
+const satchelHorse = kcds.characters.Horse.spawn(position);
+satchelHorse.giveTo(player);
+satchelHorse.storage.addItem({ item: 'apple', amount: 3 });
+```
+
 ```lua
 local satchelHorse = kcds.characters.Horse.spawn(position)
 satchelHorse:giveTo(player)
@@ -250,6 +299,16 @@ the like. Open it for another player with `open(viewer)`, from anywhere: their g
 transfer screen with everything the player carries and wears.
 
 ```js
+// /inv <id>: an admin goes through a player's pockets and kit.
+kcds.core.Events.on('playerCommand', (admin, command, args) => {
+  const target = kcds.players.Player.getById(Number(args[0]));
+  if (command === 'inv' && admin.state.get('role') === 'admin' && target) {
+    kcds.world.Stash.playerInventory(target, { put: true }).open(admin);
+  }
+});
+```
+
+```ts
 // /inv <id>: an admin goes through a player's pockets and kit.
 kcds.core.Events.on('playerCommand', (admin, command, args) => {
   const target = kcds.players.Player.getById(Number(args[0]));

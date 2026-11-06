@@ -105,6 +105,18 @@ kcds.core.Events.on('resourceStart', (name) => {
 });
 ```
 
+```ts
+// server/main.js
+const prices = require('./prices');
+const settings = require('./config.json');
+
+kcds.core.Events.on('resourceStart', (name) => {
+  if (name === 'market') {
+    console.info(`market opens with ${Object.keys(prices).length} prices`);
+  }
+});
+```
+
 ```lua
 -- server/main.lua: Lua requires .lua files by their path from the resource's folder, so the
 -- settings are a server/config.lua that returns a table.
@@ -161,6 +173,23 @@ in a file or database.
 Save under the server's folder, because the resource's own folder may be replaced with a new copy:
 
 ```js
+// server/main.js
+const fs = require('node:fs');
+const path = require('node:path');
+
+const ledgerFile = path.join(kcds.core.Runtime.serverDir, 'data', 'market', 'balances.json');
+const balances = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : {};
+
+kcds.core.Events.on('resourceStop', (name) => {
+  if (name !== 'market') {
+    return;
+  }
+  fs.mkdirSync(path.dirname(ledgerFile), { recursive: true });
+  fs.writeFileSync(ledgerFile, JSON.stringify(balances));
+});
+```
+
+```ts
 // server/main.js
 const fs = require('node:fs');
 const path = require('node:path');

@@ -29,6 +29,29 @@ Events.on('markerEnter', (marker, player) => {
 });
 ```
 
+```ts
+const { Marker, Blip } = kcds.world;
+const { Vector3 } = kcds.math;
+const { Events, Chat } = kcds.core;
+
+const shopSpot = new Vector3(100, 200, 10);
+
+const ring = Marker.place('materials/decals/ring', shopSpot, {
+  shape: 'cylinder',
+  size: 3,
+  color: 0x00ff00ff,
+  trigger: true,
+});
+
+Blip.create({ position: shopSpot, type: 'Shop', label: 'Shop' });
+
+Events.on('markerEnter', (marker, player) => {
+  if (marker.id === ring.id) {
+    Chat.sendToAll(`${player.nickname} walked in`);
+  }
+});
+```
+
 ```lua
 local Marker, Blip = kcds.world.Marker, kcds.world.Blip
 local Vector3 = kcds.math.Vector3

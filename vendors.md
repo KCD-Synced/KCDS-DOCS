@@ -31,6 +31,29 @@ Events.on('vendorTrade', (vendor, player, bought, sold, balance, haggled) => {
 });
 ```
 
+```ts
+const { Vendor } = kcds.characters;
+const { Events } = kcds.core;
+
+const smith = Vendor.create({ name: 'Smith', purse: 5000 });
+
+Vendor.setShelf(smith, [
+  { item: 'arrow_crude', amount: 50, price: 12 },
+  { item: 'bread', amount: 10, price: 30 },
+]);
+Vendor.setOffers(smith, [{ item: 'arrow_crude', price: 6 }]);
+
+Events.on('npcInteract', (npc, player) => {
+  if (npc.name === 'Smith') {
+    Vendor.open(smith, player, npc);
+  }
+});
+
+Events.on('vendorTrade', (vendor, player, bought, sold, balance, haggled) => {
+  console.info(`${player.nickname} traded, balance ${balance}`);
+});
+```
+
 ```lua
 local Vendor = kcds.characters.Vendor
 local Events = kcds.core.Events
@@ -122,6 +145,25 @@ answer, and a basket agreed in the haggle settles at the agreed price. Haggling 
 `Vendor.open`, because the game haggles with a trader.
 
 ```js
+const { Vendor } = kcds.characters;
+const { Events } = kcds.core;
+
+// At most 15% off, and the trader refuses after 4 offers.
+const armourer = Vendor.create({ name: 'Armourer', haggle: { tolerance: 0.15, rounds: 4 } });
+
+// Members of the guild pay no more than 80% if they ask for it.
+Events.on('vendorHaggle', (vendor, player, basket, offered) => {
+  if (vendor !== armourer || player.state.get('guild') !== 'smiths') {
+    return; // the shop's own rule answers
+  }
+  if (offered >= basket.price * 0.8) {
+    return { accept: true };
+  }
+  return { counter: Math.ceil(basket.price * 0.8), mood: 0.2 };
+});
+```
+
+```ts
 const { Vendor } = kcds.characters;
 const { Events } = kcds.core;
 
@@ -250,6 +292,39 @@ Events.on('playerCommand', (seller, command, args) => {
 // Return false to refuse a basket; here, no more than 10 of anything at once.
 Events.on('tradeItem', (seller, buyer, bought, sold, balance) => {
   return bought.every((line) => line.amount <= 10);
+});
+
+Events.on('tradeDone', (seller, buyer, bought, sold, balance) => {
+  console.info(`${buyer.nickname} paid ${-balance} to ${seller.nickname}`);
+});
+```
+
+```ts
+const { Events, Chat } = kcds.core;
+const { Player, Trade } = kcds.players;
+
+// "/sell Hans" shows your inventory as a shop on Hans's screen.
+Events.on('playerCommand', (seller, command, args) => {
+  if (command !== 'sell') {
+    return;
+  }
+  const buyer = Player.all().find((player) => player.nickname === args[0]);
+  if (!buyer) {
+    return;
+  }
+  const session = Trade.open(seller, buyer, {
+    prices: { apple: 7 },
+    buys: true, // Hans can also sell to the seller
+    buyPrices: { apple: 3 },
+  });
+  if (session === 0) {
+    Chat.sendToPlayer(seller, 'The trade could not open.');
+  }
+});
+
+// Return false to refuse a basket; here, no more than 10 of anything at once.
+Events.on('tradeItem', (seller, buyer, bought, sold, balance) => {
+  return bought.every((line: { amount: number }) => line.amount <= 10);
 });
 
 Events.on('tradeDone', (seller, buyer, bought, sold, balance) => {

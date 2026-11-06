@@ -20,6 +20,12 @@ const { Voice } = kcds.players;
 Voice.setRange('shout', 50);
 ```
 
+```ts
+const { Voice } = kcds.players;
+
+Voice.setRange('shout', 50);
+```
+
 ```lua
 local Voice = kcds.players.Voice
 
@@ -42,6 +48,10 @@ only a faint mumble. Heavy rain and riding cover a voice some. None of this chan
 its microphone and voice output, and nothing goes over the network.
 
 ```js
+kcds.players.Voice.setEnabled(false);
+```
+
+```ts
 kcds.players.Voice.setEnabled(false);
 ```
 
@@ -70,6 +80,10 @@ watermark always stays.
 kcds.players.Voice.setIndicator(false);
 ```
 
+```ts
+kcds.players.Voice.setIndicator(false);
+```
+
 ```lua
 kcds.players.Voice.setIndicator(false)
 ```
@@ -94,6 +108,26 @@ not set them.
 ## Rules for players
 
 ```js
+const { Voice } = kcds.players;
+const { Events } = kcds.core;
+
+// Silence a player for everyone, or make them hear nobody.
+Events.on('playerConnect', (player) => {
+  Voice.setPlayerMuted(player, false);
+  Voice.setPlayerDeaf(player, false);
+});
+
+// Players may not shout here.
+Events.on('voiceTierRequest', (player, tier) => {
+  return tier !== 'shout';
+});
+
+Events.on('voiceTalkingChanged', (player, talking) => {
+  console.info(`${player.nickname} ${talking ? 'talks' : 'is silent'}`);
+});
+```
+
+```ts
 const { Voice } = kcds.players;
 const { Events } = kcds.core;
 
@@ -174,6 +208,24 @@ going out.
 its room's echo, and a zone between a talker and the listener muffles the talker by its `occlusion`.
 
 ```js
+const { LocalVoice } = kcds.ui;
+
+// A church that echoes, and walls that muffle a voice by half.
+LocalVoice.setZones([
+  {
+    min: { x: 100, y: 200, z: 10 },
+    max: { x: 120, y: 230, z: 25 },
+    reverb: 'church',
+    occlusion: 0.5,
+  },
+]);
+
+kcds.core.Events.on('localVoiceTransmitting', (transmitting) => {
+  console.log(transmitting ? `on air, ${LocalVoice.getTier()}` : 'quiet');
+});
+```
+
+```ts
 const { LocalVoice } = kcds.ui;
 
 // A church that echoes, and walls that muffle a voice by half.

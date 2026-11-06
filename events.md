@@ -19,6 +19,22 @@ Events.on('playerDisconnect', (player) => {
 });
 ```
 
+```ts
+const { Events, Chat } = kcds.core;
+
+Events.on('playerConnect', (player) => {
+  console.info(`${player.nickname} is connecting`);
+});
+
+Events.on('playerReady', (player) => {
+  Chat.sendToPlayer(player, 'Welcome!');
+});
+
+Events.on('playerDisconnect', (player) => {
+  console.info(`${player.nickname} left`);
+});
+```
+
 ```lua
 local Events, Chat = kcds.core.Events, kcds.core.Chat
 
@@ -94,6 +110,22 @@ These events ask: `cartEntering`, `craftingCompleting`, `craftingStarting`, `doo
 `treeRegrow` and `worldItemPickup`.
 
 ```js
+const { Events } = kcds.core;
+const { Area } = kcds.world;
+
+// No picking locks in town.
+Events.on('doorInteract', (player, door, action) => {
+  if (action !== 'lockpick') {
+    return;
+  }
+  const inTown = Area.aroundEntity(player).some((area) => area.labels.includes('town'));
+  if (inTown) {
+    return false;
+  }
+});
+```
+
+```ts
 const { Events } = kcds.core;
 const { Area } = kcds.world;
 

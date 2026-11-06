@@ -22,6 +22,19 @@ Key.bind('f3', () => {
 });
 ```
 
+```ts
+// client
+const { NoClip, Key } = kcds.ui;
+
+Key.bind('f3', () => {
+  if (NoClip.isActive()) {
+    NoClip.disable();
+  } else {
+    NoClip.enable({ mode: 'body', speed: 20 });
+  }
+});
+```
+
 ```lua
 -- client
 local NoClip, Key = kcds.ui.NoClip, kcds.ui.Key
@@ -80,6 +93,13 @@ kcds.core.Events.on('playerConnect', (player) => {
 });
 ```
 
+```ts
+// server
+kcds.core.Events.on('playerConnect', (player) => {
+  player.noclipAllowed = staff.has(player.steamId);
+});
+```
+
 ```lua
 -- server
 kcds.core.Events.on("playerConnect", function(player)
@@ -98,6 +118,19 @@ Events.On("playerConnect", (Player player) =>
 Client scripts can check `NoClip.isAllowed()` and the `noclipAllowedChanged(allowed)` event, or test the result:
 
 ```js
+// client
+const { NoClip, Hud, Key } = kcds.ui;
+
+Key.bind('f3', () => {
+  if (NoClip.isActive()) {
+    NoClip.disable();
+  } else if (NoClip.enable() === 'notAllowed') {
+    Hud.showNotification('Flying is not allowed here.');
+  }
+});
+```
+
+```ts
 // client
 const { NoClip, Hud, Key } = kcds.ui;
 
@@ -162,6 +195,20 @@ Camera.playPath([
 kcds.core.Events.on('cameraPathFinished', () => Camera.endShot());
 ```
 
+```ts
+// client
+const { Camera } = kcds.ui;
+const { Vector3 } = kcds.math;
+
+const square = new Vector3(512, 830, 31);
+Camera.playPath([
+  { position: new Vector3(480, 800, 45), lookAt: square, time: 2 },
+  { position: new Vector3(540, 800, 40), lookAt: square, time: 8 },
+  { position: new Vector3(545, 860, 36), lookAt: square, time: 14, fov: 45 },
+]);
+kcds.core.Events.on('cameraPathFinished', () => Camera.endShot());
+```
+
 ```lua
 -- client
 local Camera = kcds.ui.Camera
@@ -205,6 +252,13 @@ down, `y` rolls it and `z` turns it. `frequency` 0, the default, gives one push,
 times a second.
 
 ```js
+// client
+kcds.core.Events.on('kicked', () => {
+  kcds.ui.Camera.shake({ angle: { x: -15 }, duration: 1 });
+});
+```
+
+```ts
 // client
 kcds.core.Events.on('kicked', () => {
   kcds.ui.Camera.shake({ angle: { x: -15 }, duration: 1 });

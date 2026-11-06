@@ -29,6 +29,25 @@ Events.on('playerUnqueued', (entry, reason) => {
 });
 ```
 
+```ts
+const { Events, Queue } = kcds.core;
+const supporters = new Set(['76561198000000000']);
+
+Events.on('playerQueued', (entry) => {
+  if (supporters.has(entry.steamId)) {
+    Queue.setPriority(entry.id, 10);
+    Queue.setStatus(entry.id, {
+      line: 'Welcome back! Supporters go first.',
+      fields: [{ label: 'Priority', value: 'Supporter' }],
+    });
+  }
+});
+
+Events.on('playerUnqueued', (entry, reason) => {
+  console.info(`${entry.nickname} left the queue: ${reason}`);
+});
+```
+
 ```lua
 local Events, Queue = kcds.core.Events, kcds.core.Queue
 local supporters = { ["76561198000000000"] = true }
@@ -98,6 +117,16 @@ Everyone who gets in, from the queue or directly, passes through `playerConnecti
 game](licence.md)).
 
 ```js
+kcds.core.Events.on('playerConnecting', async (request) => {
+  request.update('One moment, looking you up...');
+  const account = await lookUpAccount(request.steamId);
+  if (!account) {
+    request.reject('Register on our website first: example.com/join');
+  }
+});
+```
+
+```ts
 kcds.core.Events.on('playerConnecting', async (request) => {
   request.update('One moment, looking you up...');
   const account = await lookUpAccount(request.steamId);

@@ -27,6 +27,30 @@ Key.bind('e', () => {
 });
 ```
 
+```ts
+// client
+const { Key, Camera } = kcds.ui;
+const { World } = kcds.world;
+const { Events } = kcds.core;
+
+Key.bind('e', () => {
+  const ray = Camera.rayFromScreen({ range: 4 });
+  const hit = ray && World.raycast(ray.origin, ray.target, { mode: 'anything' });
+  if (!hit) {
+    return;
+  }
+  if (hit.entityClass === 'AnimDoor') {
+    Events.toServer('useDoor', hit.entityGuid);
+  } else if (hit.surface === 'mat_water') {
+    Events.toServer('fish', hit.position);
+  } else if (hit.category === 'tree') {
+    Events.toServer('chop', { model: hit.model, position: hit.position });
+  } else if (hit.player) {
+    Events.toServer('greet', hit.player.id);
+  }
+});
+```
+
 ```lua
 -- client
 local Key, Camera = kcds.ui.Key, kcds.ui.Camera

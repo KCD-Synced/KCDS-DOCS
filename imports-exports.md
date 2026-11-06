@@ -27,6 +27,13 @@ Exports.register('config', { currency: 'groschen' });
 Exports.register('pay', (amount) => amount - 1);
 ```
 
+```ts
+const { Exports } = kcds.core;
+
+Exports.register('config', { currency: 'groschen' });
+Exports.register('pay', (amount: number) => amount - 1);
+```
+
 ```lua
 local Exports = kcds.core.Exports
 
@@ -60,6 +67,15 @@ If the server may not have the other resource, mark it optional with `{ "name": 
 "optional": true }`. It starts first when present, and yours starts without it otherwise.
 
 ```js
+const { Exports, Imports } = kcds.core;
+
+const pay = Exports.get('library', 'pay');
+const afterFee = pay(100);
+
+const everything = Imports.get('library'); // { config, pay }
+```
+
+```ts
 const { Exports, Imports } = kcds.core;
 
 const pay = Exports.get('library', 'pay');

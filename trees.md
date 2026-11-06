@@ -46,6 +46,23 @@ Trees.setSpecies('objects/natural/vegetation/trees/normal_trees/quercus', {
 });
 ```
 
+```ts
+const { Trees } = kcds.world;
+
+Trees.configure({
+  hits: 5,
+  trunkHits: 4,
+  regrowMinutes: 60,
+  drops: [{ item: 'bsmt_woodExotic', amount: 3 }],
+});
+
+// For one species, by the start of its mesh path:
+Trees.setSpecies('objects/natural/vegetation/trees/normal_trees/quercus', {
+  hits: 14,
+  height: 22,
+});
+```
+
 ```lua
 local Trees = kcds.world.Trees
 
@@ -104,6 +121,31 @@ in `drops`.
 Return `false` from a refusable server event to stop that step.
 
 ```js
+const { Events, Chat } = kcds.core;
+const { Vector3 } = kcds.math;
+
+const sacredGrove = new Vector3(500, 500, 30);
+
+Events.on('playerTreeChop', (player, tree, blow) => {
+  if (tree.position.distance(sacredGrove) < 30) {
+    return false;
+  }
+  Chat.sendToPlayer(player, `${blow.number} / ${blow.of}`);
+});
+
+Events.on('playerTreeFell', (player, tree, fall) => {
+  fall.direction = new Vector3(0, 1, 0); // always falls north
+});
+
+Events.on('playerTrunkCut', (player, tree, items) => {
+  items.push({ item: 'apple', amount: 1 });
+});
+
+// Trees return only by day.
+Events.on('treeRegrow', () => kcds.world.World.hour >= 6);
+```
+
+```ts
 const { Events, Chat } = kcds.core;
 const { Vector3 } = kcds.math;
 
@@ -200,6 +242,13 @@ kcds.core.Events.on('treeFalling', (tree, fall) => {
 });
 ```
 
+```ts
+// client
+kcds.core.Events.on('treeFalling', (tree, fall) => {
+  kcds.ui.Hud.showNotification(`Timber! (${fall.seconds.toFixed(1)} s)`);
+});
+```
+
 ```lua
 -- client
 kcds.core.Events.on("treeFalling", function(tree, fall)
@@ -232,6 +281,18 @@ Methods: `tree.fell(direction?)` fells it at once, `tree.regrow()` brings it bac
 blows.
 
 ```js
+const { Trees } = kcds.world;
+
+// A storm fells the tree a client's ray found.
+kcds.core.Events.fromClient('storm', (player, object) => {
+  Trees.of(object)?.fell(new kcds.math.Vector3(1, 0, 0));
+});
+
+const fallenCount = Trees.felled().length;
+Trees.regrowAll(); // restores the whole forest
+```
+
+```ts
 const { Trees } = kcds.world;
 
 // A storm fells the tree a client's ray found.
@@ -280,6 +341,26 @@ store, and `Trees.restore()` applies it. Felled trees lie where they lay, cut on
 continue.
 
 ```js
+const fs = require('node:fs');
+const path = require('node:path');
+
+const { Trees } = kcds.world;
+const { Events, Runtime } = kcds.core;
+const forestFile = path.join(Runtime.serverDir, 'data', 'forest.json');
+
+Events.on('resourceStop', () => {
+  fs.mkdirSync(path.dirname(forestFile), { recursive: true });
+  fs.writeFileSync(forestFile, JSON.stringify(Trees.state()));
+});
+
+Events.on('resourceStart', () => {
+  if (fs.existsSync(forestFile)) {
+    Trees.restore(JSON.parse(fs.readFileSync(forestFile, 'utf8')));
+  }
+});
+```
+
+```ts
 const fs = require('node:fs');
 const path = require('node:path');
 

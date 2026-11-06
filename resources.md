@@ -28,6 +28,17 @@ Events.on('playerCommand', (player, command, args) => {
 });
 ```
 
+```ts
+const { Events, Chat } = kcds.core;
+
+Events.on('playerCommand', (player, command, args) => {
+  if (command.toLowerCase() !== 'hello') {
+    return;
+  }
+  Chat.sendToPlayer(player, args.length > 0 ? args.join(' ') : 'Hello!', { author: 'Server' });
+});
+```
+
 ```lua
 local Events, Chat = kcds.core.Events, kcds.core.Chat
 
@@ -168,6 +179,13 @@ socket.addEventListener('open', () => socket.send(JSON.stringify({ hello: 'kcds'
 socket.addEventListener('message', (event) => console.info(`bot says ${event.data}`));
 ```
 
+```ts
+const socket = new WebSocket('wss://example.com/bot');
+
+socket.addEventListener('open', () => socket.send(JSON.stringify({ hello: 'kcds' })));
+socket.addEventListener('message', (event: { data: string }) => console.info(`bot says ${event.data}`));
+```
+
 ```lua
 local socket = WebSocket.new("wss://example.com/bot")
 
@@ -186,6 +204,17 @@ Log.Info("bot says " + status["text"]);
 status, and takes a method, headers and a body.
 
 ```js
+const response = await fetch('https://example.com/api/report', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ online: kcds.players.Player.all().length }),
+});
+if (!response.ok) {
+  console.warn(`report refused: ${response.status}`);
+}
+```
+
+```ts
 const response = await fetch('https://example.com/api/report', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
@@ -245,6 +274,22 @@ Its dependents stop before it. Async handlers get up to 10 seconds. Clean-up of 
 messages and anything it spawned always happens.
 
 ```js
+const { Events } = kcds.core;
+
+Events.on('resourceStart', async (name) => {
+  if (name === 'hello') {
+    console.info('hello is ready');
+  }
+});
+
+Events.on('resourceStop', (name) => {
+  if (name === 'hello') {
+    console.info('saving before hello stops');
+  }
+});
+```
+
+```ts
 const { Events } = kcds.core;
 
 Events.on('resourceStart', async (name) => {

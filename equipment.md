@@ -17,6 +17,14 @@ slotOf.get('TunicShort05_m09_D'); // "body_cloth"
 slotOf.get('longSwordDuel'); // null
 ```
 
+```ts
+const slotOf = new Map(kcds.players.Inventory.classes().map((entry) => [entry.name, entry.slot]));
+
+slotOf.get('HoseJoined01_m03_C'); // "leg_trousers"
+slotOf.get('TunicShort05_m09_D'); // "body_cloth"
+slotOf.get('longSwordDuel'); // null
+```
+
 ```lua
 local slotOf = {}
 for _, entry in ipairs(kcds.players.Inventory.classes()) do
@@ -144,6 +152,30 @@ function setWorn(player, rowId, worn) {
 }
 ```
 
+```ts
+// Puts one row on or takes it off, leaving the other rows as they are.
+function setWorn(player: kcds.players.Player, rowId: string, worn: boolean) {
+  const { Inventory } = kcds.players;
+  const current = Inventory.get(player);
+  if (!current) {
+    return false;
+  }
+  const items = current.items.map((row) => {
+    let equipped = row.equipped;
+    if (row.id === rowId) {
+      equipped = worn ? 1 : 0;
+    }
+    return { id: row.id, item: row.item, amount: row.amount, metadata: row.metadata, equipped };
+  });
+  const answer = Inventory.set(player, {
+    items,
+    quickslots: current.quickslots,
+    revision: current.revision,
+  });
+  return answer.ok;
+}
+```
+
 ```lua
 -- Puts one row on or takes it off, leaving the other rows as they are.
 local function setWorn(player, rowId, worn)
@@ -223,6 +255,17 @@ kcds.core.Events.on('playerInventoryChanged', (player, change) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('playerInventoryChanged', (player, change) => {
+  if (change.reason !== 'equipment') {
+    return;
+  }
+  const rows = kcds.players.Inventory.get(player)?.items ?? [];
+  const worn = rows.filter((row) => row.equipped > 0);
+  console.log(`${player.nickname} wears ${worn.map((row) => row.name).join(', ')}`);
+});
+```
+
 ```lua
 kcds.core.Events.on("playerInventoryChanged", function(player, change)
   if change.reason ~= "equipment" then
@@ -266,6 +309,34 @@ Save the inventory as `Inventory.get` gives it on disconnect, and return it with
 `equipped` and restores the quick slots. A player's joining name comes with their client, so wait for `playerReady`.
 
 ```js
+const { Inventory } = kcds.players;
+const { Events } = kcds.core;
+const savedOutfits = new Map();
+
+Events.on('playerDisconnect', (player) => {
+  const current = Inventory.get(player);
+  if (!current) {
+    return;
+  }
+  const items = current.items.map((row) => ({
+    id: row.id,
+    item: row.item,
+    amount: row.amount,
+    metadata: row.metadata,
+    equipped: row.equipped,
+  }));
+  savedOutfits.set(player.nickname, { items, quickslots: current.quickslots });
+});
+
+Events.on('playerReady', (player) => {
+  const outfit = savedOutfits.get(player.nickname);
+  if (outfit) {
+    Inventory.set(player, outfit);
+  }
+});
+```
+
+```ts
 const { Inventory } = kcds.players;
 const { Events } = kcds.core;
 const savedOutfits = new Map();

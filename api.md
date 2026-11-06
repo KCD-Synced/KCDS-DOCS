@@ -21,6 +21,11 @@ const { Events, Chat } = kcds.core;
 const { Door } = kcds.world;
 ```
 
+```ts
+const { Events, Chat } = kcds.core;
+const { Door } = kcds.world;
+```
+
 ```lua
 local Events, Chat = kcds.core.Events, kcds.core.Chat
 local Door = kcds.world.Door

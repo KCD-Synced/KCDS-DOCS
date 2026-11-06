@@ -25,6 +25,24 @@ Events.on('siegeImpact', (engine, where, attacker) => {
 });
 ```
 
+```ts
+const { SiegeEngine } = kcds.world;
+const { Vector3 } = kcds.math;
+const { Events } = kcds.core;
+
+const trebuchet = SiegeEngine.spawn('trebuchet', new Vector3(100, 200, 10));
+trebuchet.ammo = 5;
+trebuchet.load();
+
+Events.on('siegeEngineReady', (engine) => {
+  engine.fire(new Vector3(200, 200, 10));
+});
+
+Events.on('siegeImpact', (engine, where, attacker) => {
+  console.info(`Stone landed at ${where.x}, ${where.y}`);
+});
+```
+
 ```lua
 local SiegeEngine = kcds.world.SiegeEngine
 local Vector3 = kcds.math.Vector3

@@ -14,6 +14,16 @@ clearInterval(heartbeat);
 queueMicrotask(() => console.log('runs when the current task ends'));
 ```
 
+```ts
+const greeting = setTimeout((text: string) => console.info(text), 250, 'Hello after 250 ms');
+clearTimeout(greeting);
+
+const heartbeat = setInterval(() => console.debug('still running'), 5000);
+clearInterval(heartbeat);
+
+queueMicrotask(() => console.log('runs when the current task ends'));
+```
+
 ```lua
 local greeting = setTimeout(function(text) print(text) end, 250, "Hello after 250 ms")
 clearTimeout(greeting)
@@ -76,6 +86,14 @@ itself, such as those that start and stop resources. The first word arrives as `
 words as `args`:
 
 ```js
+kcds.core.Events.on('consoleCommand', (command, args) => {
+  if (command === 'greet') {
+    console.info(`Hello, ${args.join(' ')}`);
+  }
+});
+```
+
+```ts
 kcds.core.Events.on('consoleCommand', (command, args) => {
   if (command === 'greet') {
     console.info(`Hello, ${args.join(' ')}`);

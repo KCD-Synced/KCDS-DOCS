@@ -17,6 +17,17 @@ const fence = kcds.world.LevelEdit.apply({
 fence.restore();
 ```
 
+```ts
+const fence = kcds.world.LevelEdit.apply({
+  name: 'objects/manmade/structures/logistical/fences/fence_4rod_01.cgf',
+  at: new kcds.math.Vector3(512.4, 830.1, 31.2),
+  hidden: true,
+});
+
+// Later:
+fence.restore();
+```
+
 ```lua
 local fence = kcds.world.LevelEdit.apply({
   name = "objects/manmade/structures/logistical/fences/fence_4rod_01.cgf",
@@ -74,6 +85,22 @@ if (hit?.levelObject) {
 }
 ```
 
+```ts
+// client: the first object two metres north of the player's chest
+const { Vector3 } = kcds.math;
+
+const me = kcds.players.LocalPlayer;
+if (me) {
+  const feet = me.position;
+  const chest = new Vector3(feet.x, feet.y, feet.z + 1.3);
+  const ahead = new Vector3(feet.x, feet.y + 2, feet.z + 1.3);
+  const hit = kcds.world.World.raycast(chest, ahead, { mode: 'anything' });
+  if (hit?.levelObject) {
+    kcds.core.Events.toServer('clear', hit.levelObject);
+  }
+}
+```
+
 ```lua
 -- client: the first object two metres north of the player's chest
 local Vector3 = kcds.math.Vector3
@@ -100,6 +127,19 @@ if (!hit["levelObject"].IsNull)
 ```
 
 ```js
+// server
+kcds.core.Events.fromClient('clear', (player, object) => {
+  kcds.world.LevelEdit.apply({
+    kind: object.kind,
+    name: object.name,
+    guid: object.guid,
+    at: object.at,
+    hidden: true,
+  });
+});
+```
+
+```ts
 // server
 kcds.core.Events.fromClient('clear', (player, object) => {
   kcds.world.LevelEdit.apply({
@@ -174,6 +214,23 @@ and allows at most 16 per second per player.
 For a tree, `category` is `'tree'` and `levelObject` can go straight into `LevelEdit.apply`:
 
 ```js
+const blowCounts = new Map();
+
+kcds.core.Events.on('playerWeaponHit', (player, hit) => {
+  if (hit.category !== 'tree' || !hit.levelObject) {
+    return;
+  }
+  const key = `${hit.model}@${hit.levelObject.at.x},${hit.levelObject.at.y}`;
+  const blows = (blowCounts.get(key) ?? 0) + 1;
+  blowCounts.set(key, blows);
+  if (blows >= 5) {
+    kcds.world.LevelEdit.apply({ ...hit.levelObject, model: 'stump_fagus_sylvatica_a' });
+    blowCounts.delete(key);
+  }
+});
+```
+
+```ts
 const blowCounts = new Map();
 
 kcds.core.Events.on('playerWeaponHit', (player, hit) => {
@@ -314,6 +371,20 @@ console.info(JSON.stringify(SmartObject.removed()));
 SmartObject.restore('2229e312da70017e');
 ```
 
+```ts
+const { SmartObject } = kcds.world;
+
+// No dice in the arena dimension, and no alchemy table at the Troskovice pharmacy.
+const diceTable = SmartObject.stations().find((station) => station.kind === 'dice');
+if (diceTable) {
+  SmartObject.remove(diceTable.id, 5);
+}
+SmartObject.remove('2229e312da70017e');
+
+console.info(JSON.stringify(SmartObject.removed()));
+SmartObject.restore('2229e312da70017e');
+```
+
 ```lua
 local SmartObject = kcds.world.SmartObject
 
@@ -353,6 +424,19 @@ smithy, drying rack or smokehouse. Each client in the dimension, by default the 
 template, including its furniture, solids and interaction entities. Later joiners build it too.
 
 ```js
+const guildBench = kcds.world.SmartObject.spawn({
+  blueprint: 'Bench/bench_2places_low', // from SmartObject.blueprints()
+  position: [1650.5, 2160, 35.4], // the prefab's origin
+  rotation: [0, 0, 0.7071, 0.7071], // optional: x, y, z, w
+  name: 'guild bench',
+});
+
+console.info(guildBench.kind); // 'seat'
+const saved = JSON.stringify(guildBench); // { blueprint, position, rotation, name }
+guildBench.destroy();
+```
+
+```ts
 const guildBench = kcds.world.SmartObject.spawn({
   blueprint: 'Bench/bench_2places_low', // from SmartObject.blueprints()
   position: [1650.5, 2160, 35.4], // the prefab's origin
@@ -414,6 +498,15 @@ Gizmo.line(player.position, npc.position, { color: Color.red(), durationMs: 5000
 Gizmo.box(new Vector3(100, 200, 10), { x: 2, y: 2, z: 1 }, { players: [player] });
 ```
 
+```ts
+// server
+const { Gizmo } = kcds.world;
+const { Vector3, Color } = kcds.math;
+
+Gizmo.line(player.position, npc.position, { color: Color.red(), durationMs: 5000 });
+Gizmo.box(new Vector3(100, 200, 10), { x: 2, y: 2, z: 1 }, { players: [player] });
+```
+
 ```lua
 -- server
 local Gizmo = kcds.world.Gizmo
@@ -430,6 +523,15 @@ Gizmo.Box(new Vector3(100, 200, 10), new { x = 2, y = 2, z = 1 }, new { players 
 ```
 
 ```js
+// client
+kcds.world.Gizmos.set(
+  'spawn',
+  { type: 'sphere', position: new kcds.math.Vector3(100, 200, 10), radius: 2 },
+  { color: 0xffffcc00 },
+);
+```
+
+```ts
 // client
 kcds.world.Gizmos.set(
   'spawn',

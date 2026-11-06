@@ -93,6 +93,14 @@ kcds.core.Events.on('playerConnecting', (request) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('playerConnecting', (request) => {
+  if (request.discordVerified) {
+    console.info(`${request.nickname} is Discord user ${request.discordId}`);
+  }
+});
+```
+
 ```lua
 kcds.core.Events.on("playerConnecting", function(request)
   if request.discordVerified then
@@ -112,6 +120,14 @@ Events.On("playerConnecting", (JsValue request) =>
 ```
 
 ```js
+kcds.core.Events.on('playerConnecting', (request) => {
+  if (myBans.has(`steam:${request.getIdentifier('steam')}`)) {
+    request.reject('You are banned from this server.');
+  }
+});
+```
+
+```ts
 kcds.core.Events.on('playerConnecting', (request) => {
   if (myBans.has(`steam:${request.getIdentifier('steam')}`)) {
     request.reject('You are banned from this server.');

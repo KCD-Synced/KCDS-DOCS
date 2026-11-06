@@ -14,6 +14,14 @@ kcds.core.Events.on('playerReady', (player) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('playerReady', (player) => {
+  player.setNameplateTitle('Town guard');
+  player.setNameplateText(`[Guard] ${player.nickname}`);
+  player.setNameplateColor(0xffc9a227);
+});
+```
+
 ```lua
 kcds.core.Events.on("playerReady", function(player)
   player:setNameplateTitle("Town guard")
@@ -63,6 +71,14 @@ Role-play servers use it for `/me` and `/do`. It returns how many players receiv
 comes near later does not see it.
 
 ```js
+kcds.core.Events.on('playerCommand', (player, command, args) => {
+  if (command === 'me') {
+    player.showOverheadText(`* ${args.join(' ')}`, 8000, 0xffc9a227);
+  }
+});
+```
+
+```ts
 kcds.core.Events.on('playerCommand', (player, command, args) => {
   if (command === 'me') {
     player.showOverheadText(`* ${args.join(' ')}`, 8000, 0xffc9a227);
@@ -125,6 +141,18 @@ Key.bind('f8', () => {
 });
 ```
 
+```ts
+// client
+const { Nameplates, Key } = kcds.ui;
+
+Nameplates.setMode('name'); // names without health bars
+Nameplates.setSelfVisible(true); // also this player's own plate, off by default
+
+Key.bind('f8', () => {
+  Nameplates.setVisible(!Nameplates.isVisible());
+});
+```
+
 ```lua
 -- client
 local Nameplates, Key = kcds.ui.Nameplates, kcds.ui.Key
@@ -155,6 +183,13 @@ A plate shows only what both sides allow: the server's mode for that player and 
 A client script can add a short line above any plate on its screen:
 
 ```js
+// client
+kcds.core.Events.on('trade:offer', (offer) => {
+  kcds.ui.Nameplates.setLabel(offer.playerId, 'Wants to trade', 6000, 0xffffff00);
+});
+```
+
+```ts
 // client
 kcds.core.Events.on('trade:offer', (offer) => {
   kcds.ui.Nameplates.setLabel(offer.playerId, 'Wants to trade', 6000, 0xffffff00);

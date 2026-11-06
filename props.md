@@ -31,6 +31,27 @@ Events.on('playerReady', (player) => {
 Events.on('propPlaceConfirm', (player, session, placement) => placement.onSurface);
 ```
 
+```ts
+const { Prop, PropPlacer } = kcds.world;
+const { Vector3 } = kcds.math;
+const { Events } = kcds.core;
+
+const crate = Prop.spawn(
+  'crate_box_a',
+  new Vector3(100, 200, 10),
+  new Vector3(0, 0, 90),
+  1.5,
+  'static',
+);
+crate.physics = 'rigid';
+
+Events.on('playerReady', (player) => {
+  PropPlacer.begin(player, { model: 'crate_box_a', range: 8, spawn: { physics: 'static' } });
+});
+
+Events.on('propPlaceConfirm', (player, session, placement) => placement.onSurface);
+```
+
 ```lua
 local Prop, PropPlacer = kcds.world.Prop, kcds.world.PropPlacer
 local Vector3 = kcds.math.Vector3
@@ -94,6 +115,15 @@ const back = kcds.world.Prop.spawn('objects/kcds_cards/back.cgf', position);
 back.hideFrom(player);
 ```
 
+```ts
+// A card only `player` sees the face of; everyone else sees its back.
+const position = new kcds.math.Vector3(120, 200, 10.8);
+const face = kcds.world.Prop.spawn('objects/kcds_cards/as.cgf', position);
+face.showOnlyTo(player);
+const back = kcds.world.Prop.spawn('objects/kcds_cards/back.cgf', position);
+back.hideFrom(player);
+```
+
 ```lua
 -- A card only `player` sees the face of; everyone else sees its back.
 local position = kcds.math.Vector3.new(120, 200, 10.8)
@@ -130,6 +160,16 @@ World.addInteraction({ entity: barrel, text: 'Open the barrel', radius: 2.5 }, (
 });
 ```
 
+```ts
+const { World, Prop } = kcds.world;
+const { Chat } = kcds.core;
+
+const barrel = Prop.spawn('barrel_a', new kcds.math.Vector3(120, 200, 10));
+World.addInteraction({ entity: barrel, text: 'Open the barrel', radius: 2.5 }, (player: kcds.players.Player) => {
+  Chat.sendToPlayer(player, 'Only rainwater inside.');
+});
+```
+
 ```lua
 local World, Prop = kcds.world.World, kcds.world.Prop
 local Chat = kcds.core.Chat
@@ -157,6 +197,13 @@ thrown card or a hopping game piece costs one message. For the server, and for a
 prop is at the end at once. A rigid prop moves by its physics and throws.
 
 ```js
+// A card thrown onto the table half a metre away, turning as it flies.
+const { Vector3 } = kcds.math;
+const card = kcds.world.Prop.spawn('objects/kcds_cards/as.cgf', new Vector3(120, 200, 10.9));
+card.glideTo(new Vector3(120, 200.5, 10.75), { x: 0, y: 0, z: 30 }, { ms: 450, arc: 0.12 });
+```
+
+```ts
 // A card thrown onto the table half a metre away, turning as it flies.
 const { Vector3 } = kcds.math;
 const card = kcds.world.Prop.spawn('objects/kcds_cards/as.cgf', new Vector3(120, 200, 10.9));
@@ -196,6 +243,18 @@ the game lays it out in its villages, with its windows, roof and shadow. It is s
 by its path under the game's `Prefabs/` folder or by its file name:
 
 ```js
+const { Vector3 } = kcds.math;
+
+const house = kcds.world.Prop.spawn(
+  'prefab:house_1s_4r_angled_a_dobesovicko',
+  new Vector3(120, 200, 10),
+  new Vector3(0, 0, 90),
+);
+console.info(house.meshName, house.meshGroup);
+// house_1s_4r_angled_a_dobesovicko prefabs/structures/living/houses/unique/dobesovicko
+```
+
+```ts
 const { Vector3 } = kcds.math;
 
 const house = kcds.world.Prop.spawn(
@@ -255,6 +314,28 @@ Everyone else sees the pose that game reports. If nobody's game shows it, becaus
 where it last rested. A distant game simulates it against terrain and whatever it has loaded there.
 
 ```js
+const { Vector3 } = kcds.math;
+const { Events, Chat } = kcds.core;
+
+const barrel = kcds.world.Prop.spawn('barrel_a', new Vector3(100, 200, 12), {}, 1, 'rigid');
+barrel.mass = 20; // this model's collision has no mass of its own
+
+Events.on('playerCommand', (player, command) => {
+  if (command !== 'kick') {
+    return;
+  }
+  const away = barrel.position.sub(player.position).normalize();
+  if (!barrel.applyImpulse(new Vector3(away.x * 60, away.y * 60, 90))) {
+    Chat.sendToPlayer(player, 'Nobody is near enough to move it.');
+  }
+});
+
+Events.on('propRest', (prop, position) => {
+  console.info(`prop ${prop.id} rests at ${position}`);
+});
+```
+
+```ts
 const { Vector3 } = kcds.math;
 const { Events, Chat } = kcds.core;
 
@@ -353,6 +434,14 @@ kcds.core.Events.on('propHit', (prop, speed, position) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('propHit', (prop, speed, position) => {
+  if (speed >= 6 && prop.model.endsWith('barrel_a.cgf')) {
+    prop.destroy();
+  }
+});
+```
+
 ```lua
 kcds.core.Events.on("propHit", function(prop, speed, position)
   if speed >= 6 and prop.model:sub(-#"barrel_a.cgf") == "barrel_a.cgf" then
@@ -382,6 +471,19 @@ Events.On("propHit", (Prop prop, double speed, Vector3 position) =>
 sack on a head or a noose on a neck. All players see it follow the joint, even while the player is cuffed.
 
 ```js
+const sack = prisoner.attachProp({
+  model: 'sack_a',
+  joint: 'Head',
+  position: new kcds.math.Vector3(0, 0.05, 0.1),
+});
+
+prisoner.detachProp(sack); // or sack.id
+
+// the game's rope cuffs are held in the left hand slot
+const cuffs = prisoner.attachProp({ model: 'rope_cuffs_front', hand: 'left' });
+```
+
+```ts
 const sack = prisoner.attachProp({
   model: 'sack_a',
   joint: 'Head',
@@ -439,6 +541,16 @@ mark is a flat textured mesh, either your resource's or the game's, sitting just
 `removeMark(id)` or until the player leaves. It returns an id, and `player.marks` lists them.
 
 ```js
+const shoulderBrand = thief.addMark({
+  model: 'brand_mark', // your resource's flat mesh
+  joint: 'RightArm',
+  position: new kcds.math.Vector3(0.02, 0.06, 0.05),
+  scale: 0.1,
+});
+thief.removeMark(shoulderBrand);
+```
+
+```ts
 const shoulderBrand = thief.addMark({
   model: 'brand_mark', // your resource's flat mesh
   joint: 'RightArm',
@@ -536,6 +648,23 @@ PropPlacer.on('confirm', (pose) => {
 PropPlacer.on('rejected', () => kcds.ui.Hud.showNotification('Not there.'));
 ```
 
+```ts
+// client
+const { PropPlacer } = kcds.world;
+
+PropPlacer.begin({
+  model: 'objects/manmade/structures/living/tents/canopy_forest_a.cgf',
+  rules: { maxSlope: 20, maxDistance: 8 },
+});
+
+PropPlacer.on('confirm', (pose) => {
+  if (pose) {
+    kcds.core.Events.toServer('pitchTent', { position: pose.position, rotation: pose.rotation });
+  }
+});
+PropPlacer.on('rejected', () => kcds.ui.Hud.showNotification('Not there.'));
+```
+
 ```lua
 -- client
 local PropPlacer = kcds.world.PropPlacer
@@ -587,6 +716,17 @@ house.setPose(new Vector3(124, 200, 10));
 house.destroy();
 ```
 
+```ts
+// client
+const { Prefab } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const [path] = Prefab.find('living/houses/house_1s_2r');
+const house = Prefab.place(path, new Vector3(120, 200, 10), new Vector3(0, 0, 90));
+house.setPose(new Vector3(124, 200, 10));
+house.destroy();
+```
+
 ```lua
 -- client
 local Prefab = kcds.world.Prefab
@@ -618,6 +758,20 @@ house.Destroy();
 ground. The ground is solid at once where it now lies, and every edit can be undone:
 
 ```js
+// client
+const { Prefab, Terrain } = kcds.world;
+const { Vector3 } = kcds.math;
+
+// A flat pad 7 m across the middle, fading into the slope over 6 m more.
+const pad = Terrain.flatten(new Vector3(120, 200, 0), 7, 14.5, 6);
+const house = Prefab.place('house_1s_4r_angled_a_dobesovicko', new Vector3(120, 200, 14.5));
+
+// A hill, then gone again.
+const hill = Terrain.raise(new Vector3(140, 200, 0), 3, 4, 6);
+hill.undo();
+```
+
+```ts
 // client
 const { Prefab, Terrain } = kcds.world;
 const { Vector3 } = kcds.math;
@@ -679,6 +833,19 @@ const fir = Vegetation.plant('abies_alba_forest_b', new Vector3(120, 200, 14), {
 fir?.remove();
 ```
 
+```ts
+// client
+const { Vegetation } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const trees = Vegetation.kinds().filter((path) => path.includes('/trees/'));
+const fir = Vegetation.plant('abies_alba_forest_b', new Vector3(120, 200, 14), {
+  scale: 1.2,
+  turn: 30,
+});
+fir?.remove();
+```
+
 ```lua
 -- client
 local Vegetation = kcds.world.Vegetation
@@ -717,6 +884,19 @@ if (!fir.IsNull)
 floor over a gap, or a ramp up to a door. They block players, horses and anything else the game's physics moves:
 
 ```js
+// client
+const { Collision } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const wall = Collision.addBox({
+  center: new Vector3(1533, 2143, 17.1),
+  size: new Vector3(6, 0.3, 3),
+  rotation: { x: 0, y: 0, z: 30 },
+});
+wall.set({ size: new Vector3(8, 0.3, 3) });
+```
+
+```ts
 // client
 const { Collision } = kcds.world;
 const { Vector3 } = kcds.math;

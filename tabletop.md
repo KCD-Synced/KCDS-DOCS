@@ -35,6 +35,21 @@ const board = Tabletop.create({
 });
 ```
 
+```ts
+const { Tabletop } = kcds.world;
+
+const board = Tabletop.create({
+  position: { x: 1650.2, y: 2160.5, z: 36.1 }, // the middle of the board's top
+  rotation: 90, // degrees about the vertical axis
+  board: { model: 'dice_board', rows: 8, columns: 8, cellSize: 0.07, height: 0.06 },
+  seats: [
+    { position: { x: 1650.2, y: 2161.1, z: 35.6 }, rotation: 180, side: 'white' },
+    { position: { x: 1650.2, y: 2159.9, z: 35.6 }, rotation: 0, side: 'black' },
+  ],
+  turnSeconds: 60, // a turn passes after a minute; 0 for no limit
+});
+```
+
 ```lua
 local Tabletop = kcds.world.Tabletop
 
@@ -87,6 +102,35 @@ up from the chair, which stands them up from the table. Such a seat shows no Sit
 `animation`:
 
 ```js
+const { SmartObject, Tabletop } = kcds.world;
+
+// The game's bench for one: its seat is at the prefab's origin, the sitter facing along its +y
+// (here turned to face -y, the board). 'Bench/bench_1place_low_table' sits with both hands on the
+// table, over a board.
+SmartObject.spawn({
+  blueprint: 'Bench/bench_1place_low',
+  position: [1650.2, 2161.1, 35.0],
+  rotation: [0, 0, 1, 0],
+});
+Tabletop.create({
+  position: { x: 1650.2, y: 2160.5, z: 35.77 },
+  board: { rows: 8, columns: 8, cellSize: 0.058 },
+  seats: [
+    {
+      position: { x: 1650.2, y: 2161.1, z: 35.0 },
+      chair: true,
+      camera: {
+        position: { x: 1650.2, y: 2160.95, z: 36.27 },
+        lookAt: { x: 1650.2, y: 2160.53, z: 35.77 },
+        fov: 55,
+        look: { yaw: 35, up: 20, down: 25 },
+      },
+    },
+  ],
+});
+```
+
+```ts
 const { SmartObject, Tabletop } = kcds.world;
 
 // The game's bench for one: its seat is at the prefab's origin, the sitter facing along its +y
@@ -182,6 +226,15 @@ console.info(board.pieceAt([3, 4]) === stone, stone.cell);
 stone.remove();
 ```
 
+```ts
+const stone = board.addPiece({ model: 'dicebadge_balatro_badge_silver', cell: [0, 1], side: 'white' });
+
+await stone.moveTo([1, 2]); // a hop, in 0.4 s
+await stone.moveTo([3, 4], { path: 'slide', ms: 600 });
+console.info(board.pieceAt([3, 4]) === stone, stone.cell);
+stone.remove();
+```
+
 ```lua
 local stone = board:addPiece({ model = "dicebadge_balatro_badge_silver", cell = { 0, 1 }, side = "white" })
 
@@ -214,6 +267,35 @@ const { Events, Chat } = kcds.core;
 
 // Start once both seats are taken.
 Events.on('tabletopSeated', (table) => {
+  if (table.state === 'idle' && table.seats.every((seat) => seat.player)) {
+    table.start();
+  }
+});
+
+Events.on('tabletopTurn', (table, seat, player) => {
+  Chat.sendToPlayer(player, 'Your move.');
+});
+
+// A player may pick only their own pieces, and move one only to an empty cell.
+Events.on('tabletopPieceSelect', (table, player, piece) => piece.side === table.seats[table.seatOf(player)].side);
+Events.on('tabletopMoveRequest', (table, player, piece, cell) => {
+  if (table.pieceAt(cell) !== null) {
+    return false;
+  }
+  table.nextTurn();
+  return true;
+});
+
+Events.on('tabletopEnd', (table, winner, reason) => {
+  Chat.sendToAll(winner ? `${winner.nickname} wins (${reason}).` : 'No winner.');
+});
+```
+
+```ts
+const { Events, Chat } = kcds.core;
+
+// Start once both seats are taken.
+Events.on('tabletopSeated', (table: kcds.world.Tabletop) => {
   if (table.state === 'idle' && table.seats.every((seat) => seat.player)) {
     table.start();
   }
@@ -355,6 +437,15 @@ if (await board.bet(20)) {
 card.showOnlyTo(null); // turned face up for all
 ```
 
+```ts
+// A card only its holder sees, and a stake from everyone seated.
+const card = board.addPiece({ model: 'dicebadge_extravalue', cell: [7, 0], side: 'black', visibleTo: player });
+if (await board.bet(20)) {
+  console.info(`${board.pot} groschen in the pot`);
+}
+card.showOnlyTo(null); // turned face up for all
+```
+
 ```lua
 -- A card only its holder sees, and a stake from everyone seated.
 local card = board:addPiece({ model = "dicebadge_extravalue", cell = { 7, 0 }, side = "black", visibleTo = player })
@@ -395,6 +486,21 @@ from their own eyes wherever their seat puts them: their hand of pieces before t
 the mouse looking about.
 
 ```js
+// Five cards each, and the flop face up in a row in the middle.
+const [alice, bob] = kcds.players.Player.all();
+const deck = board.createDeck();
+deck.addPile('board', { position: { x: 0, y: 0.08 }, layout: 'row' });
+deck.shuffle();
+deck.deal([alice, bob], 5);
+deck.dealTo('board', 3);
+
+kcds.core.Events.on('deckPlayRequest', (played, player, pieces) => {
+  // Only on their turn, one piece at a time; the deck throws it onto its 'table' pile.
+  return board.playerAt(board.turn) === player && pieces.length === 1;
+});
+```
+
+```ts
 // Five cards each, and the flop face up in a row in the middle.
 const [alice, bob] = kcds.players.Player.all();
 const deck = board.createDeck();
@@ -485,6 +591,37 @@ deck.dealTo('table', 1, { faceUp: true });
 board.start();
 
 const myTurn = (player) => board.playerAt(board.turn) === player;
+
+kcds.core.Events.on('deckPlayRequest', (played, player, pieces) => {
+  const top = deck.pile('table').at(-1);
+  const [card] = pieces;
+  return (
+    myTurn(player) && pieces.length === 1 && (card.suit === top?.suit || card.rank === top?.rank)
+  );
+});
+
+kcds.core.Events.on('deckDrawRequest', (played, player) => myTurn(player));
+
+kcds.core.Events.on('tabletopTurn', async () => {
+  if (deck.remaining === 0) {
+    await deck.restock('table');
+  }
+});
+```
+
+```ts
+// Prší with the 32 cards, four each, the first card face up.
+const [alice, bob] = kcds.players.Player.all();
+const deck = board.createDeck({
+  ranks: ['7', '8', '9', 'T', 'J', 'Q', 'K', 'A'],
+  actions: { draw: 'Draw a card', pass: false },
+});
+deck.shuffle();
+deck.deal([alice, bob], 4);
+deck.dealTo('table', 1, { faceUp: true });
+board.start();
+
+const myTurn = (player: kcds.players.Player) => board.playerAt(board.turn) === player;
 
 kcds.core.Events.on('deckPlayRequest', (played, player, pieces) => {
   const top = deck.pile('table').at(-1);
@@ -612,6 +749,11 @@ const saved = JSON.stringify(board.save()); // pieces, their data and the turn
 board.load(JSON.parse(saved));
 ```
 
+```ts
+const saved = JSON.stringify(board.save()); // pieces, their data and the turn
+board.load(JSON.parse(saved));
+```
+
 ```lua
 local saved = json.encode(board:save()) -- pieces, their data and the turn
 board:load(json.decode(saved))
@@ -665,6 +807,63 @@ Events.on('tabletopCellClick', (table, player, cell) => {
     return;
   }
   const side = board.seats[board.seatOf(player)].side;
+  if (board.pieceAt(cell) === null) {
+    board.addPiece({ model: MARKS[side], cell, side });
+    if (wins(side)) {
+      board.finish(player, 'three in a row');
+    } else if (board.pieces.length === 9) {
+      board.finish(null, 'draw');
+    } else {
+      board.nextTurn();
+    }
+  }
+  return false;
+});
+
+Events.on('tabletopEnd', (table, winner, reason) => {
+  if (table === board) {
+    Chat.sendToAll(winner ? `${winner.nickname} wins at tic-tac-toe: ${reason}` : 'Tic-tac-toe: a draw');
+  }
+});
+```
+
+```ts
+// tic-tac-toe
+const { Tabletop } = kcds.world;
+const { Events, Chat } = kcds.core;
+
+const MARKS = { x: 'dicebadge_balatro_badge_gold', o: 'dicebadge_balatro_badge_silver' };
+const LINES = [
+  [[0, 0], [0, 1], [0, 2]], [[1, 0], [1, 1], [1, 2]], [[2, 0], [2, 1], [2, 2]],
+  [[0, 0], [1, 0], [2, 0]], [[0, 1], [1, 1], [2, 1]], [[0, 2], [1, 2], [2, 2]],
+  [[0, 0], [1, 1], [2, 2]], [[0, 2], [1, 1], [2, 0]],
+];
+
+const board = Tabletop.create({
+  position: { x: 1650.2, y: 2160.5, z: 36.1 },
+  board: { model: 'dice_board', rows: 3, columns: 3, cellSize: 0.12, height: 0.06 },
+  seats: [
+    { position: { x: 1650.2, y: 2161.1, z: 35.6 }, rotation: 180, side: 'x' },
+    { position: { x: 1650.2, y: 2159.9, z: 35.6 }, rotation: 0, side: 'o' },
+  ],
+});
+
+function wins(side: keyof typeof MARKS): boolean {
+  return LINES.some((line) => line.every((cell) => board.pieceAt(cell)?.side === side));
+}
+
+Events.on('tabletopSeated', (table) => {
+  if (table === board && board.state === 'idle' && board.seats.every((seat) => seat.player)) {
+    board.clear();
+    board.start();
+  }
+});
+
+Events.on('tabletopCellClick', (table, player, cell) => {
+  if (table !== board) {
+    return;
+  }
+  const side: keyof typeof MARKS = board.seats[board.seatOf(player)].side;
   if (board.pieceAt(cell) === null) {
     board.addPiece({ model: MARKS[side], cell, side });
     if (wins(side)) {
@@ -933,6 +1132,119 @@ Events.on('tabletopMoveRequest', (table, player, piece, cell) => {
   }
   if (kind === 'capture') {
     board.pieceAt({ row: (from.row + cell.row) / 2, column: (from.column + cell.column) / 2 }).remove();
+  }
+  if (cell.row === (piece.side === 'white' ? 7 : 0)) {
+    piece.data.king = true;
+  }
+  if (!board.pieces.some((other) => other.side !== piece.side)) {
+    board.finish(player, 'all pieces taken');
+    return true;
+  }
+  if (kind === 'capture' && canCapture(piece, cell)) {
+    jumping = piece;
+  } else {
+    board.nextTurn();
+  }
+  return true;
+});
+
+Events.on('tabletopEnd', (table, winner, reason) => {
+  if (table === board) {
+    Chat.sendToAll(winner ? `${winner.nickname} wins at checkers: ${reason}` : 'Checkers: no winner');
+  }
+});
+```
+
+```ts
+// checkers
+const { Tabletop } = kcds.world;
+const { Events, Chat } = kcds.core;
+
+type Piece = kcds.world.TabletopPiece;
+type Cell = { row: number; column: number };
+
+const MEN = { white: 'dicebadge_balatro_badge_silver', black: 'dicebadge_balatro_badge_plumb' };
+const board = Tabletop.create({
+  position: { x: 1652.4, y: 2158.3, z: 36.1 },
+  board: { model: 'dice_board', rows: 8, columns: 8, cellSize: 0.07, height: 0.06 },
+  seats: [
+    { position: { x: 1652.4, y: 2158.9, z: 35.6 }, rotation: 180, side: 'white' },
+    { position: { x: 1652.4, y: 2157.7, z: 35.6 }, rotation: 0, side: 'black' },
+  ],
+  turnSeconds: 90,
+});
+// The piece that jumps again in the middle of a capture run.
+let jumping: Piece | null = null;
+
+function sideOf(player: kcds.players.Player): string {
+  return board.seats[board.seatOf(player)].side;
+}
+
+// What a step of `piece` from `from` to `to` is: 'move', 'capture' or null for neither.
+function stepKind(piece: Piece, from: Cell, to: Cell): 'move' | 'capture' | null {
+  const rows = to.row - from.row;
+  const columns = to.column - from.column;
+  const forward = piece.side === 'white' ? 1 : -1;
+  if (to.row < 0 || to.row > 7 || to.column < 0 || to.column > 7 || Math.abs(rows) !== Math.abs(columns)) {
+    return null;
+  }
+  if (board.pieceAt(to) !== null || (!piece.data.king && Math.sign(rows) !== forward)) {
+    return null;
+  }
+  if (Math.abs(rows) === 1) {
+    return 'move';
+  }
+  const jumped = Math.abs(rows) === 2 ? board.pieceAt({ row: from.row + rows / 2, column: from.column + columns / 2 }) : null;
+  return jumped !== null && jumped.side !== piece.side ? 'capture' : null;
+}
+
+function canCapture(piece: Piece, from: Cell): boolean {
+  return [-2, 2].some((rows) =>
+    [-2, 2].some((columns) => stepKind(piece, from, { row: from.row + rows, column: from.column + columns }) === 'capture'),
+  );
+}
+
+function newGame() {
+  board.clear();
+  jumping = null;
+  for (let row = 0; row < 8; row++) {
+    for (let column = 0; column < 8; column++) {
+      if ((row + column) % 2 === 1 && (row < 3 || row > 4)) {
+        const side = row < 3 ? 'white' : 'black';
+        board.addPiece({ model: MEN[side], cell: { row, column }, side, data: { king: false } });
+      }
+    }
+  }
+  board.start();
+}
+
+Events.on('tabletopSeated', (table) => {
+  if (table === board && board.state === 'idle' && board.seats.every((seat) => seat.player)) {
+    newGame();
+  }
+});
+
+Events.on('tabletopTurn', (table) => {
+  if (table === board) {
+    jumping = null;
+  }
+});
+
+Events.on('tabletopPieceSelect', (table, player, piece) => {
+  return table !== board || (piece.side === sideOf(player) && (jumping === null || piece === jumping));
+});
+
+Events.on('tabletopMoveRequest', (table, player, piece, cell) => {
+  if (table !== board) {
+    return;
+  }
+  const from = piece.cell;
+  const kind = stepKind(piece, from, cell);
+  if (kind === null || (jumping !== null && kind !== 'capture')) {
+    return false;
+  }
+  if (kind === 'capture') {
+    board.pieceAt({ row: (from.row + cell.row) / 2, column: (from.column + cell.column) / 2 })?.remove();
   }
   if (cell.row === (piece.side === 'white' ? 7 : 0)) {
     piece.data.king = true;

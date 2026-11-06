@@ -16,6 +16,19 @@ const shot = await kcds.world.Render.view({
 // shot is { png: 'data:image/png;base64,iVBORw0...', width: 960, height: 530 }
 ```
 
+```ts
+// client
+const { Vector3 } = kcds.math;
+
+const shot = await kcds.world.Render.view({
+  position: new Vector3(1652.5, 2151.5, 37.5),
+  lookAt: new Vector3(1647.5, 2155.5, 36),
+  fov: 60, // degrees; leave out or use 0 for the game's value
+  width: 960, // PNG width; leave out for the window's size
+});
+// shot is { png: 'data:image/png;base64,iVBORw0...', width: 960, height: 530 }
+```
+
 ```lua
 -- client
 local Vector3 = kcds.math.Vector3

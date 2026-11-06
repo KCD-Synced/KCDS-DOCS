@@ -13,6 +13,17 @@ kcds.core.Events.on('characterCreatorClosed', (appearance, reason) => {
 });
 ```
 
+```ts
+// client
+kcds.ui.CharacterCreator.open({ title: 'Who are you?', genders: 'both' });
+
+kcds.core.Events.on('characterCreatorClosed', (appearance, reason) => {
+  if (reason === 'accepted') {
+    kcds.core.Events.toServer('saveLook', appearance);
+  }
+});
+```
+
 ```lua
 -- client
 kcds.ui.CharacterCreator.open({ title = "Who are you?", genders = "both" })

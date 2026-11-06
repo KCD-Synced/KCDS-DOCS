@@ -69,6 +69,13 @@ kcds.core.Events.on('playerReady', () => {
 });
 ```
 
+```ts
+// client
+kcds.core.Events.on('playerReady', () => {
+  kcds.core.Events.toServer('hello', { message: 'Hello from my game' });
+});
+```
+
 ```lua
 -- client
 kcds.core.Events.on("playerReady", function()
@@ -85,6 +92,16 @@ Events.On("playerReady", () =>
 ```
 
 ```js
+// server
+kcds.core.Events.fromClient('hello', (sender, payload) => {
+  if (!payload || typeof payload.message !== 'string' || payload.message.length > 128) {
+    return;
+  }
+  kcds.core.Chat.sendToPlayer(sender, payload.message);
+});
+```
+
+```ts
 // server
 kcds.core.Events.fromClient('hello', (sender, payload) => {
   if (!payload || typeof payload.message !== 'string' || payload.message.length > 128) {
@@ -134,6 +151,11 @@ To reach everyone:
 kcds.core.Events.broadcast('hello:announce', { text: 'The market opens at noon.' });
 ```
 
+```ts
+// server
+kcds.core.Events.broadcast('hello:announce', { text: 'The market opens at noon.' });
+```
+
 ```lua
 -- server
 kcds.core.Events.broadcast("hello:announce", { text = "The market opens at noon." })
@@ -145,6 +167,13 @@ Events.Broadcast("hello:announce", new { text = "The market opens at noon." });
 ```
 
 ```js
+// client
+kcds.core.Events.on('hello:announce', (data) => {
+  kcds.ui.Hud.showNotification(data.text);
+});
+```
+
+```ts
 // client
 kcds.core.Events.on('hello:announce', (data) => {
   kcds.ui.Hud.showNotification(data.text);
@@ -170,6 +199,13 @@ To reach one player, use `player.emit(name, payload)`. The client hears it the s
 `Events.on(name)`. It returns `false` if the player has left.
 
 ```js
+// server
+kcds.core.Events.fromClient('shop:prices.ask', (player) => {
+  player.emit('shop:prices', { bread: 3, ale: 2 });
+});
+```
+
+```ts
 // server
 kcds.core.Events.fromClient('shop:prices.ask', (player) => {
   player.emit('shop:prices', { bread: 3, ale: 2 });
@@ -215,6 +251,13 @@ The scripts start with nothing, and `playerResourcesReady` fires again on the se
 client needs from that event, not just on the first join:
 
 ```js
+// server
+kcds.core.Events.on('playerResourcesReady', (player) => {
+  player.emit('shop:prices', { bread: 4, beer: 2 });
+});
+```
+
+```ts
 // server
 kcds.core.Events.on('playerResourcesReady', (player) => {
   player.emit('shop:prices', { bread: 4, beer: 2 });

@@ -25,6 +25,27 @@ Events.on('playerCommand', (player, command, args) => {
 });
 ```
 
+```ts
+const { Events } = kcds.core;
+const { Player } = kcds.players;
+
+Events.on('playerReady', (player) => {
+  console.info(`${player.nickname} (${player.id}) is at ${player.position}`);
+});
+
+Events.on('playerCommand', (player, command, args) => {
+  if (command === 'heal') {
+    player.heal();
+  }
+  if (command === 'tp' && args[0]) {
+    const [target] = Player.find(args[0]);
+    if (target) {
+      player.teleport(target.position);
+    }
+  }
+});
+```
+
 ```lua
 local Events = kcds.core.Events
 local Player = kcds.players.Player
@@ -111,6 +132,17 @@ if (hand && neck) {
 }
 ```
 
+```ts
+// client: a rope between a guard's hand and a prisoner's neck
+const { Player } = kcds.players;
+
+const hand = new Player(data.guardId).jointPosition('Bip01 R Hand');
+const neck = new Player(data.prisonerId).jointPosition('Bip01 Neck');
+if (hand && neck) {
+  console.log(`rope ${hand.distance(neck).toFixed(2)} m`);
+}
+```
+
 ```lua
 -- client: a rope between a guard's hand and a prisoner's neck
 local Player = kcds.players.Player
@@ -139,6 +171,11 @@ Players and entities see each other only in the same dimension. Dimension 429496
 instances, interiors, minigames or an admin's own space.
 
 ```js
+player.setDimension(1000 + player.id); // a dimension of their own
+player.showOnlyTo(admin); // one other player can still see them
+```
+
+```ts
 player.setDimension(1000 + player.id); // a dimension of their own
 player.showOnlyTo(admin); // one other player can still see them
 ```

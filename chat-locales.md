@@ -11,6 +11,13 @@ Chat.sendToAll('The tournament starts at noon.', { author: 'Herald' });
 Chat.sendToPlayer(player, 'Only you can read this.');
 ```
 
+```ts
+const { Chat } = kcds.core;
+
+Chat.sendToAll('The tournament starts at noon.', { author: 'Herald' });
+Chat.sendToPlayer(player, 'Only you can read this.');
+```
+
 ```lua
 local Chat = kcds.core.Chat
 
@@ -33,6 +40,19 @@ text)` fires. For local chat, radio or roleplay channels, switch the relay off a
 yourself:
 
 ```js
+const { Chat, Events } = kcds.core;
+const { Player } = kcds.players;
+
+Chat.setChatRelay(false);
+
+Events.on('playerChat', (speaker, text) => {
+  for (const listener of Player.inRadius(speaker.position, 30)) {
+    Chat.sendToPlayer(listener, text, { author: speaker.nickname });
+  }
+});
+```
+
+```ts
 const { Chat, Events } = kcds.core;
 const { Player } = kcds.players;
 
@@ -93,6 +113,18 @@ For each player, the text is chosen in this order:
 Placeholders such as `{name}` are filled from the values you pass.
 
 ```js
+const { Chat, Events, Locales } = kcds.core;
+
+Locales.set('english', { 'myshop.welcome': 'Welcome, {name}!' });
+Locales.set('czech', { 'myshop.welcome': 'Vítej, {name}!' });
+
+Events.on('playerReady', (player) => {
+  const line = Locales.text(player, 'myshop.welcome', { name: player.nickname });
+  Chat.sendToPlayer(player, line);
+});
+```
+
+```ts
 const { Chat, Events, Locales } = kcds.core;
 
 Locales.set('english', { 'myshop.welcome': 'Welcome, {name}!' });

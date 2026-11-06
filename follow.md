@@ -33,6 +33,35 @@ Events.on('followStopped', (target, reason) => {
 });
 ```
 
+```ts
+// client
+const { Follow } = kcds.characters;
+const { Hud, Key } = kcds.ui;
+const { Events } = kcds.core;
+
+// F starts following the nearest person within 20 m; F again stops.
+Key.bind('f', () => {
+  if (Follow.getTarget() || Follow.isPending()) {
+    Follow.stop();
+    return;
+  }
+  const nearby = Follow.targets();
+  if (nearby.length > 0 && Follow.canStart(nearby[0])) {
+    Follow.start(nearby[0]);
+  }
+});
+
+Events.on('followStarted', (target) => {
+  Hud.showNotification(`Following ${target.nickname}`);
+});
+
+Events.on('followStopped', (target, reason) => {
+  if (reason === 'targetLost') {
+    Hud.showNotification(`${target.nickname} is gone`);
+  }
+});
+```
+
 ```lua
 -- client
 local Follow = kcds.characters.Follow
@@ -126,6 +155,11 @@ A cuffed player only walks.
 To lead a prisoner 1.5 m behind a guard, with no prompt and no way to walk off:
 
 ```js
+// client
+kcds.characters.Follow.start(guard, { hint: false, playerCanStop: false, distance: 1.5 });
+```
+
+```ts
 // client
 kcds.characters.Follow.start(guard, { hint: false, playerCanStop: false, distance: 1.5 });
 ```

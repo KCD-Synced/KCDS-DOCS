@@ -19,6 +19,10 @@ Values are joined as text, so an object appears as `[object Object]`. Convert it
 console.info('inventory', JSON.stringify(player.getInventory()));
 ```
 
+```ts
+console.info('inventory', JSON.stringify(player.getInventory()));
+```
+
 ```lua
 print("inventory", json.encode(player:getInventory()))
 ```
@@ -66,6 +70,18 @@ kcds.core.Events.fromClient('shop:buy', async (player, payload) => {
 });
 ```
 
+```ts
+kcds.core.Events.fromClient('shop:buy', async (player, payload) => {
+  try {
+    await buy(player, payload);
+  } catch (problem) {
+    const message = problem instanceof Error ? problem.message : String(problem);
+    console.warn(`${player.nickname} could not buy: ${message}`);
+    kcds.core.Chat.sendToPlayer(player, 'That did not work.');
+  }
+});
+```
+
 ```lua
 -- buy answers a promise; :catch is the try/catch of a promise.
 kcds.core.Events.fromClient("shop:buy", function(player, payload)
@@ -108,6 +124,17 @@ and starts nothing. See [Console commands](server.md#console-commands).
 A console command of your own is handy for quick checks:
 
 ```js
+kcds.core.Events.on('consoleCommand', (command, args) => {
+  if (command !== 'where') {
+    return;
+  }
+  for (const player of kcds.players.Player.all()) {
+    console.info(`${player.nickname} at ${player.position}`);
+  }
+});
+```
+
+```ts
 kcds.core.Events.on('consoleCommand', (command, args) => {
   if (command !== 'where') {
     return;

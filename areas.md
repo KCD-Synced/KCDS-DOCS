@@ -36,6 +36,31 @@ Events.on('areaExit', (area, entity) => {
 });
 ```
 
+```ts
+const { Area } = kcds.world;
+const { Vector3 } = kcds.math;
+const { Events } = kcds.core;
+
+Area.create({
+  id: 'town-gate',
+  type: 'box',
+  position: new Vector3(100, 200, 10),
+  min: new Vector3(-5, -5, -2),
+  max: new Vector3(5, 5, 4),
+  labels: ['town'],
+});
+
+Events.on('areaEnter', (area, entity, matchingDimension) => {
+  if (area.id === 'town-gate' && matchingDimension) {
+    console.info(`entered: ${entity.id}`);
+  }
+});
+
+Events.on('areaExit', (area, entity) => {
+  console.info(`left ${area.id}: ${entity.id}`);
+});
+```
+
 ```lua
 local Area = kcds.world.Area
 local Vector3 = kcds.math.Vector3
@@ -113,6 +138,33 @@ kcds.core.Events.on('areaEnter', (area, entity) => {
 // The inn of Troskovice, by its id.
 const inn = Area.getById('108c8fabab6e4bf9');
 console.info(inn.type, inn.height, inn.players.length);
+
+// All interiors on the map, and those a player is in.
+const interiors = Area.all('level').filter((area) => area.labels.includes('interior'));
+const here = Area.aroundEntity(player).filter((area) => area.labels.includes('interior'));
+
+// Turn off all stealth areas on this server.
+for (const area of Area.taggedWith('stealthArea_crouch')) {
+  area.enabled = false;
+}
+```
+
+```ts
+const { Area } = kcds.world;
+const { Player } = kcds.players;
+
+// Tell players when they step onto private ground.
+kcds.core.Events.on('areaEnter', (area, entity) => {
+  if (area.kind === 'level' && entity instanceof Player && area.labels.includes('private')) {
+    kcds.core.Chat.sendToPlayer(entity, `You are on private ground (${area.name}).`);
+  }
+});
+
+// The inn of Troskovice, by its id.
+const inn = Area.getById('108c8fabab6e4bf9');
+if (inn) {
+  console.info(inn.type, inn.height, inn.players.length);
+}
 
 // All interiors on the map, and those a player is in.
 const interiors = Area.all('level').filter((area) => area.labels.includes('interior'));
@@ -240,6 +292,26 @@ A shape needs a `height` above the wall thickness and edges that do not cross. A
 refused. In these cases, `create` throws a `RangeError` and `setShape` returns `false`. Level areas cannot have walls.
 
 ```js
+const { Vector3 } = kcds.math;
+
+const pen = kcds.world.Area.create({
+  id: 'pen',
+  type: 'box',
+  position: new Vector3(1650, 2150, 35),
+  min: new Vector3(-4, -4, 0),
+  max: new Vector3(4, 4, 3),
+  collision: true,
+  wallTop: true,
+});
+
+kcds.core.Events.on('playerCommand', (player, command) => {
+  if (command === 'open') {
+    pen.collision = false;
+  }
+});
+```
+
+```ts
 const { Vector3 } = kcds.math;
 
 const pen = kcds.world.Area.create({

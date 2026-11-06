@@ -22,6 +22,24 @@ Events.on('playerReady', (player) => {
 });
 ```
 
+```ts
+const { Cart } = kcds.world;
+const { Vector3 } = kcds.math;
+const { Events } = kcds.core;
+
+const wagon = Cart.spawn('wagon_b_covered', new Vector3(100, 200, 10));
+wagon.maxSpeed = 5;
+
+// Refuse a second driver.
+Events.on('cartEntering', (cart, player, seat) => {
+  return seat !== 'driver' || cart.driver === null;
+});
+
+Events.on('playerReady', (player) => {
+  wagon.seatPlayer(player, 'driver');
+});
+```
+
 ```lua
 local Cart = kcds.world.Cart
 local Vector3 = kcds.math.Vector3

@@ -24,6 +24,17 @@ Progression.lockPerks(['Art of preservation']); // perk names or GUIDs
 Progression.setGameXp(false); // only XP your scripts give counts
 ```
 
+```ts
+const { Progression } = kcds.players;
+
+Progression.setXpGain('*', 0.5); // half XP on all tracks
+Progression.setXpGain('alchemy', 2); // double on this one
+Progression.setXpCap('*', 300); // up to 300 XP per minute on each track
+Progression.setMaxLevel('weapon_sword', 20);
+Progression.lockPerks(['Art of preservation']); // perk names or GUIDs
+Progression.setGameXp(false); // only XP your scripts give counts
+```
+
 ```lua
 local Progression = kcds.players.Progression
 
@@ -49,6 +60,15 @@ rewrites its description and lore in every player's perk tree, and players who j
 text back to the game.
 
 ```js
+const { Progression } = kcds.players;
+
+Progression.setPerkText('Against all odds', {
+  name: "Racek's legacy",
+  description: 'You fight on when others would fall.',
+});
+```
+
+```ts
 const { Progression } = kcds.players;
 
 Progression.setPerkText('Against all odds', {
@@ -97,6 +117,22 @@ or a notice. `Progression.xpNeeded(track, level)` gives the XP a level costs. Be
 Store `player.progression` when a player leaves, and pass it to `loadProgression` when they return:
 
 ```js
+const { Events } = kcds.core;
+const savedProgress = new Map();
+
+Events.on('playerDisconnect', (player) => {
+  savedProgress.set(player.nickname, player.progression);
+});
+
+Events.on('playerReady', (player) => {
+  const snapshot = savedProgress.get(player.nickname);
+  if (snapshot) {
+    player.loadProgression(snapshot, { notify: false });
+  }
+});
+```
+
+```ts
 const { Events } = kcds.core;
 const savedProgress = new Map();
 

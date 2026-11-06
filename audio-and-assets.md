@@ -13,6 +13,11 @@ hear, have the server tell all clients to play it:
 kcds.core.Events.broadcast('bells:ring', { x: 1998, y: 2498.75, z: 116 });
 ```
 
+```ts
+// server
+kcds.core.Events.broadcast('bells:ring', { x: 1998, y: 2498.75, z: 116 });
+```
+
 ```lua
 -- server
 kcds.core.Events.broadcast("bells:ring", { x = 1998, y = 2498.75, z = 116 })
@@ -24,6 +29,13 @@ Events.Broadcast("bells:ring", new { x = 1998, y = 2498.75, z = 116 });
 ```
 
 ```js
+// client
+kcds.core.Events.on('bells:ring', (spot) => {
+  kcds.world.Audio.playAt('a_o_bell_kkut_kostelni', spot);
+});
+```
+
+```ts
 // client
 kcds.core.Events.on('bells:ring', (spot) => {
   kcds.world.Audio.playAt('a_o_bell_kkut_kostelni', spot);
@@ -66,6 +78,15 @@ Audio.setSoundParameter(horseId, 'horse_speed', 0.5);
 Audio.setSoundSwitch(playerId, 'sword_mat', 'mat_metal');
 ```
 
+```ts
+// client
+const { Audio } = kcds.world;
+
+Audio.play('v_horse_whistle');
+Audio.setSoundParameter(horseId, 'horse_speed', 0.5);
+Audio.setSoundSwitch(playerId, 'sword_mat', 'mat_metal');
+```
+
 ```lua
 -- client
 local Audio = kcds.world.Audio
@@ -92,6 +113,11 @@ positions must be within 16 km of the map's origin.
 from that position, fades with distance and follows the player's voice volume.
 
 ```js
+// client: your file is stream/sounds/kcds/guards/halt.ogg
+kcds.world.Audio.playFile('sounds/kcds/guards/halt', guardId, '20');
+```
+
+```ts
 // client: your file is stream/sounds/kcds/guards/halt.ogg
 kcds.world.Audio.playFile('sounds/kcds/guards/halt', guardId, '20');
 ```
@@ -148,6 +174,11 @@ resources/
 kcds.world.Prop.spawn('objects/kcds/furniture/chair.cgf', new kcds.math.Vector3(1650, 2150, 37));
 ```
 
+```ts
+// server: spawn the chair by its full path
+kcds.world.Prop.spawn('objects/kcds/furniture/chair.cgf', new kcds.math.Vector3(1650, 2150, 37));
+```
+
 ```lua
 -- server: spawn the chair by its full path
 kcds.world.Prop.spawn("objects/kcds/furniture/chair.cgf", kcds.math.Vector3.new(1650, 2150, 37))
@@ -159,6 +190,13 @@ Prop.Spawn("objects/kcds/furniture/chair.cgf", new Vector3(1650, 2150, 37));
 ```
 
 ```js
+// client: check whether this game has it yet
+if (kcds.core.Assets.has('objects/kcds/furniture/chair.cgf')) {
+  console.log('the chair is here');
+}
+```
+
+```ts
 // client: check whether this game has it yet
 if (kcds.core.Assets.has('objects/kcds/furniture/chair.cgf')) {
   console.log('the chair is here');

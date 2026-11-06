@@ -24,6 +24,24 @@ delivery.setObjective(0, { text: 'Collect the grain', progress: 'done' });
 delivery.setProgress('done');
 ```
 
+```ts
+const { Quest } = kcds.characters;
+const { Vector3 } = kcds.math;
+
+const delivery = Quest.give('deliver_grain', 'Grain for the mill', {
+  player,
+  description: 'The miller needs three sacks of grain.',
+  objectives: [
+    { text: 'Collect the grain', position: new Vector3(512, 830, 31) },
+    { text: 'Bring it to the miller' },
+  ],
+  track: true,
+});
+
+delivery.setObjective(0, { text: 'Collect the grain', progress: 'done' });
+delivery.setProgress('done');
+```
+
 ```lua
 local Quest = kcds.characters.Quest
 local Vector3 = kcds.math.Vector3
@@ -79,6 +97,33 @@ deletes it and `track(player?)` and `untrack(player?)` change tracking. The even
 what each choice does.
 
 ```js
+const { Dialogue } = kcds.characters;
+const { Events } = kcds.core;
+
+Events.on('npcInteract', (npc, player) => {
+  const page = {
+    line: 'What brings you to the mill?',
+    options: [
+      { id: 'work', text: 'I am looking for work.' },
+      { id: 'bye', text: 'Nothing. Farewell.' },
+    ],
+  };
+  Dialogue.open(player, page, { npc });
+});
+
+Events.on('dialogueChoice', (session, player, optionId) => {
+  if (optionId === 'bye') {
+    Dialogue.close(session);
+    return;
+  }
+  Dialogue.update(session, {
+    line: 'Carry these sacks.',
+    options: [{ id: 'bye', text: 'Right away.' }],
+  });
+});
+```
+
+```ts
 const { Dialogue } = kcds.characters;
 const { Events } = kcds.core;
 

@@ -33,6 +33,26 @@ kcds.core.Events.on('npcDeath', (npc, killer) => {
 });
 ```
 
+```ts
+const { Npc } = kcds.characters;
+const { Vector3 } = kcds.math;
+
+const guard = Npc.create({
+  soul: 'guard',
+  name: 'Gate guard',
+  nameplate: true,
+  position: new Vector3(-2820, -1320, 104),
+});
+
+guard.lookAt(player);
+guard.say('Halt! Who goes there?');
+guard.moveTo(new Vector3(-2830, -1310, 104), { speed: 'walk' });
+
+kcds.core.Events.on('npcDeath', (npc, killer) => {
+  console.info(`${npc.name} died`);
+});
+```
+
 ```lua
 local Npc = kcds.characters.Npc
 local Vector3 = kcds.math.Vector3
@@ -97,6 +117,17 @@ An NPC can have a player-style name and health bar over its head. Set `nameplate
 `setNameplateText(text)` for a title instead of the name, `setNameplateColor(0xAARRGGBB)` and `setNameplateHealthVisible(false)`.
 
 ```js
+const captain = kcds.characters.Npc.create({
+  soul: 'knight',
+  name: 'Hanush',
+  nameplate: true,
+  position,
+});
+captain.setNameplateText('Captain of the guard');
+captain.setNameplateColor(0xffffd27f);
+```
+
+```ts
 const captain = kcds.characters.Npc.create({
   soul: 'knight',
   name: 'Hanush',
@@ -184,6 +215,23 @@ kcds.core.Events.on('patrolWaypoint', (npc, patrol) => {
 });
 ```
 
+```ts
+const { PatrolRoute } = kcds.characters;
+const { Vector3 } = kcds.math;
+
+const wallWalk = PatrolRoute.create({
+  name: 'walls',
+  points: [new Vector3(0, 0, 10), new Vector3(30, 0, 10), new Vector3(30, 30, 10)],
+  speed: 'walk',
+  waitSeconds: 5,
+});
+guard.patrol(wallWalk);
+
+kcds.core.Events.on('patrolWaypoint', (npc, patrol) => {
+  console.info(`${npc.name} at ${patrol.waypointIndex}`);
+});
+```
+
 ```lua
 local PatrolRoute = kcds.characters.PatrolRoute
 local Vector3 = kcds.math.Vector3
@@ -255,6 +303,18 @@ const statue = kcds.characters.Npc.create({
 statue.brain = true; // it thinks again
 ```
 
+```ts
+const statue = kcds.characters.Npc.create({
+  soul: 'townswoman',
+  position: new kcds.math.Vector3(100, 200, 25),
+  brain: false,
+  targetable: false,
+  invulnerable: true,
+});
+
+statue.brain = true; // it thinks again
+```
+
 ```lua
 local statue = kcds.characters.Npc.create({
   soul = "townswoman",
@@ -300,6 +360,14 @@ Npc.setAnimalSpecies('Wolf', 50); // half as many wolves
 Npc.setHarvestTable({ Boar: [{ item: 'boarMeat', amount: 2 }] });
 ```
 
+```ts
+const { Npc } = kcds.characters;
+
+Npc.setAnimalPopulation({ enabled: true });
+Npc.setAnimalSpecies('Wolf', 50); // half as many wolves
+Npc.setHarvestTable({ Boar: [{ item: 'boarMeat', amount: 2 }] });
+```
+
 ```lua
 local Npc = kcds.characters.Npc
 
@@ -331,6 +399,20 @@ An `npcHarvest` handler can return its own yield for this harvest, as `{ items: 
 checked like the table's. The class must still be in the table, and `[]` is enough.
 
 ```js
+kcds.core.Events.on('npcHarvest', (player, npc) => {
+  if (npc.actorClass !== 'Boar' || player.getStat('survival') < 10) {
+    return;
+  }
+  return {
+    items: [
+      { item: 'boarMeat', amount: 4 },
+      { item: 'boarKidney', amount: 1 },
+    ],
+  };
+});
+```
+
+```ts
 kcds.core.Events.on('npcHarvest', (player, npc) => {
   if (npc.actorClass !== 'Boar' || player.getStat('survival') < 10) {
     return;
@@ -392,6 +474,14 @@ Players cannot talk to them: they show no Talk, Chat or Reply prompt and raise n
 turn it on with `Npc.adopt(guid).interactable = true`.
 
 ```js
+const { Npc } = kcds.characters;
+
+Npc.setPopulation({ maxPeople: 24, activationRadius: 60, despawnRadius: 90 });
+Npc.setPopulation({ share: 50 }); // half of the level's people
+Npc.setPopulation({ enabled: false }); // only your own NPCs
+```
+
+```ts
 const { Npc } = kcds.characters;
 
 Npc.setPopulation({ maxPeople: 24, activationRadius: 60, despawnRadius: 90 });

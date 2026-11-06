@@ -15,6 +15,13 @@ const rows = kcds.characters.Animations.list('bakermill');
 //    partner: '', slaveBody: false, player: true, clip: 'baker_mill_fill' }, ...]
 ```
 
+```ts
+const rows = kcds.characters.Animations.list('bakermill');
+// [{ fragment: 'BakerMillFill', tags: '', duration: 4.233, oneShot: true, fullBody: true,
+//    rightHand: '', leftHand: '', male: true, female: false, sequence: '', phase: '',
+//    partner: '', slaveBody: false, player: true, clip: 'baker_mill_fill' }, ...]
+```
+
 ```lua
 local rows = kcds.characters.Animations.list("bakermill")
 -- { { fragment = "BakerMillFill", tags = "", duration = 4.233, oneShot = true, fullBody = true,
@@ -58,6 +65,24 @@ play as their clip on all screens. A fragment that repeats in the game keeps rep
 ## Playing an animation
 
 ```js
+// A deep bow.
+player.playAnimation('Greetings', { tags: 'bowBig' });
+
+// Reading on a loop, while the player cannot walk away.
+player.playAnimation('', {
+  clip: 'reading_stand_inv_in',
+  loop: true,
+  lockMovement: true,
+});
+
+kcds.core.Events.on('playerAnimationEnd', (player, fragment, reason) => {
+  console.info(`${player.nickname}: ${fragment} ${reason}`);
+});
+
+player.stopAnimation(); // or { standUp: true } to get up the game's way
+```
+
+```ts
 // A deep bow.
 player.playAnimation('Greetings', { tags: 'bowBig' });
 
@@ -138,6 +163,14 @@ player.playAnimation('IngameDialogPose_SittingWithOrWithoutTable_Loop', {
 });
 ```
 
+```ts
+player.playAnimation('IngameDialogPose_SittingWithOrWithoutTable_Loop', {
+  tags: 'sitting',
+  loop: true,
+  lockRotation: { yaw: 45, up: 10, down: 60 },
+});
+```
+
 ```lua
 player:playAnimation("IngameDialogPose_SittingWithOrWithoutTable_Loop", {
   tags = "sitting",
@@ -164,6 +197,14 @@ These apply on all screens without restarting it. They return `false` if no `pla
 - `setAnimationProps(props)` changes the props, which helps tune a held prop while the hand moves
 
 ```js
+player.playAnimation('PrayStand', { loop: true, speed: 0.5, time: 2 });
+player.pauseAnimation();
+player.setAnimationSpeed(2); // takes effect once resumed
+player.resumeAnimation();
+player.setAnimationProps({ model: 'wooden_scoop', position: { x: 0.02, y: 0, z: 0 } });
+```
+
+```ts
 player.playAnimation('PrayStand', { loop: true, speed: 0.5, time: 2 });
 player.pauseAnimation();
 player.setAnimationSpeed(2); // takes effect once resumed
@@ -215,6 +256,12 @@ if (player.seated) {
 }
 ```
 
+```ts
+if (player.seated) {
+  player.playAnimation('Guest_DrinkBeer');
+}
+```
+
 ```lua
 if player.seated then
   player:playAnimation("Guest_DrinkBeer")
@@ -251,6 +298,14 @@ player.playAnimation('', {
 });
 ```
 
+```ts
+player.playAnimation('', {
+  clip: 'reading_stand_inv_in',
+  loop: true,
+  props: { model: 'wooden_scoop', hand: 'right' },
+});
+```
+
 ```lua
 player:playAnimation("", {
   clip = "reading_stand_inv_in",
@@ -279,6 +334,11 @@ NPCs hold a tankard, cup or scoop. `position` and `rotation` then only fine-tune
 player.playAnimation('Guest_DrinkBeer', { props: { item: 'tankard_beer', attach: 'game' } });
 ```
 
+```ts
+// An upright tankard, raised to the mouth and set down between sips.
+player.playAnimation('Guest_DrinkBeer', { props: { item: 'tankard_beer', attach: 'game' } });
+```
+
 ```lua
 -- An upright tankard, raised to the mouth and set down between sips.
 player:playAnimation("Guest_DrinkBeer", { props = { item = "tankard_beer", attach = "game" } })
@@ -302,6 +362,15 @@ Biped names also work, so `Bip01 Neck` means `Neck` and `Bip01 R Hand` means `Ri
 client's log then lists the body's joints.
 
 ```js
+// A noose rope on the neck while hanging.
+player.playAnimation('DeadBody_Hanged', {
+  tags: 'slaveHalter+hanged_01',
+  loop: true,
+  props: { item: 'poi_hroby_noose', joint: 'Neck' },
+});
+```
+
+```ts
 // A noose rope on the neck while hanging.
 player.playAnimation('DeadBody_Hanged', {
   tags: 'slaveHalter+hanged_01',
@@ -340,6 +409,11 @@ way in the game, and all screens see it at the same moments.
 player.playAnimation('GetMash', { props: { item: 'Scoop', attach: 'game', fromAnimation: true } });
 ```
 
+```ts
+// The scoop appears as GetMash reaches for it, and goes as it is laid back.
+player.playAnimation('GetMash', { props: { item: 'Scoop', attach: 'game', fromAnimation: true } });
+```
+
 ```lua
 -- The scoop appears as GetMash reaches for it, and goes as it is laid back.
 player:playAnimation("GetMash", { props = { item = "Scoop", attach = "game", fromAnimation = true } })
@@ -360,6 +434,10 @@ turned to it, as the game's camp places a groom, and the animation starts a mome
 player.playAnimation('CampHorseGroomingLoopLeft', { target: horse, side: 'left', loop: true });
 ```
 
+```ts
+player.playAnimation('CampHorseGroomingLoopLeft', { target: horse, side: 'left', loop: true });
+```
+
 ```lua
 player:playAnimation("CampHorseGroomingLoopLeft", { target = horse, side = "left", loop = true })
 ```
@@ -372,6 +450,13 @@ With `untilPutDown: true`, the prop is in the hand from the start and goes when 
 `place`, `despawnitem` or `detach` event, for animations that hand an item over without picking one up first:
 
 ```js
+player.playAnimation('AlchemyReturn', {
+  tags: 'alchemyBowl',
+  props: { item: 'Scoop', attach: 'game', untilPutDown: true },
+});
+```
+
+```ts
 player.playAnimation('AlchemyReturn', {
   tags: 'alchemyBowl',
   props: { item: 'Scoop', attach: 'game', untilPutDown: true },
@@ -398,6 +483,21 @@ animation holds the item, and show it again afterwards. The events `propPickedUp
 `prop` is `{ index, fragment, hand, item, model, rest }`.
 
 ```js
+const potScoop = kcds.world.Prop.spawn('wooden_scoop', { x: 512.4, y: 1288.1, z: 31.02 });
+
+player.playAnimation('GetMash', {
+  tags: 'FrontIn',
+  props: { item: 'Scoop', attach: 'game', fromAnimation: true, rest: potScoop },
+});
+
+kcds.core.Events.on('propPickedUp', (who, prop) => {
+  if (prop.rest === potScoop) {
+    console.info(`${who.nickname} scoops soup from the pot`);
+  }
+});
+```
+
+```ts
 const potScoop = kcds.world.Prop.spawn('wooden_scoop', { x: 512.4, y: 1288.1, z: 31.02 });
 
 player.playAnimation('GetMash', {
@@ -458,6 +558,14 @@ player.playAnimation('CrimeSurrender', {
 });
 ```
 
+```ts
+player.playAnimation('CrimeSurrender', {
+  tags: 'l_torch',
+  loop: true,
+  props: { model: 'torch_player', hand: 'left', attach: 'game', lit: true },
+});
+```
+
 ```lua
 player:playAnimation("CrimeSurrender", {
   tags = "l_torch",
@@ -482,6 +590,10 @@ player.PlayAnimation("CrimeSurrender", new
 bodies do not push each other while it plays.
 
 ```js
+guard.playPairedAnimation(condemned, 'Quest_StandHlbrdKill');
+```
+
+```ts
 guard.playPairedAnimation(condemned, 'Quest_StandHlbrdKill');
 ```
 
@@ -512,6 +624,11 @@ kcds.players.Interactions.set('pointing', false); // for everyone
 player.setInteraction('pointing', false); // for one player
 ```
 
+```ts
+kcds.players.Interactions.set('pointing', false); // for everyone
+player.setInteraction('pointing', false); // for one player
+```
+
 ```lua
 kcds.players.Interactions.set("pointing", false) -- for everyone
 player:setInteraction("pointing", false) -- for one player
@@ -525,6 +642,12 @@ player.SetInteraction("pointing", false); // for one player
 ## Facial expressions
 
 ```js
+player.setExpression('FE_Default', { tags: 'angry' });
+player.setExpression('FE_DialogueSpeaking', { tags: 'happy' });
+player.setExpression(''); // back to the game's own face
+```
+
+```ts
 player.setExpression('FE_Default', { tags: 'angry' });
 player.setExpression('FE_DialogueSpeaking', { tags: 'happy' });
 player.setExpression(''); // back to the game's own face
@@ -550,6 +673,16 @@ The face keeps the expression alongside whatever the body plays, until the next 
 ## Talking
 
 ```js
+player.setSpeaking(true); // the mouth moves on all screens
+player.setSpeaking(true, 'happy'); // this time only: 'neutral', 'happy', 'drunk' or 'chew'
+player.setTalkingStyle('drunk'); // their style from now on
+player.setSpeaking(false);
+
+console.info(player.talking); // the current mouth style, or null
+console.info(player.talkingStyle); // 'drunk'
+```
+
+```ts
 player.setSpeaking(true); // the mouth moves on all screens
 player.setSpeaking(true, 'happy'); // this time only: 'neutral', 'happy', 'drunk' or 'chew'
 player.setTalkingStyle('drunk'); // their style from now on
@@ -591,6 +724,15 @@ Client scripts use `kcds.ui.EmoteWheel` to manage the emote catalogue and the si
 `npc.playAnimation(emote.fragment, { tags: emote.tags })`.
 
 ```js
+// client
+const { EmoteWheel } = kcds.ui;
+
+const catalogue = EmoteWheel.getCatalog(); // [{ id, name, duration, fullBody, fragment, tags, femaleTags }]
+EmoteWheel.assignSlot(5, 8); // the last slot now points
+console.log(JSON.stringify(EmoteWheel.getSlots())); // [1, 2, 3, 4, 5, 8]
+```
+
+```ts
 // client
 const { EmoteWheel } = kcds.ui;
 

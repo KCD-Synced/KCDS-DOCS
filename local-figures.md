@@ -15,6 +15,16 @@ const guide = kcds.characters.LocalNpc.create({
 guide.say('Follow the road to the mill.');
 ```
 
+```ts
+// client
+const guide = kcds.characters.LocalNpc.create({
+  soul: '210170d8-afb2-4cbd-9df5-da2a8e722af4',
+  name: 'Guide',
+  position: new kcds.math.Vector3(100, 200, 10),
+});
+guide.say('Follow the road to the mill.');
+```
+
 ```lua
 -- client
 local guide = kcds.characters.LocalNpc.create({

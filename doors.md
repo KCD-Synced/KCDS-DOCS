@@ -22,6 +22,22 @@ if (vaultDoor) {
 }
 ```
 
+```ts
+const { Door } = kcds.world;
+
+kcds.core.Events.on('doorInteract', (player, door, action, keySide) => {
+  if (door.guid === '00000000000000ab' && action === 'lockpick') {
+    return false;
+  }
+});
+
+const vaultDoor = Door.find('ab');
+if (vaultDoor) {
+  vaultDoor.locked = true;
+  vaultDoor.setOpen(false);
+}
+```
+
 ```lua
 local Door = kcds.world.Door
 
@@ -100,6 +116,16 @@ kcds.core.Events.on('doorDiscovered', (door) => {
 });
 ```
 
+```ts
+const lockedDoors = new Set(['00000000000000ab']);
+
+kcds.core.Events.on('doorDiscovered', (door) => {
+  if (lockedDoors.has(door.guid)) {
+    door.locked = true;
+  }
+});
+```
+
 ```lua
 local lockedDoors = { ["00000000000000ab"] = true }
 
@@ -141,6 +167,18 @@ Door.remove(doorway.guid, 7); // an open doorway in dimension 7
 Door.restore(doorway.guid, 7);
 ```
 
+```ts
+const { Door } = kcds.world;
+
+const doorway = Door.find('41977678219215de');
+if (doorway) {
+  Door.remove(doorway.guid, 7); // an open doorway in dimension 7
+
+  // Later:
+  Door.restore(doorway.guid, 7);
+}
+```
+
 ```lua
 local Door = kcds.world.Door
 
@@ -169,6 +207,20 @@ close, unlock and pick it, under the same checks as level doors. New doors start
 too.
 
 ```js
+const guildDoor = kcds.world.Door.spawn({
+  model: 'lvl1_door_a_left', // from Door.models(), by path or file name
+  position: [1650.5, 2160, 35.4], // the hinge pivot
+  rotation: [0, 0, 0.7071, 0.7071], // optional: x, y, z, w
+  name: 'guild hall',
+  locked: true,
+  lock: 'boltAndKey', // 'none', 'bolt', 'boltAndKey' (default) or 'key'
+  canBePicked: true,
+  lockLevel: 0.8, // 0 to 1; leave out for the game's value
+});
+guildDoor.setOpen(true);
+```
+
+```ts
 const guildDoor = kcds.world.Door.spawn({
   model: 'lvl1_door_a_left', // from Door.models(), by path or file name
   position: [1650.5, 2160, 35.4], // the hinge pivot
@@ -242,6 +294,18 @@ firstGate.open(); // a barred gate has its bar removed first
 firstGate.close({ bar: false }); // closes without replacing the bar
 ```
 
+```ts
+const { Gate } = kcds.world;
+
+for (const gate of Gate.all('trosecko')) {
+  console.info(gate.key, gate.states);
+}
+
+const [firstGate] = Gate.all('trosecko');
+firstGate.open(); // a barred gate has its bar removed first
+firstGate.close({ bar: false }); // closes without replacing the bar
+```
+
 ```lua
 local Gate = kcds.world.Gate
 
@@ -281,6 +345,20 @@ Players' games tell the server where graves are, so `Grave.all()` lists the ones
 been near them. Nothing is saved, and all graves are full again after a server start.
 
 ```js
+const { Grave } = kcds.world;
+
+kcds.core.Events.on('graveDug', (player, grave) => {
+  kcds.core.Chat.sendToAll(`${player.nickname} dug out a grave.`);
+  setTimeout(() => grave.reset(), 10 * 60 * 1000); // refills after ten minutes
+});
+
+const closest = Grave.nearest({ x: 3187.1, y: 495.9, z: 40.5 }, 50);
+if (closest && !closest.dug) {
+  closest.dig();
+}
+```
+
+```ts
 const { Grave } = kcds.world;
 
 kcds.core.Events.on('graveDug', (player, grave) => {
@@ -341,6 +419,14 @@ Reference: [Door](/docs/api/door), [Gate](/docs/api/gate), [Grave](/docs/api/gra
 prompt, and a Lock hint on the U key at an unlocked door or chest. The server checks the key on each use.
 
 ```js
+const house = kcds.world.Area.getById('006588875df00335');
+if (house) {
+  house.lockKey = 'key_home';
+  house.setLocked(true);
+}
+```
+
+```ts
 const house = kcds.world.Area.getById('006588875df00335');
 if (house) {
   house.lockKey = 'key_home';

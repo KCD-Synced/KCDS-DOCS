@@ -40,6 +40,20 @@ Keybinds.on('make_peace', (id, state) => {
 });
 ```
 
+```ts
+// client
+const { Keybinds } = kcds.ui;
+Keybinds.add('make_peace', { label: 'Make peace', key: 'h' });
+let since = 0;
+Keybinds.on('make_peace', (id, state) => {
+  if (state === 'down') {
+    since = Date.now();
+  } else if (Date.now() - since >= 1000) {
+    kcds.core.Events.toServer('peace');
+  }
+});
+```
+
 ```lua
 -- client
 local Keybinds = kcds.ui.Keybinds
@@ -81,6 +95,12 @@ Keybinds.On("make_peace", new Action<string, string>((id, state) =>
 ```
 
 ```js
+kcds.core.Events.fromClient('peace', (player) => {
+  player.makePeace();
+});
+```
+
+```ts
 kcds.core.Events.fromClient('peace', (player) => {
   player.makePeace();
 });

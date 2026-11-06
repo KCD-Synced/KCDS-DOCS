@@ -41,6 +41,21 @@ Web.on(shop, 'buy', (item) => kcds.core.Events.toServer('menuBuy', item));
 Web.emit(shop, 'gold', { amount: 120 });
 ```
 
+```ts
+// client
+const { Web, Controls } = kcds.ui;
+
+const shop = Web.open('kcds://resources/shop_menu/ui/index.html', {
+  width: 800,
+  height: 600,
+  focus: true,
+});
+Controls.showCursor();
+
+Web.on(shop, 'buy', (item) => kcds.core.Events.toServer('menuBuy', item));
+Web.emit(shop, 'gold', { amount: 120 });
+```
+
 ```lua
 -- client
 local Web, Controls = kcds.ui.Web, kcds.ui.Controls
@@ -140,6 +155,11 @@ A client script can also show a page once resources have started, which replaces
 `package.json`:
 
 ```js
+// client: needs "files": ["ui/**"] in package.json
+kcds.ui.LoadingScreen.show('kcds://resources/my-server/ui/loading.html');
+```
+
+```ts
 // client: needs "files": ["ui/**"] in package.json
 kcds.ui.LoadingScreen.show('kcds://resources/my-server/ui/loading.html');
 ```

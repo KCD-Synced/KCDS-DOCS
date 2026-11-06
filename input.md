@@ -14,6 +14,15 @@ Key.bind('shift', 'both', (key, edge) => console.log(`${key} ${edge}`)); // edge
 Key.unbind('f');
 ```
 
+```ts
+// client
+const { Key } = kcds.ui;
+
+Key.bind('f', () => kcds.core.Events.toServer('openDoor'));
+Key.bind('shift', 'both', (key, edge) => console.log(`${key} ${edge}`)); // edge is 'down' or 'up'
+Key.unbind('f');
+```
+
 ```lua
 -- client
 local Key = kcds.ui.Key
@@ -91,6 +100,26 @@ Keybinds.on('radio', 'both', (id, edge) => {
 });
 ```
 
+```ts
+// client
+const { Keybinds } = kcds.ui;
+const { Events } = kcds.core;
+
+Keybinds.addCategory('roleplay', 'Roleplay');
+Keybinds.add('emote_menu', {
+  label: 'Emote menu',
+  category: 'roleplay',
+  key: 'f6',
+  controller: 'xi_dpad_up',
+});
+Keybinds.add('radio', { label: 'Talk on the radio', key: 'numpad1' });
+
+Keybinds.on('emote_menu', () => Events.toServer('emotes:open'));
+Keybinds.on('radio', 'both', (id, edge) => {
+  Events.toServer('radio:talk', edge === 'down');
+});
+```
+
 ```lua
 -- client
 local Keybinds = kcds.ui.Keybinds
@@ -143,6 +172,13 @@ const menu = kcds.ui.Keybinds.get('emote_menu');
 //   controller: 'xi_dpad_up', defaultKey: 'f6', defaultController: 'xi_dpad_up' }
 ```
 
+```ts
+// client
+const menu = kcds.ui.Keybinds.get('emote_menu');
+// { id: 'emote_menu', label: 'Emote menu', category: 'roleplay', key: 'f6', keys: ['f6'],
+//   controller: 'xi_dpad_up', defaultKey: 'f6', defaultController: 'xi_dpad_up' }
+```
+
 ```lua
 -- client
 local menu = kcds.ui.Keybinds.get("emote_menu")
@@ -170,6 +206,15 @@ The settings screen lists only keyboard and mouse keys. A controller button is t
 or what your script sets, perhaps from your own settings page:
 
 ```js
+// client
+const { Keybinds } = kcds.ui;
+
+Keybinds.set('radio', { key: 'f7', controller: 'xi_y' }); // saved like a choice on the screen
+Keybinds.set('emote_menu', { controller: null }); // no controller button
+Keybinds.reset('radio'); // back to the defaults
+```
+
+```ts
 // client
 const { Keybinds } = kcds.ui;
 
@@ -213,6 +258,17 @@ Controls.hideCursor();
 Controls.enable();
 ```
 
+```ts
+// client
+const { Controls } = kcds.ui;
+
+Controls.disable(); // no moving, fighting or using things
+Controls.showCursor();
+// ... your menu is open ...
+Controls.hideCursor();
+Controls.enable();
+```
+
 ```lua
 -- client
 local Controls = kcds.ui.Controls
@@ -242,6 +298,17 @@ You can block a single game action, on whatever key the player uses for it. The 
 `Key.bind`, which lets a resource take over a game key:
 
 ```js
+// client
+const { Controls, Key } = kcds.ui;
+
+Controls.blockAction('jump'); // space no longer jumps
+Key.bind('space', () => kcds.core.Events.toServer('ring:bell'));
+
+// Later:
+Controls.unblockAction('jump');
+```
+
+```ts
 // client
 const { Controls, Key } = kcds.ui;
 

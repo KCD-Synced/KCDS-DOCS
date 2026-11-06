@@ -17,6 +17,18 @@ pebbles.giveTo(player);
 player.mount(pebbles);
 ```
 
+```ts
+const { Horse } = kcds.characters;
+const { Vector3 } = kcds.math;
+
+const spot = player.position.clone().add(player.rotation.rotateVector(new Vector3(0, 3, 0)));
+const pebbles = Horse.spawn(spot, player.rotation, '', 'Pebbles', 'horse_noble05');
+
+pebbles.setDimension(player.dimension);
+pebbles.giveTo(player);
+player.mount(pebbles);
+```
+
 ```lua
 local Horse = kcds.characters.Horse
 local Vector3 = kcds.math.Vector3
@@ -72,6 +84,10 @@ saddlebags stay the owner's. `horse.riders` lists those players, and `allowRider
 neglected one:
 
 ```js
+horse.speedScale = 0.5;
+```
+
+```ts
 horse.speedScale = 0.5;
 ```
 
@@ -160,6 +176,13 @@ game during loading.
 owner and a mode.
 
 ```js
+const { Dog } = kcds.characters;
+
+const mutt = Dog.spawn(player, player.position, player.rotation, '', 'Mutt');
+mutt.mode = 1; // follow
+```
+
+```ts
 const { Dog } = kcds.characters;
 
 const mutt = Dog.spawn(player, player.position, player.rotation, '', 'Mutt');

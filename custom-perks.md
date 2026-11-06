@@ -96,6 +96,17 @@ kcds.core.Events.on('playerReady', (player) => {
 });
 ```
 
+```ts
+const { Progression } = kcds.players;
+
+const perk = Progression.perkNamed('MyServerPerk');
+kcds.core.Events.on('playerReady', (player) => {
+  if (perk && !player.hasPerk(perk.id)) {
+    player.addPerk(perk.id);
+  }
+});
+```
+
 ```lua
 local Progression = kcds.players.Progression
 

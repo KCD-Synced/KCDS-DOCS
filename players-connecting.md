@@ -60,6 +60,14 @@ kcds.core.Events.on('playerConnecting', async (request) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('playerConnecting', async (request) => {
+  if (!(await launcherTickets.redeem(request.joinToken, request.steamId))) {
+    request.reject('Start the game from our launcher.');
+  }
+});
+```
+
 ```lua
 kcds.core.Events.on("playerConnecting", function(request)
   -- a handler cannot wait, so it answers the promise: the join waits for it
@@ -94,6 +102,22 @@ Once admitted, a player's connection goes through these events in order:
 | `playerDisconnect` | they left, but the object still has its last values                   | save what you keep                               |
 
 ```js
+const { Events, Chat } = kcds.core;
+
+Events.on('playerSpawning', (player) => {
+  player.spawn(new kcds.math.Vector3(1652.5, 2151.5, 37.5), { z: 90 });
+});
+
+Events.on('playerReady', (player) => {
+  Chat.sendToPlayer(player, `Welcome, ${player.nickname}!`);
+});
+
+Events.on('playerDisconnect', (player) => {
+  savedInventories.set(player.steamId, kcds.players.Inventory.get(player));
+});
+```
+
+```ts
 const { Events, Chat } = kcds.core;
 
 Events.on('playerSpawning', (player) => {

@@ -27,6 +27,26 @@ Events.on('diceMatchEnd', (match, first, second, winner, reason) => {
 });
 ```
 
+```ts
+const { Dice } = kcds.world;
+const { Events } = kcds.core;
+const { Player } = kcds.players;
+
+Events.on('diceTableUse', (player, table, match) => {
+  if (match !== 0) {
+    return;
+  }
+  const opponent = Player.nearest(player.position, { radius: 4, except: player });
+  if (opponent) {
+    Dice.start(player.id, opponent.id, { targetScore: 1500 });
+  }
+});
+
+Events.on('diceMatchEnd', (match, first, second, winner, reason) => {
+  console.info(`Match ${match} ended: ${reason}`);
+});
+```
+
 ```lua
 local Dice = kcds.world.Dice
 local Events = kcds.core.Events
@@ -91,6 +111,14 @@ kcds.world.Dice.startAgainstNpc(player, {
 });
 ```
 
+```ts
+kcds.world.Dice.startAgainstNpc(player, {
+  difficulty: 'hard',
+  npcName: 'Gambler',
+  targetScore: 1500,
+});
+```
+
 ```lua
 kcds.world.Dice.startAgainstNpc(player, {
   difficulty = "hard",
@@ -147,6 +175,26 @@ if (table) {
 }
 ```
 
+```ts
+const { Dice } = kcds.world;
+const { Npc } = kcds.characters;
+const { Player } = kcds.players;
+
+interface Chair {
+  player: number | null;
+  sitFrom: { position: kcds.math.Vector3; lookAt: kcds.math.Vector3 };
+}
+
+const table = Dice.tables().find((row) => row.chairs.some((chair: Chair) => chair.player === null));
+const chair: Chair | undefined = table?.chairs.find((candidate: Chair) => candidate.player === null);
+if (table && chair) {
+  const gambler = Npc.create({ position: table.position });
+  gambler.pin(Player.all()[0]);
+  gambler.moveTo(chair.sitFrom.position, { speed: 'walk' });
+  // When npcIntentDone fires: call gambler.lookAt(chair.sitFrom.lookAt), then start the match.
+}
+```
+
 ```lua
 local Dice = kcds.world.Dice
 local Npc = kcds.characters.Npc
@@ -191,6 +239,30 @@ A player can take one of a table's two chairs and wait. Their game walks them th
 sit-down. A match between the two seated players plays from their chairs, and both stay seated after it.
 
 ```js
+const { Dice } = kcds.world;
+const { Events, Chat } = kcds.core;
+const { Player } = kcds.players;
+
+Events.on('diceTableUse', (player, table, match) => {
+  if (match === 0 && Dice.sit(player.id) < 0) {
+    Chat.sendToPlayer(player, 'Both chairs are taken.');
+  }
+});
+
+setInterval(() => {
+  for (const table of Dice.tables()) {
+    const [first, second] = Dice.sittersAt(table.id).map((id) => {
+      return id === null ? null : Player.getById(id);
+    });
+    const bothSeated = first?.seated && second?.seated;
+    if (bothSeated && Dice.gameOf(first.id) === 0 && Dice.gameOf(second.id) === 0) {
+      Dice.start(first.id, second.id);
+    }
+  }
+}, 500);
+```
+
+```ts
 const { Dice } = kcds.world;
 const { Events, Chat } = kcds.core;
 const { Player } = kcds.players;
@@ -288,6 +360,17 @@ Reference: [Dice](/docs/api/dice).
 thief's game runs the minigame, and the server decides the result.
 
 ```js
+const { Pickpocketing } = kcds.players;
+
+Pickpocketing.setEnabled(true);
+Pickpocketing.setVictimNotice(true, '{thief} had a hand in your pocket!');
+
+kcds.core.Events.on('playerPickpocketStart', (thief, victim) => {
+  return thief.dimension === victim.dimension;
+});
+```
+
+```ts
 const { Pickpocketing } = kcds.players;
 
 Pickpocketing.setEnabled(true);

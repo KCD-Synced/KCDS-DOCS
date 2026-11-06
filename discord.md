@@ -30,6 +30,16 @@ kcds.ui.Discord.setPresence({
 });
 ```
 
+```ts
+// client
+kcds.ui.Discord.setPresence({
+  name: 'Rattay Roleplay', // shown as "KCDS - Rattay Roleplay"
+  largeImage: 'https://example.com/rattay-logo.png', // replaces the KCDS logo
+  largeText: 'Rattay Roleplay', // tooltip for that image
+  button: { label: 'Join our Discord', url: 'https://discord.gg/example' },
+});
+```
+
 ```lua
 -- client
 kcds.ui.Discord.setPresence({
@@ -54,6 +64,17 @@ Discord.SetPresence(new
 You can also update it as things change for the player:
 
 ```js
+// client
+kcds.core.Events.on('job:changed', (job) => {
+  kcds.ui.Discord.setPresence({
+    state: `Working as a ${job}`, // the line under "Playing on ..."
+    smallImage: 'https://example.com/icons/blacksmith.png',
+    smallText: 'Blacksmith',
+  });
+});
+```
+
+```ts
 // client
 kcds.core.Events.on('job:changed', (job) => {
   kcds.ui.Discord.setPresence({

@@ -51,6 +51,20 @@ kcds.core.Events.on('consoleCommand', (command, words) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('consoleCommand', (command, words) => {
+  if (command !== 'js') {
+    return;
+  }
+  try {
+    const value = eval(words.join(' '));
+    console.info(typeof value === 'object' ? JSON.stringify(value) : String(value));
+  } catch (problem) {
+    console.warn(problem instanceof Error ? problem.message : String(problem));
+  }
+});
+```
+
 ```lua
 -- "lua <code>" in the server console runs that Lua and prints its answer.
 kcds.core.Events.on("consoleCommand", function(command, words)
@@ -94,6 +108,15 @@ The **Console** tab in KCDS-Admin runs the same commands.
 For client code, `resources/scratch/client/main.js` can put an experiment on a key:
 
 ```js
+// client
+kcds.ui.Key.bind('f6', () => {
+  const ray = kcds.ui.Camera.rayFromScreen({ range: 30 });
+  const hit = ray && kcds.world.World.raycast(ray.origin, ray.target, { mode: 'anything' });
+  kcds.ui.Hud.showNotification(hit ? `${hit.kind} at ${hit.position}` : 'nothing within 30 m');
+});
+```
+
+```ts
 // client
 kcds.ui.Key.bind('f6', () => {
   const ray = kcds.ui.Camera.rayFromScreen({ range: 30 });

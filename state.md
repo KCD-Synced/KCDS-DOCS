@@ -14,6 +14,17 @@ player.state.onChange('job', (value) => {
 });
 ```
 
+```ts
+// server
+player.state.set('job', 'blacksmith'); // all players see it
+player.state.set('money', 120, { scope: 'owner' }); // only this player's game
+player.state.set('notes', 'none', { scope: 'server' }); // stays on the server
+
+player.state.onChange('job', (value: unknown) => {
+  console.info(`job is now ${value}`);
+});
+```
+
 ```lua
 -- server
 player.state:set("job", "blacksmith") -- all players see it
@@ -41,6 +52,14 @@ player.State.OnChange("job", (JsValue value) =>
 // client
 kcds.core.Events.on('playerReady', () => {
   const job = kcds.players.LocalPlayer.state.get('job');
+  kcds.ui.Hud.showNotification(`You work as a ${job}`);
+});
+```
+
+```ts
+// client
+kcds.core.Events.on('playerReady', () => {
+  const job = kcds.players.LocalPlayer?.state.get('job');
   kcds.ui.Hud.showNotification(`You work as a ${job}`);
 });
 ```

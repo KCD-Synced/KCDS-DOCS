@@ -28,6 +28,14 @@ const aboveGate = gate.clone().add(new Vector3(0, 0, 3));
 const height = gate.distance(aboveGate); // 3
 ```
 
+```ts
+const { Vector3 } = kcds.math;
+
+const gate = new Vector3(10, 20, 3);
+const aboveGate = gate.clone().add(new Vector3(0, 0, 3));
+const height = gate.distance(aboveGate); // 3
+```
+
 ```lua
 local Vector3 = kcds.math.Vector3
 
@@ -62,6 +70,13 @@ const quarterTurn = Quaternion.fromAxisAngle(new Vector3(0, 0, 1), Math.PI / 2);
 const turned = quarterTurn.rotateVector(new Vector3(0, 1, 0));
 ```
 
+```ts
+const { Quaternion, Vector3 } = kcds.math;
+
+const quarterTurn = Quaternion.fromAxisAngle(new Vector3(0, 0, 1), Math.PI / 2);
+const turned = quarterTurn.rotateVector(new Vector3(0, 1, 0));
+```
+
 ```lua
 local Quaternion, Vector3 = kcds.math.Quaternion, kcds.math.Vector3
 
@@ -77,6 +92,12 @@ var turned = quarterTurn.RotateVector(new Vector3(0, 1, 0));
 To get a point three metres in front of a player, rotate a forward offset by the player's rotation:
 
 ```js
+const { Vector3 } = kcds.math;
+
+const ahead = player.position.clone().add(player.rotation.rotateVector(new Vector3(0, 3, 0)));
+```
+
+```ts
 const { Vector3 } = kcds.math;
 
 const ahead = player.position.clone().add(player.rotation.rotateVector(new Vector3(0, 3, 0)));
@@ -103,6 +124,13 @@ A `Color` stores red, green, blue and alpha as numbers from 0 to 1.
 - **Presets:** `white`, `black`, `red`, `green`, `blue`, `yellow`, `cyan`, `magenta`, `transparent`.
 
 ```js
+const { Color } = kcds.math;
+
+const banner = Color.fromRGB(20, 100, 220, 128);
+const css = banner.toHex(true);
+```
+
+```ts
 const { Color } = kcds.math;
 
 const banner = Color.fromRGB(20, 100, 220, 128);

@@ -15,6 +15,16 @@ Events.on('craftingCompleted', (player, result) => {
 });
 ```
 
+```ts
+const { Events } = kcds.core;
+
+Events.on('craftingStarting', (player, proposal) => player.level >= 5);
+
+Events.on('craftingCompleted', (player, result) => {
+  console.info(`${player.nickname} made ${result.recipe}`);
+});
+```
+
 ```lua
 local Events = kcds.core.Events
 
@@ -56,6 +66,21 @@ lists it with `source: 'script'`. It lasts for the rest of the server's life, an
 does nothing.
 
 ```js
+kcds.world.Crafting.defineRecipe({
+  kind: 'smithing',
+  id: 'guild_horseshoe',
+  name: 'Guild horseshoe',
+  icon: 'horseshoeFarmer',
+  category: 'Other',
+  workpiece: 'horseshoe',
+  minSkill: 2,
+  description: 'The smiths of the guild shoe their horses this way.',
+  ingredients: [{ item: '94d8f5f1-20a7-4840-98ad-1d198d381389', amount: 2 }],
+  products: [{ item: '549ab26e-df73-43d6-ac9b-f4f74afec67f', threshold: 40 }],
+});
+```
+
+```ts
 kcds.world.Crafting.defineRecipe({
   kind: 'smithing',
   id: 'guild_horseshoe',
@@ -160,6 +185,30 @@ kcds.core.Events.on('craftingStationUsed', (player, { station }) => {
 });
 ```
 
+```ts
+const { Crafting } = kcds.world;
+
+Crafting.addRecipe({
+  id: 'smoked_boar',
+  name: 'Smoked boar',
+  ingredients: [{ item: 'boarMeat', amount: 2 }],
+  products: [{ item: 'boarMeatSmoked', amount: 2 }],
+  duration: 8,
+});
+
+const smokehouse = Crafting.addStation({
+  position: new kcds.math.Vector3(100, 200, 10),
+  recipes: ['smoked_boar'],
+  text: 'Smoke meat',
+});
+
+kcds.core.Events.on('craftingStationUsed', (player, { station }) => {
+  if (station === smokehouse) {
+    Crafting.craft(player, station, 'smoked_boar');
+  }
+});
+```
+
 ```lua
 local Crafting = kcds.world.Crafting
 
@@ -229,6 +278,14 @@ for (const pot of CookPot.all()) {
 }
 ```
 
+```ts
+const { CookPot } = kcds.world;
+
+for (const pot of CookPot.all()) {
+  CookPot.refill(pot.guid, 6);
+}
+```
+
 ```lua
 local CookPot = kcds.world.CookPot
 
@@ -254,6 +311,14 @@ control to each game. A pot's `fireLit` reads it.
 and 5 Survival XP. Picked plants grow back on the world clock.
 
 ```js
+const { Gathering } = kcds.world;
+
+Gathering.setRegrowth(6, 12); // grows back in 6 to 12 game hours
+
+kcds.core.Events.on('gatheringHarvest', (player, pick) => player.dimension === 4294967295); // false refuses outside the shared dimension
+```
+
+```ts
 const { Gathering } = kcds.world;
 
 Gathering.setRegrowth(6, 12); // grows back in 6 to 12 game hours
@@ -303,6 +368,15 @@ const garden = kcds.world.Area.getById('garden');
 
 garden.clearHerbs();
 console.info(`${garden.herbsWithin().length} herbs left`); // 0
+```
+
+```ts
+const garden = kcds.world.Area.getById('garden');
+
+if (garden) {
+  garden.clearHerbs();
+  console.info(`${garden.herbsWithin().length} herbs left`); // 0
+}
 ```
 
 ```lua

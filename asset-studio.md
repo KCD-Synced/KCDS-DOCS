@@ -225,6 +225,19 @@ player.setPoseAnimation({
 });
 ```
 
+```ts
+// A whip whose lash starts posed in a curl and lets go after half a second.
+player.setPhysicalProp({ kind: 'whip', physics: { shape: 1, curl: 150 } });
+player.setPoseAnimation({
+  keys: [
+    { time: 0, pose: {}, prop: { shape: 1, curl: 150, sway: 0 } },
+    { time: 0.3, pose: {}, prop: { shape: 1, curl: -60, sway: 20 } },
+    { time: 0.5, pose: {}, prop: { shape: 0 } },
+  ],
+  loop: false,
+});
+```
+
 ```lua
 -- A whip whose lash starts posed in a curl and lets go after half a second.
 player:setPhysicalProp({ kind = "whip", physics = { shape = 1, curl = 150 } })
@@ -370,6 +383,23 @@ player.setPoseAnimation({
 });
 ```
 
+```ts
+player.setPoseAnimation({
+  keys: [
+    { time: 0, pose: {} },
+    { time: 0.4, pose: {} },
+  ],
+  lashTrack: {
+    rate: 40,
+    length: 1.6,
+    frames: [
+      [0, -5, 3, -8],
+      [2, -6, 5, -9],
+    ],
+  },
+});
+```
+
 ```lua
 player:setPoseAnimation({
   keys = {
@@ -444,6 +474,15 @@ takes it, so the shapes can be changed by hand. Each key's shape goes in the exp
 animation; a key's `lash` is the same in `Player.setPoseAnimation` and `Animations.define`:
 
 ```js
+player.setPoseAnimation({
+  keys: [
+    { time: 0, pose: {}, lash: [[0.1, 0, 0], [0.2, 0, -0.05]] },
+    { time: 0.4, pose: {}, lash: [[0.1, 0, 0.02], [0.2, 0, 0.05]] },
+  ],
+});
+```
+
+```ts
 player.setPoseAnimation({
   keys: [
     { time: 0, pose: {}, lash: [[0.1, 0, 0], [0.2, 0, -0.05]] },
@@ -921,6 +960,17 @@ kcds.core.Events.on('playerReady', (player) => {
 });
 ```
 
+```ts
+'use strict';
+// Exported from the Asset/Animation Studio: every player who joins holds this prop in
+// the right hand (Player.setPhysicalProp).
+const PROP = {"kind":"whip","segments":20,"length":1.7,"hand":"RightHand","grip":{"pitch":20,"twist":0},"physics":{"gravity":9.8,"damping":0.1,"mass":0.3,"air":0.02,"bend":0,"stiffness":0,"collide":2}};
+
+kcds.core.Events.on('playerReady', (player) => {
+  player.setPhysicalProp(PROP);
+});
+```
+
 ```lua
 -- The export's server.js in Lua, for a resource of yours written in Lua.
 local PROP = {
@@ -983,6 +1033,16 @@ function give(player) {
 }
 ```
 
+```ts
+kcds.characters.Animations.define('kcds_studio_animation', ANIMATION);
+
+function give(player: kcds.players.Player) {
+  player.setPhysicalProp(PROP);
+  // The whole body plays it: the player does not walk or turn it meanwhile.
+  player.playAnimation('kcds_studio_animation', { lockMovement: true });
+}
+```
+
 ```lua
 kcds.characters.Animations.define("kcds_studio_animation", ANIMATION)
 
@@ -1027,6 +1087,26 @@ Players get these files through the resource download, as any resource's `stream
 character in the studio, turned and sized as there, and takes it away when they leave:
 
 ```js
+const MESH = 'objects/kcds/kcds_studio_mesh/suzanne.cgf';
+const MESH_PLACE = { offset: [0.64, -0.64, 1], turn: [0, 0, 0], scale: 1 };
+const meshes = new Map();
+
+kcds.core.Events.on('playerReady', (player) => {
+  const { x, y, z } = player.position;
+  const [dx, dy, dz] = MESH_PLACE.offset;
+  const at = new kcds.math.Vector3(x + dx, y + dy, z + dz);
+  const [rx, ry, rz] = MESH_PLACE.turn;
+  const turn = new kcds.math.Vector3(rx, ry, rz);
+  meshes.set(player.id, kcds.world.Prop.spawn(MESH, at, turn, MESH_PLACE.scale));
+});
+
+kcds.core.Events.on('playerDisconnect', (player) => {
+  meshes.get(player.id)?.destroy();
+  meshes.delete(player.id);
+});
+```
+
+```ts
 const MESH = 'objects/kcds/kcds_studio_mesh/suzanne.cgf';
 const MESH_PLACE = { offset: [0.64, -0.64, 1], turn: [0, 0, 0], scale: 1 };
 const meshes = new Map();
@@ -1116,6 +1196,19 @@ player.setPhysicalProp(null); // takes it away
 console.log(player.physicalProp.grip); // { pitch: 20, twist: 0 }
 ```
 
+```ts
+player.setPhysicalProp({ kind: 'whip' }); // the game's whip handle with a 1.6 m lash
+player.setPhysicalProp({ kind: 'rope', segments: 24, length: 2.5 });
+player.setPhysicalProp({
+  kind: 'whip',
+  hand: 'LeftHand',
+  grip: { pitch: 20 },
+  physics: { damping: 0.1, collide: 2 },
+});
+player.setPhysicalProp(null); // takes it away
+console.log(player.physicalProp.grip); // { pitch: 20, twist: 0 }
+```
+
 ```lua
 player:setPhysicalProp({ kind = "whip" }) -- the game's whip handle with a 1.6 m lash
 player:setPhysicalProp({ kind = "rope", segments = 24, length = 2.5 })
@@ -1174,6 +1267,29 @@ as `kcds_studio_animation`. Its `server.js` gives the animation the name `kcds_s
 on the server and plays it on every player who joins:
 
 ```js
+'use strict';
+// Exported from the Asset/Animation Studio: every player who joins plays the animation
+// kcds_studio_animation (player.playAnimation).
+const ANIMATION = {
+  keys: [
+    { time: 0, pose: { RightArm: [40, 0, 0] } },
+    { time: 0.6, pose: { RightArm: [100, 0, 0], RightForeArm: [0, 0, 60] } },
+    { time: 1.2, pose: { RightArm: [40, 0, 0] } },
+  ],
+  blend: 'spline',
+  loop: true,
+};
+
+// Any resource on the server plays it by name, as one of the game's own:
+// player.playAnimation('kcds_studio_animation'), player.stopAnimation().
+kcds.characters.Animations.define('kcds_studio_animation', ANIMATION);
+
+kcds.core.Events.on('playerReady', (player) => {
+  player.playAnimation('kcds_studio_animation');
+});
+```
+
+```ts
 'use strict';
 // Exported from the Asset/Animation Studio: every player who joins plays the animation
 // kcds_studio_animation (player.playAnimation).
@@ -1289,6 +1405,16 @@ and `collide`, the same values as `setPhysicalProp`'s `hand`, `grip` and `physic
 blend toward the next key that sets them, the hand and `collide` switch at the key:
 
 ```js
+player.setPhysicalProp({ kind: 'whip', physics: { collide: 2 } });
+player.setPoseAnimation({
+  keys: [
+    { time: 0, pose: { RightArm: [-170, 0, 10] }, prop: { pitch: 90 } },
+    { time: 0.4, pose: { RightArm: [-110, 0, 5] }, prop: { pitch: 20 } },
+  ],
+});
+```
+
+```ts
 player.setPhysicalProp({ kind: 'whip', physics: { collide: 2 } });
 player.setPoseAnimation({
   keys: [

@@ -18,6 +18,15 @@ kcds.core.Events.on('monologueSuppressed', (text, textKey) => {
 });
 ```
 
+```ts
+// client
+kcds.core.Events.on('monologueSuppressed', (text, textKey) => {
+  if (text) {
+    kcds.ui.Hud.showNotification(`(you think) ${text}`);
+  }
+});
+```
+
 ```lua
 -- client
 kcds.core.Events.on("monologueSuppressed", function(text, textKey)
@@ -49,6 +58,13 @@ not play. The quest carries on as if they had, and each one fires `storyCutscene
 game's cutscene table:
 
 ```js
+// client
+kcds.core.Events.on('storyCutsceneSuppressed', (cutscene) => {
+  console.info(`skipped the cutscene ${cutscene}`);
+});
+```
+
+```ts
 // client
 kcds.core.Events.on('storyCutsceneSuppressed', (cutscene) => {
   console.info(`skipped the cutscene ${cutscene}`);

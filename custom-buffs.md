@@ -38,6 +38,34 @@ Events.on('playerCustomBuffRemove', (player, buff, reason) => {
 player.addBuff(blessing); // the GUID, or use the id
 ```
 
+```ts
+const { Buffs } = kcds.players;
+const { Events } = kcds.core;
+
+const blessing = Buffs.register('myres:blessing', {
+  name: 'Blessing',
+  description: 'A priest blessed you.',
+  visual: 'well_rested',
+  duration: 120,
+  tickInterval: 10,
+  stackable: true,
+  maxStacks: 3,
+  modifiers: { stamina: 20, health: { operation: 'add', value: 5 } },
+});
+
+Events.on('playerCustomBuffApply', (player, buff) => {
+  console.info(`${buff.displayName} on ${player.nickname}`);
+});
+Events.on('playerCustomBuffTick', (player, buff) => {
+  player.addStat('health', 1);
+});
+Events.on('playerCustomBuffRemove', (player, buff, reason) => {
+  console.info(`${buff.name}: ${reason}`);
+});
+
+player.addBuff(blessing); // the GUID, or use the id
+```
+
 ```lua
 local Buffs = kcds.players.Buffs
 local Events = kcds.core.Events
@@ -151,6 +179,14 @@ const rattling = kcds.players.Buffs.register('myres:rattling_armour', {
 });
 ```
 
+```ts
+const rattling = kcds.players.Buffs.register('myres:rattling_armour', {
+  name: 'Rattling armour',
+  visual: 'well_rested',
+  modifiers: { noise: { operation: 'multiply', value: 1.4 } },
+});
+```
+
 ```lua
 local rattling = kcds.players.Buffs.register("myres:rattling_armour", {
   name = "Rattling armour",
@@ -173,6 +209,30 @@ var rattling = Buffs.Register("myres:rattling_armour", new
 other scripts set.
 
 ```js
+const { Buffs } = kcds.players;
+
+const brokenArm = Buffs.register('myres:broken_arm', {
+  name: 'Broken arm',
+  visual: 'well_rested',
+  modifiers: { attackSpeed: { operation: 'multiply', value: 0.8 } },
+});
+const brokenLeg = Buffs.register('myres:broken_leg', {
+  name: 'Broken leg',
+  visual: 'well_rested',
+  modifiers: { noSprint: true, runSpeed: -0.5 },
+});
+
+kcds.core.Events.on('playerDamage', (player, attacker, amount, bodyPart) => {
+  if (amount > 40 && (bodyPart === 'leftArm' || bodyPart === 'rightArm')) {
+    player.addBuff(brokenArm);
+  }
+  if (amount > 40 && (bodyPart === 'leftLeg' || bodyPart === 'rightLeg')) {
+    player.addBuff(brokenLeg);
+  }
+});
+```
+
+```ts
 const { Buffs } = kcds.players;
 
 const brokenArm = Buffs.register('myres:broken_arm', {
@@ -251,6 +311,31 @@ A custom buff cannot change maximum health or armor rating. The game has no buff
 and its `mhs` and `bba` codes moved neither stat when tested.
 
 ```js
+const { Buffs } = kcds.players;
+
+Buffs.register('myres:giant', {
+  name: 'Giant',
+  visual: 'well_rested',
+  duration: 600,
+  modifiers: { maxStamina: { operation: 'multiply', value: 1.5 }, carryCapacity: 100, charisma: 5 },
+});
+
+Buffs.register('myres:marathon', {
+  name: 'Marathon',
+  visual: 'well_rested',
+  duration: 600,
+  modifiers: { hungerDrain: 0.2, energyDrain: 0.1 },
+});
+
+Buffs.register('myres:feast', {
+  name: 'Feast',
+  visual: 'well_rested',
+  duration: 300,
+  modifiers: { hunger: { operation: 'set', value: 100 }, healthRegeneration: 0.5 },
+});
+```
+
+```ts
 const { Buffs } = kcds.players;
 
 Buffs.register('myres:giant', {
@@ -363,6 +448,30 @@ const warmth = Buffs.register({
   effects: { stats: { stamina: 20 }, tickStats: { health: 1 } },
   tickSeconds: 5,
   onTick: (player, buff) => console.info(player.nickname, buff.name),
+});
+
+kcds.core.Events.on('playerBuffRemoved', (player, buff, reason) => {
+  if (buff === 'warmth') {
+    kcds.core.Chat.sendToAll(`The warmth wore off (${reason})`);
+  }
+});
+
+player.addBuff(warmth); // or 'warmth'
+player.hasBuff(warmth);
+player.removeBuff(warmth);
+```
+
+```ts
+const { Buffs } = kcds.players;
+
+const warmth = Buffs.register({
+  name: 'warmth',
+  label: 'Warm',
+  icon: 'hangover',
+  duration: 120,
+  effects: { stats: { stamina: 20 }, tickStats: { health: 1 } },
+  tickSeconds: 5,
+  onTick: (player: kcds.players.Player, buff: { name: string }) => console.info(player.nickname, buff.name),
 });
 
 kcds.core.Events.on('playerBuffRemoved', (player, buff, reason) => {

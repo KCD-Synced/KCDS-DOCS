@@ -20,6 +20,20 @@ lamp.radius = 12; // all players see the new size
 lamp.castShadows = true;
 ```
 
+```ts
+const { Light } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const lamp = Light.spawn(new Vector3(2293.2, 2026.0, 106.5), {
+  color: { x: 1, y: 0.55, z: 0.2 },
+  intensity: 2,
+  radius: 8,
+});
+
+lamp.radius = 12; // all players see the new size
+lamp.castShadows = true;
+```
+
 ```lua
 local Light = kcds.world.Light
 local Vector3 = kcds.math.Vector3
@@ -88,6 +102,18 @@ const { Vector3 } = kcds.math;
 
 const feet = kcds.players.LocalPlayer.position;
 const headLamp = Light.spawn(new Vector3(feet.x, feet.y, feet.z + 2), { radius: 4 });
+```
+
+```ts
+// client
+const { Light } = kcds.world;
+const { Vector3 } = kcds.math;
+
+const me = kcds.players.LocalPlayer;
+if (me) {
+  const feet = me.position;
+  const headLamp = Light.spawn(new Vector3(feet.x, feet.y, feet.z + 2), { radius: 4 });
+}
 ```
 
 ```lua
