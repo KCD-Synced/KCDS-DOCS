@@ -5,7 +5,8 @@ the public documentation, published at <https://kcdsynced.com/docs> along with t
 They cover how to use KCDS, not how it is built. All pages are in English, and links to API pages are written
 `/docs/api/<type>`.
 
-Found a mistake or something unclear? Open an issue or a pull request in this repository.
+Found a mistake or something unclear? Open an issue or a pull request in this repository. The text is
+CC BY-ND 4.0 and the code examples are free to use in your resources (MIT-0): see [LICENSE.md](LICENSE.md).
 
 ## Get started
 
