@@ -19,7 +19,7 @@ CC BY-ND 4.0 and the code examples are free to use in your resources (MIT-0): se
 
 ## Hosting
 
-- [Running a server](server.md), [How players connect](players-connecting.md), [Join queue and whitelist](join-queue.md)
+- [Running a server](server.md), [Containers](containers.md), [How players connect](players-connecting.md), [Join queue and whitelist](join-queue.md)
 - [Server rules](server-rules.md), [A legal copy of the game](licence.md)
 - [Discord presence](discord.md)
 

@@ -1,0 +1,53 @@
+# Containers
+
+The KCDS server is also a Docker image, built and published with every release on the GitHub
+container registry:
+
+```text
+ghcr.io/kcd-synced/kcds-server:<version>
+ghcr.io/kcd-synced/kcds-server:latest
+```
+
+Use the version tag your players' clients have, for example `1.0.0`: a client and a server of
+different versions refuse each other when joining. The image runs the same Linux server as the
+server package, with Node.js for the resources, and starts it with `start-server.sh`.
+
+## Running it
+
+```text
+docker run -d --name kcds \
+  -p 7777:7777/udp -p 7777:7777/tcp \
+  -e KCDS_SERVER_NAME="My server" \
+  -v "$PWD/resources:/opt/kcds/resources" \
+  ghcr.io/kcd-synced/kcds-server:1.0.0
+```
+
+- **Ports:** players connect over UDP 7777, and the game downloads your resources' files over TCP
+  7777. Publish both, and open and forward both on the host as for the server package.
+- **Resources:** mount your `resources` folder over `/opt/kcds/resources`. The image's own folder is
+  empty.
+- **Settings:** set them with the `KCDS_SERVER_*` variables (`-e`), or mount your `server.json` at
+  `/opt/kcds/server.json`. A variable wins over `server.json`. Every setting and its variable is
+  listed in [Running a server](/docs/server#settings-server-json). In the container the server
+  listens on every interface unless the settings name one.
+- **KCDS-Admin:** set `adminPort` and `adminPassword` (or their `KCDS_ADMIN_*` variables) and
+  publish the admin port too, for example `-p 127.0.0.1:30121:30121`. Bind it to the host's
+  loopback and reach it over SSH or a reverse proxy with TLS, as described for KCDS-Admin.
+- **Restarts:** a restart from KCDS-Admin starts the server again inside the container. `docker stop`
+  stops it cleanly.
+
+## Updating
+
+The image is the update: pull the new version's tag and start a new container from it with the
+same mounts and settings. KCDS-Admin's one-click server update is for the server package, not for
+a container.
+
+```text
+docker pull ghcr.io/kcd-synced/kcds-server:<new version>
+docker stop kcds && docker rm kcds
+docker run -d --name kcds ... ghcr.io/kcd-synced/kcds-server:<new version>
+```
+
+The server writes its own data (crash reports, backups, bans and admin accounts) inside the
+container under `/opt/kcds`. To keep it across a new container, keep that data on a volume or in
+your mounted folders, as your setup needs.
