@@ -38,8 +38,10 @@ log lines to `crashes/`, next to the resources folder. KCDS-Admin lists these. C
 ### Client
 
 `console` lines from a client script go to the player's own game log, marked `RESOURCE client <text>`. The
-file is `client-<process id>.log`, next to `kcd2s-game-client-v4.dll` in the KCDS folder. With the
-installer, that folder is `%LOCALAPPDATA%\Programs\KCDS`.
+file is `client-<process id>.log` in `%LOCALAPPDATA%\KCDS\logs`, beside the launcher's `launcher.log`; the
+folder button next to the gear in the main menu opens that folder. The 20 newest client logs are kept. Before
+1.0.1 the file was next to `kcd2s-game-client-v4.dll` in the KCDS folder (`%LOCALAPPDATA%\Programs\KCDS`
+with the installer).
 
 The newest file belongs to the running game. If a problem only happens for one player, ask them to send you
 theirs.

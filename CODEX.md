@@ -400,8 +400,8 @@ files. See [TypeScript](https://kcdsynced.com/docs/typescript).
    resource starts again with its latest files, and online players get the new client part without
    restarting their game.
 3. Server output is in the server console and the Console tab of KCDS-Admin. Client output is in the
-   player's game log, `client-<process id>.log` in the KCDS folder (`%LOCALAPPDATA%\Programs\KCDS` with the
-   installer).
+   player's game log, `client-<process id>.log` in `%LOCALAPPDATA%\KCDS\logs` (the folder button in the main
+   menu opens it; before 1.0.1 the log was in the KCDS folder itself).
 
 `console.log` joins its values as text, so log `JSON.stringify(value)` (in Lua, `json.encode(value)`) to see
 an object.

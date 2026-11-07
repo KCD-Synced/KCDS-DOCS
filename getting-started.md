@@ -70,6 +70,10 @@ The report becomes a private ticket on our Discord. It contains:
 Use this form for bugs in KCDS itself. Problems with a server's scripts or rules belong with that
 server's team. Abusing reports gets a player banned from reporting.
 
+When the game does not reach a server (or an editor stops answering), the folder button next to the gear
+in the main menu opens `%LOCALAPPDATA%\KCDS\logs`: your client logs and the launcher's log are all there,
+ready to attach to a ticket. The game's own `kcd.log` is in the game's folder.
+
 ## Settings for crowded areas
 
 These settings are environment variables. Set them before starting the game, and restart it after a
