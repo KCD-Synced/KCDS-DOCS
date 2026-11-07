@@ -60,7 +60,10 @@ Log.Info($"{shot["width"]} x {shot["height"]}");
 optional `roll`. A pose `startShot` refuses throws the same error here.
 
 **Contents:** the picture is the frame as the game renders it, with the HUD as the player has it. Hide elements
-with `Hud.setHidden`. KCDS's chat and nameplates are not included.
+with `Hud.setHidden`. KCDS's chat and nameplates are not included. With `ui: false`, the native screens of
+resources (`NativeUI.createScreen`) are left out too: the game hides them only while the picture's frames are taken,
+behind the frame the player keeps seeing, so the player never sees them go. Hiding a screen yourself for a picture
+would show the player that it disappears.
 
 **While it is taken:** this takes about a tenth of a second, during which the player keeps seeing the previous
 frame, so the game seems to pause briefly. The game's eye adaptation follows the other view, so a much brighter or
