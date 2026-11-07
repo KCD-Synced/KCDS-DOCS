@@ -42,6 +42,14 @@ The **World Architect** button at the left of the menu bar opens the **Saves** t
 
 A save made on another map is loaded or merged on that map: switch to it first.
 
+**Reset map** at the right end of the Saves tab starts the map again from the game's own. It asks first in the menu
+bar ("Reset ... to the game's map? Your work is saved first.", **Reset** or **Cancel**). Reset keeps the work as a save
+named `<map> before reset <date> <time>`, then takes everything you built off the map: buildings, plants, props,
+lights, sounds, effects, collision shapes and zones, the ground's shape and paint, the cleared grass, and the level
+objects you hid or moved. The time and weather go back to how the editor starts (noon, held, clear). Your saves and
+your own models and textures stay, so the kept save loads or merges back at any time. A reset is not an Undo step: the
+kept save is the way back.
+
 ### Switching the map
 
 The map's name in the middle of the menu bar is a button. A press opens a list of every map under it: the game's three
@@ -476,7 +484,8 @@ paving) and `materials` (the names it takes), `texture` (a material of your own 
 models and materials, the folder looked at again) and `set_material` (a placed prop drawn with one of your materials),
 `clear_nature`,
 `add_nature`, `new_map` (a new flat custom map, made on this PC; then `switch_map` to it), `undo`, `redo`, `history`, `ground_height`, `raycast`, `screenshot` (the view as a picture, so the
-assistant sees what it built), `saves`, `save`, `load`, `merge`, `delete_save`.
+assistant sees what it built), `saves`, `save`, `load`, `merge`, `delete_save`, `reset_map` (the Saves tab's
+**Reset map**, called with `confirm: true`; its answer's `keptAs` names the save the work was kept in).
 
 ### Opening a closed building
 
