@@ -229,7 +229,10 @@ opens in the same light. While Freeze weather is on, the game's own weather does
 - **Effects:** Lights, Sounds, and the game's particle effects (583): Fire and explosions, Smoke and dust, Weather and water
   (rain, lightning, streams), Work (smithy, bathhouse, woodwork ...), Combat and blood, and Other. A light (candle,
   torch, fireplace, lantern, lamp, moonlight, red, green, blue) is a point light; its Details set Colour, Intensity
-  (0 to 100), Radius (0.5 to 100 m) and Shadows. An effect runs where you put it
+  (0 to 100), Radius (0.5 to 100 m), Shadows and **Room light**. A Room light (also its own preset, warm, 20 m) lights a
+  room as the game lights its own: it sets the ambient light within its radius to its colour times its intensity,
+  without shine or shadows. One in the middle of an opened building, as wide as it and warm (intensity about 1 to 2.5;
+  below 1 darkens), takes out the cold blue sky light its inside gets; then the lamps and candles light it. An effect runs where you put it
   until you take it away; it moves and turns like a prop and is kept in the project and in saves, in this game only.
   Its Details set Size (×0.25 to ×32) and Plays again (every 1, 2, 5 or 10 s, or runs on). Effects that play once and
   are gone (blood, combat, flashes, explosions, lightning) play again every 2 s, and blood starts four times as big, so

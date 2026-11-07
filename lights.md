@@ -131,6 +131,44 @@ var feet = LocalPlayer.Current!.Position;
 var headLamp = Light.Spawn(new Vector3(feet.X, feet.Y, feet.Z + 2), new { radius = 4 });
 ```
 
+### Room lights
+
+The game lights its rooms with ambient lights: such a light sets the ambient light within its radius to its colour
+times its intensity, without shine or shadows. In a client script, `ambient: true` makes one (it stays one: read
+`ambient`). An intensity below 1 darkens what it covers and above 1 brightens it, so one in the middle of a building,
+as wide as the building and warm, takes out the cold sky light a room open to the sky gets; the room's lamps then
+light it. World Architect's **Room light** is one.
+
+```js
+// client
+const room = kcds.world.Light.spawn(new kcds.math.Vector3(3066, 665, 58), {
+  ambient: true,
+  radius: 25,
+  color: { x: 1, y: 0.75, z: 0.5 },
+  intensity: 1.5,
+});
+```
+
+```ts
+// client
+const room = kcds.world.Light.spawn(new kcds.math.Vector3(3066, 665, 58), {
+  ambient: true,
+  radius: 25,
+  color: { x: 1, y: 0.75, z: 0.5 },
+  intensity: 1.5,
+});
+```
+
+```lua
+-- client
+local room = kcds.world.Light.spawn(kcds.math.Vector3.new(3066, 665, 58), { ambient = true, radius = 25, color = { x = 1, y = 0.75, z = 0.5 }, intensity = 1.5 })
+```
+
+```cs
+// client
+var room = Light.Spawn(new Vector3(3066, 665, 58), new { ambient = true, radius = 25, color = new { x = 1, y = 0.75, z = 0.5 }, intensity = 1.5 });
+```
+
 ## Limit
 
 The game shows at most 192 lights, counting both server and client ones. `Light.spawn` in a client
