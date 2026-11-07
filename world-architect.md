@@ -121,7 +121,10 @@ players appear on it.
   selection shows its rows from the top. On the game's own maps the NAVMESH section says the map has the game's own
   navmesh; **Bake** shows on custom maps.
 - **Content (bottom):** the folders of the current mode with their counts, and their items as tiles with a picture of
-  each. A press on a tile chooses it; the search box finds in the folder by name. The History tab lists the changes,
+  each. A press on a tile chooses it; the search box finds in the folder by name, by what a thing is for (`seating`,
+  `table`, `bed`, `storage`, `lighting`, `textile`, `decoration`, `religious`, `kitchen`, `food`, `tools`, `smithy`,
+  `fixture`, `books`, `weapons`, read from the game's folders and file names) or by a kind of room (`church`,
+  `tavern`, `smithy`, `bedroom`, `kitchen`, `storeroom`, `study`, `hall`: what furnishes it). The History tab lists the changes,
   newest first. The Validation tab lists what may be wrong: two buildings that overlap, a plant standing inside a
   building or a collision shape, a collision shape wholly inside a building (solid already), the level's own objects
   you hid, and what looks wrong at once in a room: a prop that floats over what is under it (more than 10 cm), sinks
@@ -288,6 +291,31 @@ A level door shows **Open** in Details: switch it and the door swings open or sh
 is unlocked first). A level object near one of the level's gates (the Malešov drawbridge, the Suchdol portcullis, the
 castle and town gates) shows the gate under **GATE**: step it through its states (closed, open, barricaded, ...) and
 watch it move. Both happen in this game only and are not saved; the next load shows the level's own state.
+
+### Interiors
+
+A level building shows **INTERIOR** in Details. A building with rooms of the game's own names it and counts its rooms
+and doors; **Go inside** puts the camera in its first room, at a player's eye over the floor, looking along the room.
+A building the game closed inside (a box fills it so nobody walks in) says **no rooms of its own here** and shows
+**Open it**: your walk-in copy of it takes its place where it stands, as one Undo step. The copy has no filling boxes,
+a floor where each box stood (the ground inside covers it where it is higher), its walls still solid, and a Room light
+in its largest room over the real floor. Its files go to your assets as `objects/kcds/opened/<name>_0.cgf` ... and
+`<name>_walls.cgf` (the collision); a second copy of the same building gets a name of its own (`<name>_2`). The
+level's own building is hidden in this game, as with Delete.
+
+### Arranging furniture
+
+A prop of yours shows **ARRANGE** in Details:
+
+| Row        | What it does                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| Copies     | how many to put (1 to 24, 4 at first)                                                              |
+| Spacing    | metres from one middle to the next (0.25 m steps, 1.5 m at first)                                  |
+| In a row   | copies of it to its right, turned as it is: pews, benches along a wall, a shelf of jars           |
+| In a block | copies in a block as square as it gets, the rows behind it: beds in a dormitory, crates in a store |
+| Around it  | the item chosen in Content (else copies of it) on a ring just past its sides, each facing it: chairs around a table, candles around an altar |
+
+Each press is one Undo step.
 
 ### Doors and gates of your own
 
@@ -499,7 +527,8 @@ saves, all as Undo steps in the editor, as if you did them by hand.
 
 The tools: `state`, `open`, `close`, `switch_map`, `camera`, `fly_speed`, `look` (hour in half hours, clock,
 weather, wind, `freeze_time`, `freeze_weather`), `catalogue` (names, with each building's `box` and `size` in metres;
-`folder`, `minWidth` ... `maxHeight` keep only what fits, `sizes: true` sizes props too), `list`, `place_many` (up to 300
+`folder`, `minWidth` ... `maxHeight` keep only what fits, `sizes: true` sizes props too; each item answers its `tags`,
+and `tag`, `tags` or `room` keep only what is for that, as the search box finds it), `list`, `arrange` (below), `place_many` (up to 300
 in one call, `avoidOverlap` leaving out what would stand in another), `fill_row` (a street front from one point to another lined with the game's city houses side by side, each turned so its street front, with its doors, faces the street, no gaps or overlaps), `place` (also the collision shapes and the Zones: `wall`, `floor`, `ramp`, `box`, `safe`, `spawn`,
 `trigger`, `private`, sized with `shape_size`), `select`, `move`,
 `export_blender`, `export_server`, `delete`, `duplicate`, `scale` (steps of ×1.1 on anything that scales), `shape_size`, `pick` (what stands at a point, also the level's own objects, with an id
@@ -507,7 +536,9 @@ to move or hide; with `from` and `to`, what that line meets first, such as a doo
 names its class, `entity: 'AnimDoor'`), `hide_level_at`, `hide_level_named` (hides the level objects near a point
 whose file name has a given text, such as `gate_a_doors`, even where your own copy stands on top; the camera must be
 near, the level streams in only there; a miss lists the names nearby), `show_level` (shows a hidden one again),
-`open_model` (a copy of a closed game building you can walk into, below), `door` (opens or closes a picked level door), `properties` and `set_property` (read a picked or the selected level entity's own properties and set a bool or number one in this game), `gates_near` and `gate` (step one of
+`buildings_near`, `interiors_near`, `enter_interior` and `open_building` (below), `entities_near` (the level's
+entities around a point, nearest first: doors, lights, probes, area shapes; `class` keeps one class, `properties: true`
+reads the first 16's properties too), `open_model` (a copy of a closed game building you can walk into, below), `door` (opens or closes a picked level door), `properties` and `set_property` (read a picked or the selected level entity's own properties and set a bool or number one in this game), `gates_near` and `gate` (step one of
 the level's gates through its states), `bake_navmesh` (a custom map's navmesh from the ground as it is now, for the next start), `walk` and `npc_state` (send the selected preview NPC, placed as `npc_man` or
 `npc_woman`, walking to a point, and read whether it arrived), `terrain` (raise, lower, flatten along points), `paint`
 (a ground material along points, its dabs half a brush radius apart along the whole line: roads, yards, a square's
@@ -540,10 +571,36 @@ the sky only, walls and ceiling without texture, holes. With them come whether t
 ceiling is, the things and lights in it, and Validation's issues there, each with the id to fix, and a checklist to
 judge the pictures by.
 
+`arrange` lays furniture out in one step (one Undo step): `name` placed at each spot of a layout, or the things `ids`
+moved to them in order.
+
+- `layout: 'row'`: from `from` to `to`, `count` spread evenly with both ends; or from `from` along `direction`
+  (degrees from +x), `spacing` metres apart.
+- `layout: 'grid'`: `rows` x `columns` around `at`, `spacing` apart (one number, or `[across, along]`), the grid
+  turned `turn`, with an `aisle` of metres kept free down its middle: pews either side of a nave.
+- `layout: 'around'`: `count` on a ring of `radius` around `at`, each facing the middle (`face: 'out'` away from it).
+- `turn` turns every thing (a prop's front is its -y side); `toward` turns each to face a point; `snap: 'floor'` rests
+  each on the floor. A model that runs along its own y, such as a choir stall, is named in the answer's `note`: add 90
+  to `turn` for a row of them.
+
+### Interiors
+
+`buildings_near` lists the level's buildings around a point, nearest first: each one's `mesh`, place and `turn`,
+and `interior`, the name of the game's own rooms in it, or `closed: true`. `interiors_near` lists the game's interiors
+with their rooms (name, middle, box) and doors; `enter_interior` puts the camera in one of their rooms, as **Go
+inside**. `open_building` opens a closed one where it stands, as **Open it**: the nearest building to `at` (or `mesh`
+from `buildings_near`), with the same options as `open_model` below and `floor: false` for no floors. Its answer
+lists the boxes removed, the pieces placed and the room light.
+
+When the assistant connects, the server tells it how to make a room look like the game's own: find the building, get
+in, review before changing anything, give the walls real materials, light it with a room light and a light at every
+flame, furnish it for its use with `catalogue` `room` and `arrange`, and review again until no warning is left.
+
 ### Opening a closed building
 
 Many of the game's buildings have no inside: a box fills them so nobody walks in, and the inside walls are drawn
-black. `open_model` copies such a building into your assets without those boxes:
+black. `open_building` opens one in a single step (above); `open_model` is the step-by-step way, copying such a
+building into your assets without those boxes:
 
 - `mesh`: the building's model, for example
   `objects/manmade/structures/religious/churches/stjames_church.cgf`. `list_only: true` lists its boxes (index, centre,
