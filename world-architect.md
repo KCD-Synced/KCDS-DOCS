@@ -297,9 +297,13 @@ watch it move. Both happen in this game only and are not saved; the next load sh
 A level building shows **INTERIOR** in Details. A building with rooms of the game's own names it and counts its rooms
 and doors; **Go inside** puts the camera in its first room, at a player's eye over the floor, looking along the room.
 A building the game closed inside (a box fills it so nobody walks in) says **no rooms of its own here** and shows
-**Open it**: your walk-in copy of it takes its place where it stands, as one Undo step. The copy has no filling boxes,
-a floor where each box stood (the ground inside covers it where it is higher), its walls still solid, and a Room light
-in its largest room over the real floor. Its files go to your assets as `objects/kcds/opened/<name>_0.cgf` ... and
+**Open it**: your walk-in copy of it takes its place where it stands, as one Undo step. The copy has no filling boxes
+and its walls are still solid. Where each box stood it gets a plank floor you can see and walk on, at the building's
+doorstep when the box reached down into the ground, otherwise at the box's bottom (an upper storey). The ground the
+building hid inside is levelled just under that floor. The mesh that only casts the building's shadow is drawn as
+nothing, and a Room light hangs 3 m over the floor of its largest room. The planks are a texture made once into your
+textures (`opened_floor`); change them like any slot. A building nothing fills (no box at least 2.5 m thick) is
+refused with that reason and nothing changes; so is any opening that fails half way. Its files go to your assets as `objects/kcds/opened/<name>_0.cgf` ... and
 `<name>_walls.cgf` (the collision); a second copy of the same building gets a name of its own (`<name>_2`). The
 level's own building is hidden in this game, as with Delete.
 
