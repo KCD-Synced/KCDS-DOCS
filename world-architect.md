@@ -107,7 +107,9 @@ players appear on it.
 
 - **Menu bar (top):** the KCD2-Synced mark, the editor's name, the map switch in the middle, whether the work is saved
   and **Leave** (back to the main menu and the server list).
-- **Toolbar:** the tools (Select, Move, Rotate, Scale), the snaps (grid, angle, fit ground), the modes (Place, Terrain,
+- **Toolbar:** the tools (Select, Move, Rotate, Scale), the snaps (grid, angle, and **Surface**: fit the ground under
+  a building, and rest a prop on what you press: on a floor its foot on it, on a ceiling hung from it by its top, on a
+  wall its back against it and turned to face out, as the preview shows), the modes (Place, Terrain,
   Foliage, Collision, Props, Effects and Zones), then Undo, Redo and Exit.
 - **Outliner (left):** everything you placed, by group (Buildings, Foliage, Collision, and the level's own objects you
   hid). A press on a group folds or unfolds it; a press on a line selects it. Its search box finds by name; its filter
@@ -121,8 +123,12 @@ players appear on it.
 - **Content (bottom):** the folders of the current mode with their counts, and their items as tiles with a picture of
   each. A press on a tile chooses it; the search box finds in the folder by name. The History tab lists the changes,
   newest first. The Validation tab lists what may be wrong: two buildings that overlap, a plant standing inside a
-  building or a collision shape, a collision shape wholly inside a building (solid already), and the level's own objects
-  you hid. A press on one selects it and flies the camera to it. The editor takes the pictures itself, a page at a time (the tiles say Loading meanwhile), and keeps them
+  building or a collision shape, a collision shape wholly inside a building (solid already), the level's own objects
+  you hid, and what looks wrong at once in a room: a prop that floats over what is under it (more than 10 cm), sinks
+  into the floor or, hung (a chandelier), hangs in the air under the ceiling or from nothing; a lamp, candle or
+  chandelier with no light of yours within 2.5 m (a prop gives no light by itself); and a light less than half a metre
+  over the floor (it lights a round spot there only). Props fixed to walls (shelves, pictures, banners) and pieces of a
+  building are not checked for resting. A press on one selects it and flies the camera to it. The editor takes the pictures itself, a page at a time (the tiles say Loading meanwhile), and keeps them
   in `%LOCALAPPDATA%\KCDS\architect\pictures`, so later sessions show them at once.
 - **Status bar:** the selection, what just happened, where the last press met the ground, and the snaps.
 
@@ -483,9 +489,30 @@ paving) and `materials` (the names it takes), `texture` (a material of your own 
 [Bringing a Blender model into the game](#bringing-a-blender-model-into-the-game)), `assets` (your
 models and materials, the folder looked at again) and `set_material` (a placed prop drawn with one of your materials),
 `clear_nature`,
-`add_nature`, `new_map` (a new flat custom map, made on this PC; then `switch_map` to it), `undo`, `redo`, `history`, `ground_height`, `raycast`, `screenshot` (the view as a picture, so the
-assistant sees what it built), `saves`, `save`, `load`, `merge`, `delete_save`, `reset_map` (the Saves tab's
+`add_nature`, `new_map` (a new flat custom map, made on this PC; then `switch_map` to it), `undo`, `redo`, `history`, `ground_height`, `raycast` (also meets
+the drawn faces of your own models, such as an opened building's vault, which the game's own rays pass through: such a
+hit says `drawn: true`), `screenshot` (the view as a picture, so the
+assistant sees what it built, with its light and colour measured), `review` (below), `light` (a light of Effects >
+Lights placed from a preset or changed by id: `color` as `[r, g, b]` or a colour row's name, `intensity`, `radius`,
+`shadows`, one Undo step), `effect` (a placed effect's `size` and `repeat`), `saves`, `save`, `load`, `merge`, `delete_save`, `reset_map` (the Saves tab's
 **Reset map**, called with `confirm: true`; its answer's `keptAs` names the save the work was kept in).
+
+### Furnishing a room and judging it
+
+`place` takes `snap` for props, so the assistant does not guess heights: `floor` rests the prop's foot on the first
+floor under `at`, `ceiling` hangs it by its top from the first ceiling over `at` (give `at` with its height, inside
+the room), `wall` sets its back against the first wall from `at` toward `toward` and turns it to face into the room.
+A model the game has not shown yet is put down first, measured, and then moved to rest, as one Undo step. The game
+loads walls and floors near the camera only: snapping more than 80 m from the camera is refused with that reason.
+
+`review` looks at an area (`at`, `radius`, 10 m by default) as a player would. It brings the camera there, then
+answers up to five pictures from inside it: from near each corner toward the middle at eye height (each camera kept
+short of the wall a ray meets) and one from under the ceiling or above. The MCP server measures each picture's
+brightness, contrast, colour cast, detail and flat black or textureless areas, whole and for its upper part (walls
+and ceiling) and lower part (the floor), and says what a player would notice: too dark, washed out, walls lit cold by
+the sky only, walls and ceiling without texture, holes. With them come whether the area is indoors and how high its
+ceiling is, the things and lights in it, and Validation's issues there, each with the id to fix, and a checklist to
+judge the pictures by.
 
 ### Opening a closed building
 
