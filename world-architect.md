@@ -301,10 +301,12 @@ A building the game closed inside (a box fills it so nobody walks in) says **no 
 and its walls are still solid. Where each box stood it gets a plank floor you can see and walk on, at the building's
 doorstep when the box reached down into the ground, otherwise at the box's bottom (an upper storey). The ground the
 building hid inside is levelled just under that floor (on its ground storey only). Where a box's inside ends, up to
-12 m over the doorstep, a plank ceiling covers the underside of the roof, which the game draws black from below. The
-mesh that only casts the building's shadow is drawn as nothing. A Room light hangs 3 m over the floor of its largest
-room, with a warm Lantern beside it that reaches as far, without shadows: a Room light alone left the ceiling and
-the walls the sun does not reach black. The planks are a texture made once into your
+12 m over the doorstep, and over its main room however high, a plank ceiling covers the underside of the roof, which
+the game draws black from below. The mesh that only casts the building's shadow, and the ground dressing its own
+floor replaces, are drawn as nothing. A Room light hangs 3 m over the floor of its main room and reaches every room of
+its ground storey, and warm Lanterns without shadows hang over them, one every 10 m or so: a Room light alone left
+the ceiling and the walls the sun does not reach black. The game lights the inside of a building from the level's
+own building, so one the level leaves open to the sky (St James's nave) keeps some cold sky light on its high walls. The planks are a texture made once into your
 textures (`opened_floor`); change them like any slot. A building nothing fills (no box at least 2.5 m thick) is
 refused with that reason and nothing changes; so is any opening that fails half way. Its files go to your assets as `objects/kcds/opened/<name>_0.cgf` ... and
 `<name>_walls.cgf` (the collision); a second copy of the same building gets a name of its own (`<name>_2`). The
