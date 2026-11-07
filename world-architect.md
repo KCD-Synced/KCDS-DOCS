@@ -337,6 +337,29 @@ are in Props' **Yours** folder, and your materials (`.mtl`) in a prop's Material
 place of the game's own. The same files go into a server resource's `stream/` folder unchanged, so a server can use what
 you placed.
 
+### Textures made in the editor
+
+**Yours** starts with **New stone blocks**, **New bricks**, **New plaster**, **New wood planks**, **New floor tiles**,
+**New cobbles** and **New roof tiles**. A press makes a material of yours at once, named `stone_blocks_1`, `plaster_2`
+..., in `objects/kcds/textures/`: a seamless 512-pixel texture drawn by code, each press a different one, with a normal
+map from its relief so light rakes across the joints and grain. Choose it in a prop's **Material** row or in its
+**Slots**. The AI assistant's `make_texture` makes the same with its own colour, size (256, 512 or 1024), repeat
+(`tile`), number of blocks across (`count`), `variation`, `wear`, joint width and relief.
+
+### A model's slots
+
+A model's material has slots (sub-materials): a church's are `glass`, `plaster`, `plaster_b`, `planks`, `shingles`
+.... **Details > Slots** lists them for the selected prop, without the model's lower details and collision, with what
+each is drawn as. `-` and `+` draw a slot as one of your single materials (a texture you made or a photo), or its own
+again. The change is made on every prop drawn with the same material, so the six pieces of an opened church change
+together, as one Undo step: the editor writes the model's material with that slot changed as a new material of yours in
+`objects/kcds/materials/` and the props draw with it. The project keeps what each slot is drawn as.
+
+The AI assistant's `slots` answers the same list and, for your own models, how much of the model each slot draws;
+`raycast` names the slot of a drawn face it meets. `set_slot` draws a slot as a material of yours, as a slot of a game
+material (`lookSlot`), like another slot of the same material (`like`), or as its own again (`reset`), with `tile` to
+repeat its pictures on a large face.
+
 A photo becomes a material of your own without other tools: the AI assistant's `texture` tool takes a picture on your
 PC (PNG; JPG and other kinds when [ffmpeg](https://ffmpeg.org) is installed) and writes, in your assets folder,
 `objects/kcds/<folder>/textures/<name>_diff.dds` (the picture at the nearest power-of-two size, up to 2048 pixels a
@@ -492,7 +515,7 @@ models and materials, the folder looked at again) and `set_material` (a placed p
 `add_nature`, `new_map` (a new flat custom map, made on this PC; then `switch_map` to it), `undo`, `redo`, `history`, `ground_height`, `raycast` (also meets
 the drawn faces of your own models, such as an opened building's vault, which the game's own rays pass through: such a
 hit says `drawn: true`), `screenshot` (the view as a picture, so the
-assistant sees what it built, with its light and colour measured), `review` (below), `light` (a light of Effects >
+assistant sees what it built, with its light and colour measured), `review` (below), `make_texture`, `slots` and `set_slot` (see [A model's slots](#a-models-slots)), `light` (a light of Effects >
 Lights placed from a preset or changed by id: `color` as `[r, g, b]` or a colour row's name, `intensity`, `radius`,
 `shadows`, one Undo step), `effect` (a placed effect's `size` and `repeat`), `saves`, `save`, `load`, `merge`, `delete_save`, `reset_map` (the Saves tab's
 **Reset map**, called with `confirm: true`; its answer's `keptAs` names the save the work was kept in).
