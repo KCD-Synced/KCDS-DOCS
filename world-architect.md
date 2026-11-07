@@ -304,9 +304,10 @@ building hid inside is levelled just under that floor (on its ground storey only
 12 m over the doorstep, and over its main room however high, a plank ceiling covers the underside of the roof, which
 the game draws black from below. The mesh that only casts the building's shadow, and the ground dressing its own
 floor replaces, are drawn as nothing. A Room light hangs 3 m over the floor of its main room and reaches every room of
-its ground storey, and warm Lanterns without shadows hang over them, one every 10 m or so: a Room light alone left
-the ceiling and the walls the sun does not reach black. The game lights the inside of a building from the level's
-own building, so one the level leaves open to the sky (St James's nave) keeps some cold sky light on its high walls. The planks are a texture made once into your
+its ground storey, and firelight-coloured Lanterns without shadows hang over them, one every 10 m or so: a Room
+light alone left the ceiling and the walls the sun does not reach black. The game lights the inside of a building
+from the level's own building, so one the level leaves open to the sky (St James's nave) gets some sky light on its
+high walls; the firelight keeps them from looking blue. The planks are a texture made once into your
 textures (`opened_floor`); change them like any slot. A building nothing fills (no box at least 2.5 m thick) is
 refused with that reason and nothing changes; so is any opening that fails half way. Its files go to your assets as `objects/kcds/opened/<name>_0.cgf` ... and
 `<name>_walls.cgf` (the collision); a second copy of the same building gets a name of its own (`<name>_2`). The
