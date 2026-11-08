@@ -456,7 +456,8 @@ export leaves the spawn to the server's other resources.
 The folder holds `package.json`, `server.js`, `client.js`, the work itself in `work.json`, and a `README.txt`; on a
 custom map also the map, in `maps/`. Your own
 models (the assets folder) go into the resource's `stream/` folder for every player to receive them. The level's grass
-carpet hidden by Clear nature stays in the editor only.
+carpet is taken away for every player where Clear nature cleared it and on the floor of each building you placed
+(`Terrain.hideGrass` in `client.js`; a game before 1.0.3 keeps its grass).
 
 ## Blender
 
