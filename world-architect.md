@@ -156,8 +156,21 @@ with **W A S D**; let go and the cursor is back. The editor opens while the worl
 | Ctrl+Z, Ctrl+Y | Undo, Redo                                                |
 | Delete         | Deletes the selection                                     |
 | F              | Flies the camera to the selection                         |
+| G              | Puts the selection on what is under it (To ground)        |
 | Ctrl+D         | Duplicates the selection beside it                        |
+| Shift + press  | Adds a thing to the group, or takes it out                |
+| Ctrl+C, Ctrl+V | Copies the group; puts the copies where you point         |
 | Escape         | Stops placing; pressed again, clears the selection        |
+
+**A group** (things picked with Shift and Select) moves, turns and is deleted with its selection: Move or the X, Y and
+Z arrows shift all of it by the same amount, Rotate turns all of it about the selection, and Delete takes it all away,
+each as one Undo step. Your props and plants and the level's own objects (buildings, trees, bushes) can be in one
+group.
+
+**To ground** (G, or the button in Details) drops the selection, or the group it is in, until its foot stands on what
+is under it: the terrain, a floor or a table. A prop sunk into the ground comes up onto it. Use it after the terrain
+changed, when things on a yard hang in the air or stand in the ground. It is one Undo step, and it does not tilt a
+thing to the slope.
 
 ## The camera
 
