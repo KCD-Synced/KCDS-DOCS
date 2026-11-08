@@ -88,8 +88,11 @@ resources/
 **Why these settings?**
 
 - `"lib": ["ES2022"]` and `"types"` naming only `@kcds/types/server` (or `/client`) leave out browser and Node
-  declarations, so a script sees only what the SDK declares. If your server code uses Node modules, add
-  `@types/node` and put `"node"` next to `@kcds/types/server` in the server project's `types`.
+  declarations, so a script sees only what the SDK declares.
+- Server scripts also have `fetch`, `WebSocket` and the web platform's other classes (`URL`, `Headers`,
+  `AbortController` and the rest). For their types, add `"DOM"` to the server project's lib:
+  `"lib": ["ES2022", "DOM"]` (with `@kcds/types` 1.0.2 or newer). `require` of Node's own modules (such as
+  `node:sqlite`) gives `any`. Do not add `@types/node`: its `require`, `module` and `console` clash with the SDK's.
 - Two separate projects keep each side's names out of the other.
 - Only `dist/client/` goes to players, because the manifest sends the folder of the client entry script (see
   [Project structure](project-structure.md)).
