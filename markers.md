@@ -105,7 +105,7 @@ Events.On("markerEnter", (Marker marker, Player player) =>
 | ---------- | ------------------------------------------------------------------- | --------- |
 | `shape`    | `'decal'`, `'cylinder'`, `'sphere'`, `'chevron'`, `'cube'`, `'plane'` | `'decal'` |
 | `rotation` | a unit quaternion or angles                                         |           |
-| `size`     | 0.25 to 64 (values outside are limited to this range)               | 2         |
+| `size`     | 0.05 to 64 (values outside are limited to this range)               | 2         |
 | `height`   | 0.25 to 64                                                          | 2         |
 | `spin`     | -720 to 720                                                         | 0         |
 | `bob`      | 0 to 4                                                              | 0         |
