@@ -227,9 +227,10 @@ opens in the same light. While Freeze weather is on, the game's own weather does
     leaves, cobblestones, paving, cobbles and grass, river shore) covers the ground under the brush with that
     material: how it looks up close, the sound of footsteps on it and the dust it raises. The inner half of the ring
     is fully covered and the outer half blends into the ground around, up to three materials mixed on one metre, so
-    a road or a muddy yard has soft edges. A custom map takes every material everywhere. On the game's own maps a
-    patch of ground takes only the materials it already has there, and the rest of the stroke stays as it was. From
-    far away the ground keeps the map's own colour.
+    a road or a muddy yard has soft edges. A custom map takes every material everywhere. On the game's own maps each
+    brush paints the map's own material of that kind (its cobblestones, stony mud, sand or trampled soil), and a
+    patch of ground without it takes it in; a material the map does not have leaves the ground as it was, and the
+    game's roads lie over the ground and hide paint under them. From far away the ground keeps the map's own colour.
   - **Clear nature** hides the level's own trees, bushes and plants under the brush in this game (they count as hidden
     level objects) and takes away your own plants there (also the ones Add nature planted, many at once). The level's grass carpet there (the low grass drawn over the
     ground) is cleared too, and comes back with Undo.
