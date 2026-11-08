@@ -161,7 +161,7 @@ with **W A S D**; let go and the cursor is back. The editor opens while the worl
 | Ctrl+D         | Duplicates the selection beside it                        |
 | Shift + press  | Adds a thing to the group, or takes it out (Ctrl too)     |
 | Select drag    | A box: the things of yours in it become the group         |
-| Ctrl+C, Ctrl+V | Copies the group; puts the copies where you point         |
+| Ctrl+C, Ctrl+V | Copies the group; puts the copies where you point, on any map |
 | Escape         | Stops placing; pressed again, clears the selection        |
 
 **A group** (things picked with Shift or Ctrl and Select, or by dragging a box with Select over the things of yours you
@@ -169,6 +169,10 @@ want: their places in the box; with Shift or Ctrl the box adds to the group) mov
 Z arrows shift all of it by the same amount, Rotate turns all of it about the selection, and Delete takes it all away,
 each as one Undo step. Your props and plants and the level's own objects (buildings, trees, bushes) can be in one
 group.
+
+**A copy goes to another map**: Ctrl+C keeps the copied group on this PC, so after Map → another map (Kutnohorsko to
+Trosecko, or a custom map) Ctrl+V puts it down there. The level's own buildings, props, trees and bushes in it become
+yours: props of their meshes and plants of their kinds. The ground's shape and paint are not copied.
 
 **To ground** (G, or the button in Details) drops the selection, or the group it is in, until its foot stands on what
 is under it: the terrain, a floor or a table. A prop sunk into the ground comes up onto it. Use it after the terrain
