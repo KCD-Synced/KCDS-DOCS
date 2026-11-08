@@ -157,6 +157,7 @@ with **W A S D**; let go and the cursor is back. The editor opens while the worl
 | Delete         | Deletes the selection                                     |
 | F              | Flies the camera to the selection                         |
 | G              | Puts the selection on what is under it (To ground)        |
+| Tab            | Hides the side panels and the dock; again shows them      |
 | Ctrl+D         | Duplicates the selection beside it                        |
 | Shift + press  | Adds a thing to the group, or takes it out                |
 | Ctrl+C, Ctrl+V | Copies the group; puts the copies where you point         |
