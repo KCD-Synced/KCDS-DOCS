@@ -66,6 +66,9 @@ If a setting is given in several places, the first of these wins:
 | `master`                              | `KCDS_MASTER_URL`                  | `https://master.kcdsynced.com`             | `off` keeps the server private                           |
 | `publicAddress`                       | `KCDS_SERVER_PUBLIC_ADDRESS`       |                                            | the `host:port` players dial                             |
 | `image`                               | `KCDS_SERVER_IMAGE_URL`            |                                            | the browser's card art, an `https://` address            |
+| `description`                         | `KCDS_SERVER_DESCRIPTION`          |                                            | a short text players read when they open your server in the browser, up to about 300 characters |
+| `tags`                                | `KCDS_SERVER_TAGS`                 |                                            | up to 8 tags from the fixed list, such as `["Roleplay", "Voice chat"]`; see [The server browser](#the-server-browser) |
+| `website`                             | `KCDS_SERVER_WEBSITE`              |                                            | an `http://` or `https://` address the browser offers to open |
 | `httpPort`, `httpBind`                | `KCDS_HTTP_PORT`, `KCDS_HTTP_BIND` | off, all interfaces                        | resources' HTTP routes and the [status API](#status-api) |
 | `publicPlayerList`                    | `KCDS_PUBLIC_PLAYER_LIST`          | `true`                                     | `false` keeps `/players.json` private                    |
 | `revealMap`                           | `KCDS_SERVER_REVEAL_MAP`           | `true`                                     | lifts the fog and discovers all places for all players. With `false`, players find places by walking there, firing `locationDiscovered` and `poiDiscovered` in client scripts |
@@ -89,9 +92,16 @@ seconds and is removed when the server stops.
 | `KCDS_SERVER_NAME`           | the name players see, up to 64 characters                                                         |
 | `KCDS_SERVER_PUBLIC_ADDRESS` | the `host:port` players dial. Without it, the listing uses your public IP and the server's port. Needed behind a proxy or for a DNS name |
 | `KCDS_SERVER_IMAGE_URL`      | optional `https://` address of your card picture                                                  |
+| `KCDS_SERVER_DESCRIPTION`    | optional short description, up to about 300 characters, shown when a player opens your server's row |
+| `KCDS_SERVER_TAGS`           | optional tags, comma separated, from the fixed list below; at most 8                              |
+| `KCDS_SERVER_WEBSITE`        | optional `http://` or `https://` address; the browser shows an **Open website** button that opens it in the player's own web browser |
 | `KCDS_MASTER_URL`            | `off` means not listed; another address lists it on that master instead                           |
 
 A server bound to `127.0.0.1` is listed only if `KCDS_SERVER_PUBLIC_ADDRESS` is set. Each of these can also be set in `server.json`.
+
+Tags come from a fixed list kept on the master, so players' tag filters are the same on every server: `Roleplay`, `PvP`, `PvE`,
+`Hardcore`, `Whitelist`, `Events`, `Racing`, `Siege`, `Survival`, `Freeroam`, `Economy`, `Beginner-friendly`, `Voice chat` and
+`18+`. Their case does not matter. A tag that is not on the list is reported at startup and left out.
 
 ## KCDS-Admin
 
