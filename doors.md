@@ -274,6 +274,90 @@ guildDoor.SetOpen(true);
   Use `Door.find(door.guid, dimension)` to find it again.
 - NPCs do not walk through a new door, because the level's navigation has no link for it.
 
+### A gate the level only shows
+
+Some big gates in the levels are scenery: closed, with no door behind them. To make one open and lock, hide it with
+a level edit and hang new leaves in its place. Find the gate's mesh and position once with `World.raycast` (its
+`hit.levelObject`), then do this at startup. The game's gate leaf is `lvl2_door_gate_a_left`; turned half round, it
+is the right leaf.
+
+```js
+const { Door, LevelEdit } = kcds.world;
+const { Vector3 } = kcds.math;
+
+LevelEdit.apply({
+  name: 'objects/manmade/structures/castle/gate_closed.cgf', // hit.levelObject.name
+  at: new Vector3(2402.2, 2606.2, 208.5), // hit.levelObject.at
+  hidden: true,
+});
+const left = Door.spawn({ model: 'lvl2_door_gate_a_left', position: [2400.6, 2606.2, 207.9] });
+const right = Door.spawn({
+  model: 'lvl2_door_gate_a_left',
+  position: [2403.8, 2606.2, 207.9],
+  rotation: [0, 0, 1, 0], // half round: the right leaf
+});
+left.locked = true;
+right.locked = true;
+```
+
+```ts
+const { Door, LevelEdit } = kcds.world;
+const { Vector3 } = kcds.math;
+
+LevelEdit.apply({
+  name: 'objects/manmade/structures/castle/gate_closed.cgf', // hit.levelObject.name
+  at: new Vector3(2402.2, 2606.2, 208.5), // hit.levelObject.at
+  hidden: true,
+});
+const left = Door.spawn({ model: 'lvl2_door_gate_a_left', position: [2400.6, 2606.2, 207.9] });
+const right = Door.spawn({
+  model: 'lvl2_door_gate_a_left',
+  position: [2403.8, 2606.2, 207.9],
+  rotation: [0, 0, 1, 0], // half round: the right leaf
+});
+left.locked = true;
+right.locked = true;
+```
+
+```lua
+local Door, LevelEdit = kcds.world.Door, kcds.world.LevelEdit
+local Vector3 = kcds.math.Vector3
+
+LevelEdit.apply({
+  name = "objects/manmade/structures/castle/gate_closed.cgf", -- hit.levelObject.name
+  at = Vector3.new(2402.2, 2606.2, 208.5), -- hit.levelObject.at
+  hidden = true,
+})
+local left = Door.spawn({ model = "lvl2_door_gate_a_left", position = { 2400.6, 2606.2, 207.9 } })
+local right = Door.spawn({
+  model = "lvl2_door_gate_a_left",
+  position = { 2403.8, 2606.2, 207.9 },
+  rotation = { 0, 0, 1, 0 }, -- half round: the right leaf
+})
+left.locked = true
+right.locked = true
+```
+
+```cs
+LevelEdit.Apply(new
+{
+    name = "objects/manmade/structures/castle/gate_closed.cgf", // hit.levelObject.name
+    at = new Vector3(2402.2, 2606.2, 208.5), // hit.levelObject.at
+    hidden = true,
+});
+var left = Door.Spawn(new { model = "lvl2_door_gate_a_left", position = new[] { 2400.6, 2606.2, 207.9 } });
+var right = Door.Spawn(new
+{
+    model = "lvl2_door_gate_a_left",
+    position = new[] { 2403.8, 2606.2, 207.9 },
+    rotation = new[] { 0, 0, 1, 0 }, // half round: the right leaf
+});
+left.Locked = true;
+right.Locked = true;
+```
+
+A level edit and a new door both last while the server runs, so do this every time it starts.
+
 Reference: [Door](/docs/api/door).
 
 ## Gates
