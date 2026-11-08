@@ -159,11 +159,13 @@ with **W A S D**; let go and the cursor is back. The editor opens while the worl
 | G              | Puts the selection on what is under it (To ground)        |
 | Tab            | Hides the side panels and the dock; again shows them      |
 | Ctrl+D         | Duplicates the selection beside it                        |
-| Shift + press  | Adds a thing to the group, or takes it out                |
+| Shift + press  | Adds a thing to the group, or takes it out (Ctrl too)     |
+| Select drag    | A box: the things of yours in it become the group         |
 | Ctrl+C, Ctrl+V | Copies the group; puts the copies where you point         |
 | Escape         | Stops placing; pressed again, clears the selection        |
 
-**A group** (things picked with Shift and Select) moves, turns and is deleted with its selection: Move or the X, Y and
+**A group** (things picked with Shift or Ctrl and Select, or by dragging a box with Select over the things of yours you
+want: their places in the box; with Shift or Ctrl the box adds to the group) moves, turns and is deleted with its selection: Move or the X, Y and
 Z arrows shift all of it by the same amount, Rotate turns all of it about the selection, and Delete takes it all away,
 each as one Undo step. Your props and plants and the level's own objects (buildings, trees, bushes) can be in one
 group.
