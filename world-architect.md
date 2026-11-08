@@ -258,7 +258,10 @@ opens in the same light. While Freeze weather is on, the game's own weather does
   you see them where they stand. A sound is one of the game's world sounds that loop (about 190: a village's or a
   monastery's ambience, a pond, bees, insects, a torch, a forge, a big fire): it is heard around the place you put it
   until you take it away, moves like an effect and is kept in the project and in saves; Export for server takes it
-  to every player's game.
+  to every player's game. **Decals** are the game's 239 decal materials (soil, flour, mud, blood, a road's edge, cobbles
+  in the grass ...): one lies flat on the ground where you put it, 2 m across; it moves and turns like an effect, the
+  Scale tool sizes it (0.1 to 64 m), and Export for server places it for every player (`Marker.place` with the shape
+  `decal`).
 - **Zones:** areas that block nothing, drawn in blue: Safe zone, Spawn area, Trigger area and Private ground, each with
   its labels (`safe`, `spawn`, `trigger`, `private`). They move, turn and size like collision shapes (Width, Depth,
   Height in Details), and Details shows their labels and area id. The project keeps them under `areas` exactly as a
