@@ -209,13 +209,60 @@ by injuries), `maxExhaust`, `maxHunger`, `sleeping` (non-zero while asleep), `co
 and `heal()`, the game's own cure.
 
 **Knock-outs:** a fatal blow knocks a player out and fires `playerDied`, and `revive()` gets them up. Only `knockedOut`,
-`setHealth(0)` and `revive()` control a knock-out. `player.buffs` does not list the unconsciousness and `addBuff` refuses
+`knockOut()`, `setHealth(0)` and `revive()` control a knock-out. `player.buffs` does not list the unconsciousness and `addBuff` refuses
 it, so a saved buff list cannot hold a player down at their next login. `setKnockoutVision(percent)` sets how much they see
 while down (40 % by default; 0 is black) with the game's HUD (compass, health, effects, quick slots) hidden until they
 are up again, and the game never ends a knock-out by itself while the server keeps the
 player down, and `lootable` sets whether others can search them. While knocked out a player reads `alive` false and
 `ableToAct` false, although the game keeps them at 1 health: wait for `alive` (or `knockedOut` false) to know they are
 back up.
+
+`knockOut({ health, keepEffects })` knocks a player out as a fatal blow would, with `health` left (1 by default). Their
+injuries, poison and bleeding are cured first unless `keepEffects` is true. `playerDied` follows with the reason
+`'knockOut'` and no killer.
+
+Each knock-out is an episode with its own number: `playerDied`'s fourth argument, and `player.knockoutEpisode` while
+the player is down (0 when they are up). `revive({ episode })` gets them up only from that knock-out. A timer or a
+retry that comes late therefore cannot end a later knock-out. `playerRevived(player, episode)` fires when a revive went
+out.
+
+```js
+// Knocked out by the guards: up again after a minute, unless something else got them up first.
+kcds.core.Events.on('playerDied', (player, killer, reason, episode) => {
+  if (reason === 'knockOut') {
+    setTimeout(() => player.revive({ episode }), 60000);
+  }
+});
+```
+
+```ts
+// Knocked out by the guards: up again after a minute, unless something else got them up first.
+kcds.core.Events.on('playerDied', (player, killer, reason, episode) => {
+  if (reason === 'knockOut') {
+    setTimeout(() => player.revive({ episode }), 60000);
+  }
+});
+```
+
+```lua
+-- Knocked out by the guards: up again after a minute, unless something else got them up first.
+kcds.core.Events.on("playerDied", function(player, killer, reason, episode)
+  if reason == "knockOut" then
+    setTimeout(function() return player:revive({ episode = episode }) end, 60000)
+  end
+end)
+```
+
+```cs
+// Knocked out by the guards: up again after a minute, unless something else got them up first.
+Events.On("playerDied", (Player player, Player killer, string reason, double episode) =>
+{
+    if (reason == "knockOut")
+    {
+        Timers.SetTimeout(() => player.Revive(new { episode }), 60000);
+    }
+});
+```
 
 ## Looks and body
 
