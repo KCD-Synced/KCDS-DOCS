@@ -6,7 +6,7 @@ This page follows a player from choosing your server to standing in its world, i
 
 | Method             | Details                                                                                         |
 | ------------------ | ----------------------------------------------------------------------------------------------- |
-| Server browser     | the server lists itself on KCDS Master unless `master` is `off`, or it binds to `127.0.0.1` with no `publicAddress` ([Running a server](server.md#the-server-browser)) |
+| Server browser     | the server lists itself on KCDS Master when `master` is `on` in `server.json` (off by default), unless it binds to `127.0.0.1` with no `publicAddress` ([Running a server](server.md#the-server-browser)) |
 | Direct connect     | by address in the browser, such as `play.example.com:7777` or `203.0.113.7:7777`; works for listed and private servers |
 | Join link          | `kcds://join/play.example.com:7777`, or `kcds://server/<id>` for a listed one, on your website or Discord ([Private servers and join links](server.md#private-servers-and-join-links)) |
 | Launcher           | `serverAddress` in the player's `kcds-launcher.json` joins one server directly ([Getting started](getting-started.md)) |
@@ -275,7 +275,7 @@ player](licence.md#identifying-a-player)). Use a verified one for your bans and 
 
 | The player sees                  | Likely cause                                                                                                  |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| the server is not in the browser | `master` is `off`, it binds to `127.0.0.1`, or Master cannot reach it; check for `MASTER listed` in the server log |
+| the server is not in the browser | `master` is not `on` (it is off by default), it binds to `127.0.0.1`, or Master cannot reach it; check for `MASTER listed` in the server log |
 | a time-out when joining          | the UDP port is not open or forwarded, or the address is wrong                                                |
 | "This copy cannot be verified"   | their store is offline or signed out, or the copy is not supported ([Stores](licence.md#stores))              |
 | "The gate is locked"             | the server has a password                                                                                     |
