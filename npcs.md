@@ -256,13 +256,14 @@ Events.On("npcObjectUseStarted", (Npc npc) =>
 });
 ```
 
-The level's own benches, chairs, ground seats and beds work too. `kcds.world.SmartObject.levelSeats(position, radius)`
-lists the ones near a point, nearest first, as `{ guid, kind, position, free }` with `kind` `'seat'` or `'bed'`, and
-`useObject` takes one:
+The level's own benches, chairs, ground seats and beds work too, and so do its work places: a smith forges at his
+anvil, an apothecary works at an alchemy table or a mortar until `stopUsingObject`.
+`kcds.world.SmartObject.levelPlaces(position, radius)` lists the ones near a point, nearest first, as
+`{ guid, kind, position, free }` with `kind` `'seat'`, `'bed'` or `'work'`, and `useObject` takes one:
 
 ```js
 const villager = kcds.characters.Npc.create({ position: { x: 1995, y: 2536, z: 120 } });
-const seat = kcds.world.SmartObject.levelSeats(villager.position, 20).find(
+const seat = kcds.world.SmartObject.levelPlaces(villager.position, 20).find(
   (candidate) => candidate.kind === 'seat' && candidate.free,
 );
 if (seat) {
@@ -272,7 +273,7 @@ if (seat) {
 
 ```ts
 const villager = kcds.characters.Npc.create({ position: { x: 1995, y: 2536, z: 120 } });
-const seat = kcds.world.SmartObject.levelSeats(villager.position, 20).find(
+const seat = kcds.world.SmartObject.levelPlaces(villager.position, 20).find(
   (candidate) => candidate.kind === 'seat' && candidate.free,
 );
 if (seat) {
@@ -282,7 +283,7 @@ if (seat) {
 
 ```lua
 local villager = kcds.characters.Npc.create({ position = { x = 1995, y = 2536, z = 120 } })
-for _, seat in ipairs(kcds.world.SmartObject.levelSeats(villager.position, 20)) do
+for _, seat in ipairs(kcds.world.SmartObject.levelPlaces(villager.position, 20)) do
   if seat.kind == "seat" and seat.free then
     villager:useObject(seat)
     break
@@ -292,7 +293,7 @@ end
 
 ```cs
 var villager = Npc.Create(new { position = new { x = 1995, y = 2536, z = 120 } });
-foreach (var seat in SmartObject.LevelSeats(villager.Position, 20))
+foreach (var seat in SmartObject.LevelPlaces(villager.Position, 20))
 {
     if (seat["kind"].AsString() == "seat" && seat["free"].AsBool())
     {
