@@ -101,6 +101,10 @@ On a server, **Microphone test** moves while they speak. A player on speakers tu
 hear their own voices come back. A change is heard at once; **Confirm** keeps it, leaving with **No** puts
 the settings back, and **Reset** sets the defaults, as for the game's own volumes.
 
+The keys are in the game's own **Settings > Key bindings**, in the **Voice chat** group: **Talk (push to talk)**
+(Mouse 4 by default) and **Whisper, normal or shout** (F9 by default). A player's keys are kept on their computer and
+are the same on every server; a server's resources cannot change them.
+
 A microphone shows beside the name of whoever is talking, and the player's own voice indicator lights up while
 what they say goes out. Either can be turned off in the same settings. These are the player's own choices; a server does
 not set them.

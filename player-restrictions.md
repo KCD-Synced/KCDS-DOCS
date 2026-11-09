@@ -10,6 +10,7 @@ What a server can stop a player from doing, one player at a time. The rules for 
 | `frozen = true`                               | held in place; see below                                                                                                                 |
 | `putInPillory(name?)`, `releaseFromPillory()` | the pillory                                                                                                                              |
 | `setPace(mode)`                               | forbids running or sprinting                                                                                                             |
+| `startFight(opponent)`                        | starts a fight between two players at once; see below; `fights` lists the opponents                                                    |
 | `stopFight(opponent)`                         | ends a fight                                                                                                                             |
 | `makePeace()`                                 | ends every fight they are in; `opponents` lists who they fought in the last 15 s                                                         |
 | `setInteraction(name, allowed)`               | the game's interactions for this player; see [Server rules](server-rules.md); `interactionAllowed(name)` reads one                       |
@@ -22,6 +23,40 @@ the server.
 
 **Locking on:** a player struck in melee by another player while locked on nobody locks on the striker, as the game
 locks on an NPC that attacks. `stopFight` and `makePeace` drop the lock again.
+
+**Starting a fight:** `startFight(opponent)` starts melee combat between two players at once: both games lock on the
+other, as the game's own lock does, and `playerFightStarted(player, opponent)` fires. The fight lasts until
+`stopFight`, a knock-out of either or a disconnect, and `playerFightEnded(player, opponent, reason)` tells which
+(`'stopped'`, `'knockedOut'` or `'left'`). `player.fights` lists the opponents of the fights a script started. Ask both
+players first, for example with a duel offer the other accepts: the fight does not wait for them. It returns false
+for a player who is gone, not playing or knocked out, the same player, another dimension, more than 15 m apart, or a
+pair that fights already.
+
+```js
+// server: a duel both players agreed to starts at once
+const { Events, Chat } = kcds.core;
+const offers = new Map();
+
+Events.fromClient('duel', (player, target) => {
+  const opponent = kcds.players.Player.getById(Number(target));
+  if (!opponent) {
+    return;
+  }
+  if (offers.get(opponent.id) === player.id) {
+    offers.delete(opponent.id);
+    player.startFight(opponent);
+  } else {
+    offers.set(player.id, opponent.id);
+  }
+});
+
+Events.on('playerFightEnded', (player, opponent, reason) => {
+  if (reason === 'knockedOut') {
+    const winner = player.knockedOut ? opponent : player;
+    Chat.sendToAll(`${winner.nickname} won the duel`);
+  }
+});
+```
 
 **Making peace:** `makePeace()` ends every fight the player is in, with each of `opponents`, the players they swung at
 or who swung at them in the last 15 seconds. Offer it on a key the player holds:

@@ -114,7 +114,7 @@ server stops. Without it, the server log says `MASTER private, not listed`, and 
 | ---------------------------- | ------------------------------------------------------------------------------------------------- |
 | `KCDS_SERVER_NAME`           | the name players see, up to 64 characters                                                         |
 | `KCDS_SERVER_PUBLIC_ADDRESS` | the `host:port` players dial. Without it, the listing uses your public IP and the server's port. Needed behind a proxy or for a DNS name |
-| `KCDS_SERVER_IMAGE_URL`      | optional `https://` address of your card picture                                                  |
+| `KCDS_SERVER_IMAGE_URL`      | optional `https://` address of your card picture; it also shows while a player connects, from the list or by your listed address or join link |
 | `KCDS_SERVER_DESCRIPTION`    | optional short description, up to about 300 characters, shown when a player opens your server's row |
 | `KCDS_SERVER_TAGS`           | optional tags, comma separated, from the fixed list below; at most 8                              |
 | `KCDS_SERVER_WEBSITE`        | optional `http://` or `https://` address; the browser shows an **Open website** button that opens it in the player's own web browser |
