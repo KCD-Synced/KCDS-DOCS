@@ -219,6 +219,54 @@ Events.On("playerDisconnect", (Player player) =>
 - `playerInventoryChanged`: with the reason for the change
 - `playerItemUsed`: food, potions, or ammunition spent
 
+### What the player's game changes
+
+Some changes start in the player's game: the player eats, shoots an arrow, drops an item, wears a sword down or picks
+something up. Their game sends these to the server in batches, one at a time, and the server answers each batch:
+
+- **Applied**: the server's stock took the changes. Each `playerInventoryChanged` from the batch carries `operation`,
+  the batch's id, such as `'3:17'`. It is the same for every change of one batch.
+- **Refused**: the server's stock stays as it is, and the player's game is brought back to it.
+- **Busy**: the server took too many reports this second. The game sends the same batch again shortly after, so no
+  change is lost.
+
+The server applies a batch only once, even when the game sends it twice. A batch from before a reconnect is refused,
+because the stock the player's game shows after a reconnect comes from the server again.
+
+```js
+kcds.core.Events.on('playerInventoryChanged', (player, change) => {
+  if (change.operation) {
+    console.info(`${player.nickname}'s game: ${change.reason} (batch ${change.operation})`);
+  }
+});
+```
+
+```ts
+kcds.core.Events.on('playerInventoryChanged', (player, change) => {
+  if (change.operation) {
+    console.info(`${player.nickname}'s game: ${change.reason} (batch ${change.operation})`);
+  }
+});
+```
+
+```lua
+kcds.core.Events.on("playerInventoryChanged", function(player, change)
+  if change.operation then
+    print(player.nickname .. "'s game: " .. change.reason .. " (batch " .. change.operation .. ")")
+  end
+end)
+```
+
+```cs
+Events.On("playerInventoryChanged", (Player player, JsValue change) =>
+{
+    if (change["operation"].Type == "string")
+    {
+        Log.Info($"{player.Nickname}'s game: {change["reason"]} (batch {change["operation"]})");
+    }
+});
+```
+
 ## Your own item types
 
 `Items.register` creates a type that borrows the look of a miscellaneous item, crafting material or document. It works
