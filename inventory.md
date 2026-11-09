@@ -267,6 +267,90 @@ Events.On("playerInventoryChanged", (Player player, JsValue change) =>
 });
 ```
 
+### Before a player's action changes anything
+
+`Inventory.beforeCommit(handler)` makes the actions of a player's own game wait for your verdict before they move
+anything:
+
+| Kind          | The player                                        | Also in the transaction |
+| ------------- | ------------------------------------------------- | ----------------------- |
+| `pickup`      | takes up an item lying on the ground              | `groundItem`            |
+| `drop`        | drops units of an item                            |                         |
+| `use`         | eats, drinks or applies an item, or a pot's meal  | `pot` for a meal        |
+| `vendor`      | confirms a shop basket                            | `vendor`                |
+| `trade`       | confirms a basket on another player's shelf       | `seller`                |
+| `stashTake`   | takes from a container                            | `stash`                 |
+| `stashPut`    | puts into a container                             | `stash`                 |
+| `loot`        | takes from a body                                 | `stash`, `owner`        |
+| `horseGear`   | puts tack on a horse or takes it off              | `horse`                 |
+
+Each transaction has an `id`, the `player`, their inventory `revision`, `money` (what the player gets, negative for
+what they pay) and `lines`: `{ item, name, amount, metadata, row, from, to }`, with `price` in a basket.
+
+Return `true` or `false`, or a promise of either. You can also call `verdict(true)` or `verdict(false, reason)` later,
+for example after asking a web service. Every handler must allow an action, and one that is not decided in 5 seconds
+is refused. A refused action changes nothing, and the player's game shows what the server holds again.
+
+A player's actions wait in line and commit one after the other. Each one commits against the inventories as they are
+then, so an action that no longer fits is refused by the usual rules. Without a handler, actions commit at once.
+
+```js
+const { Inventory } = kcds.players;
+
+// Shop baskets wait until the bank's books took them.
+Inventory.beforeCommit((transaction, verdict) => {
+  if (transaction.kind !== 'vendor') {
+    return true;
+  }
+  fetch('https://bank.example.com/hold', {
+    method: 'POST',
+    body: JSON.stringify({ id: transaction.id, money: transaction.money }),
+  })
+    .then((response) => verdict(response.ok))
+    .catch(() => verdict(false, 'bank unreachable'));
+});
+```
+
+```ts
+const { Inventory } = kcds.players;
+
+// Shop baskets wait until the bank's books took them.
+Inventory.beforeCommit((transaction, verdict) => {
+  if (transaction.kind !== 'vendor') {
+    return true;
+  }
+  fetch('https://bank.example.com/hold', {
+    method: 'POST',
+    body: JSON.stringify({ id: transaction.id, money: transaction.money }),
+  })
+    .then((response: { ok: boolean }) => verdict(response.ok))
+    .catch(() => verdict(false, 'bank unreachable'));
+});
+```
+
+```lua
+local Inventory = kcds.players.Inventory
+
+-- Players in the stocks can take up, buy and drop nothing.
+local inStocks = {}
+
+Inventory.beforeCommit(function(transaction, verdict)
+  verdict(not inStocks[transaction.player.id])
+end)
+```
+
+```cs
+// Players in the stocks can take up, buy and drop nothing.
+var inStocks = new HashSet<double>();
+
+Inventory.BeforeCommit((JsValue transaction, JsValue verdict) =>
+{
+    verdict.Invoke(!inStocks.Contains(transaction["player"]["id"].AsNumber()));
+});
+```
+
+`Inventory.stopBeforeCommit(id)` removes a handler; a resource's handlers also go when it stops.
+
 ## Your own item types
 
 `Items.register` creates a type that borrows the look of a miscellaneous item, crafting material or document. It works
