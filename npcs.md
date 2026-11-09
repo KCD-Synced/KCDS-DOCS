@@ -170,7 +170,8 @@ state until one is available.
 - `npc.pin(player)` keeps it on one player's game for a scene with them. If they walk away, it goes dormant rather than moving to
   someone else. `npc.pin(null)` releases it.
 - `npc.locomotion = 'kinematic'` moves it along its orders at their pace on the ground, without walking animations. `'native'`, the
-  default, makes it walk.
+  default, makes it walk. A hen (`class: 'Hen'`) is kinematic by default, because the game's own walk takes a hen its own way
+  rather than where it was sent.
 
 ## Orders
 
@@ -384,7 +385,9 @@ Npc.SetHarvestTable(new Dictionary<string, object> { ["Boar"] = new[] { new { it
 ```
 
 The classes are `Boar`, `CattleBull`, `CattleCow`, `Dog`, `Hare`, `Pig`, `Raven`, `RedDeerDoe`, `RedDeerStag`, `RoeDeerBuck`,
-`RoeDeerHind`, `SheepEwe`, `SheepRam`, `WildDog` and `Wolf`. `Npc.animals()` lists the spawned animals as `Npc` objects.
+`RoeDeerHind`, `SheepEwe`, `SheepRam`, `WildDog` and `Wolf`. `Npc.animals()` lists the spawned animals as `Npc` objects. `Hen` is
+an animal class for your own NPCs (`Npc.create({ class: 'Hen', position })`): the population does not spawn hens, and the game's
+own chicken flocks stay off on KCDS.
 
 ### Carcasses
 
