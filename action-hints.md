@@ -117,6 +117,139 @@ ActionHint.Create(
     () => Events.ToServer("lead"));
 ```
 
+## Several actions on one key
+
+`ActionMenu.open({ entries, key }, handler)` puts 2 to 6 actions on one key, E by default, as one line of the game's
+own hint: `Talk · [Trade] · Give a gift`. The mouse wheel moves the mark, and the key's press calls the handler with
+the marked entry's `id`. `ActionMenu.close(menu)` takes it down, `select(menu, id)` marks an entry and
+`selected(menu)` reads the mark. A menu is a hint underneath, so it takes over its key while it is open. The game also
+uses the wheel for its own list of conversation lines and, in combat, to switch opponents, so open a menu while the
+player is out of a fight.
+
+The choice comes from the player's game, so the server checks it before it acts, here that the player can still reach
+the stall:
+
+```js
+// client
+const { Events } = kcds.core;
+const { ActionMenu } = kcds.ui;
+
+const stallMenu = ActionMenu.open(
+  {
+    entries: [
+      { id: 'buy', text: 'Buy' },
+      { id: 'sell', text: 'Sell' },
+      { id: 'haggle', text: 'Haggle' },
+    ],
+  },
+  (entry) => Events.toServer('market:stall', { entry }),
+);
+```
+
+```ts
+// client
+const { Events } = kcds.core;
+const { ActionMenu } = kcds.ui;
+
+const stallMenu = ActionMenu.open(
+  {
+    entries: [
+      { id: 'buy', text: 'Buy' },
+      { id: 'sell', text: 'Sell' },
+      { id: 'haggle', text: 'Haggle' },
+    ],
+  },
+  (entry) => Events.toServer('market:stall', { entry }),
+);
+```
+
+```lua
+-- client
+local Events = kcds.core.Events
+local ActionMenu = kcds.ui.ActionMenu
+
+local stallMenu = ActionMenu.open({
+  entries = {
+    { id = "buy", text = "Buy" },
+    { id = "sell", text = "Sell" },
+    { id = "haggle", text = "Haggle" },
+  },
+}, function(entry)
+  Events.toServer("market:stall", { entry = entry })
+end)
+```
+
+```cs
+// client
+var stallMenu = ActionMenu.Open(new
+{
+    entries = new[]
+    {
+        new { id = "buy", text = "Buy" },
+        new { id = "sell", text = "Sell" },
+        new { id = "haggle", text = "Haggle" },
+    },
+}, (string entry) =>
+{
+    Events.ToServer("market:stall", new { entry });
+});
+```
+
+```js
+// server
+const STALL = { x: 512.4, y: 1880.2, z: 31.5 };
+const CHOICES = new Set(['buy', 'sell', 'haggle']);
+
+kcds.core.Events.fromClient('market:stall', (player, payload) => {
+  if (!payload || !CHOICES.has(payload.entry) || !player.canReach(STALL)) {
+    return;
+  }
+  kcds.core.Chat.sendToPlayer(player, `You chose ${payload.entry}.`);
+});
+```
+
+```ts
+// server
+const STALL = { x: 512.4, y: 1880.2, z: 31.5 };
+const CHOICES = new Set(['buy', 'sell', 'haggle']);
+
+kcds.core.Events.fromClient('market:stall', (player, payload) => {
+  if (!payload || !CHOICES.has(payload.entry) || !player.canReach(STALL)) {
+    return;
+  }
+  kcds.core.Chat.sendToPlayer(player, `You chose ${payload.entry}.`);
+});
+```
+
+```lua
+-- server
+local STALL = { x = 512.4, y = 1880.2, z = 31.5 }
+local CHOICES = { buy = true, sell = true, haggle = true }
+
+kcds.core.Events.fromClient("market:stall", function(player, payload)
+  if type(payload) ~= "userdata" or not CHOICES[payload.entry] or not player:canReach(STALL) then
+    return
+  end
+  kcds.core.Chat.sendToPlayer(player, "You chose " .. payload.entry .. ".")
+end)
+```
+
+```cs
+// server
+var stall = new { x = 512.4, y = 1880.2, z = 31.5 };
+var choices = new HashSet<string> { "buy", "sell", "haggle" };
+
+Events.FromClient("market:stall", (Player player, JsValue payload) =>
+{
+    var entry = payload["entry"];
+    if (entry.Type != "string" || !choices.Contains(entry.AsString()!) || !player.CanReach(stall))
+    {
+        return;
+    }
+    Chat.SendToPlayer(player, $"You chose {entry.AsString()}.");
+});
+```
+
 ## Drawing hints yourself
 
 `ActionHint.shown()` lists all hints the HUD is drawing, including the game's prompts, as `{ key, map, text, mode,
