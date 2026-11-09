@@ -17,6 +17,7 @@ server package, with Node.js for the resources, and starts it with `start-server
 ```text
 docker run -d --name kcds \
   -p 7777:7777/udp -p 7777:7777/tcp \
+  --log-opt max-size=20m --log-opt max-file=5 \
   -e KCDS_SERVER_NAME="My server" \
   -v "$PWD/resources:/opt/kcds/resources" \
   ghcr.io/kcd-synced/kcds-server:1.0.0
@@ -35,6 +36,14 @@ docker run -d --name kcds \
   loopback and reach it over SSH or a reverse proxy with TLS, as described for KCDS-Admin.
 - **Restarts:** a restart from KCDS-Admin starts the server again inside the container. `docker stop`
   stops it cleanly.
+- **Logs:** the server's log is the container's output, `docker logs kcds`. Docker's default log
+  driver keeps all of it, so a server running for weeks can fill the disk: the `--log-opt` options
+  above keep at most 5 files of 20 MB. In Docker Compose, put the same under `logging:`
+  (`driver: json-file`, `options: {max-size: 20m, max-file: "5"}`), or set it for every container
+  in Docker's `daemon.json`. To also have a log file, set `KCDS_LOG_FILE`, for example
+  `-e KCDS_LOG_FILE=/opt/kcds/logs/server.log` with a volume on `/opt/kcds/logs`; it keeps
+  `KCDS_LOG_FILES` (5) files of `KCDS_LOG_MAX_MB` (20) megabytes, as for the
+  [server package](/docs/server#starting-it).
 
 ## Updating
 

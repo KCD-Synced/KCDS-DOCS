@@ -23,6 +23,19 @@ self-built client is refused at connection.
 
 You can then type [console commands](#console-commands) into the server's terminal.
 
+**Logs:** everything the terminal shows is also written to `logs/server.log`, next to `start-server.sh`. The log never fills the disk: at
+20 MB the file becomes `server.log.1` (the one before `server.log.2`, and so on) and only 5 files are kept, so at most 100 MB. Change this
+with environment variables when you start the server:
+
+| Variable          | Default           | Meaning                                         |
+| ----------------- | ----------------- | ----------------------------------------------- |
+| `KCDS_LOG_FILE`   | `logs/server.log` | the log file; `off` writes none                 |
+| `KCDS_LOG_MAX_MB` | `20`              | megabytes a file grows to before it is replaced |
+| `KCDS_LOG_FILES`  | `5`               | files kept, the one being written included      |
+
+If you start the server with its output sent to a file of your own (`./start-server.sh > my.log`), that file is not limited: use
+`logs/server.log` instead, or `KCDS_LOG_FILE` to put the log where you want it.
+
 **In Docker**, the server image runs the same server. Publish 7777 for UDP and TCP (`-p 7777:7777/udp -p 7777:7777/tcp`), set the settings with the `KCDS_SERVER_*`
 variables or mount your `server.json` at `/opt/kcds/server.json`, and mount your resources over `/opt/kcds/resources`.
 

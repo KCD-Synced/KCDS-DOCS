@@ -5,8 +5,8 @@
 ### Server
 
 Whatever a server script writes with `console.log`, `info`, `warn`, `error` or `debug` goes to the server's
-console window and to the **Console** tab of [KCDS-Admin](server.md#kcds-admin), labelled with the
-resource's name:
+console window, to the server's log file `logs/server.log` ([Running a server](server.md#starting-it)) and
+to the **Console** tab of [KCDS-Admin](server.md#kcds-admin), labelled with the resource's name:
 
 ```text
 RESOURCE [hello] started
@@ -39,7 +39,9 @@ log lines to `crashes/`, next to the resources folder. KCDS-Admin lists these. C
 
 `console` lines from a client script go to the player's own game log, marked `RESOURCE client <text>`. The
 file is `client-<process id>.log` in `%LOCALAPPDATA%\KCDS\logs`, beside the launcher's `launcher.log`; the
-folder button next to the gear in the main menu opens that folder. The 20 newest client logs are kept. Before
+folder button next to the gear in the main menu opens that folder. A game's log grows to 32 MB at most; then
+its lines so far move to `client-<process id>.old.log` and the log starts again, so a long session keeps its
+newest lines. The 20 newest client log files are kept, 256 MB in all at most. Before
 1.0.1 the file was next to `kcd2s-game-client-v4.dll` in the KCDS folder (`%LOCALAPPDATA%\Programs\KCDS`
 with the installer).
 
