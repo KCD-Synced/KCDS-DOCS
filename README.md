@@ -27,7 +27,8 @@ CC BY-ND 4.0 and the code examples are free to use in your resources (MIT-0): se
 
 - [Resources](resources.md), [Client resources](client-resources.md), [API overview](api.md),
   [API changes](api-changes.md)
-- [Events](events.md), [Imports and exports](imports-exports.md), [Messages](sharing.md)
+- [Events](events.md), [Actions and their phases](action-lifecycle.md), [Imports and exports](imports-exports.md),
+  [Messages](sharing.md)
 - [Shared state](state.md), [Chat and translated texts](chat-locales.md)
 - [Timers, logging and the runtime](timers.md), [Math types](math.md)
 
