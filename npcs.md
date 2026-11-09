@@ -504,9 +504,13 @@ own chicken flocks stay off on KCDS.
 `npcHarvest` and `npcHarvested` follow a player skinning a carcass. A population animal is not `lootable`, so its carcass offers Gut
 but not Search. Set `npc.lootable = true` on one players should search.
 
-A dead animal with `lootable = false` and nothing to harvest offers neither prompt. That happens if its class is not in the table,
-or it was already harvested. `Npc.setHarvestTable({})` turns off the game's gutting for all animals. Any hints your server puts on
-the carcass are then the only prompts there.
+Until a resource calls `Npc.setHarvestTable`, a carcass gives what the game gives for that animal: the meat, skin and other parts
+`npc.lootOf()` lists, without the trophies and special parts (`special_...`), which the game keeps for a skilled hunter. An animal
+made with only a class gets its class's yield. The hen and the raven give nothing. Your own table replaces all of it.
+
+A dead animal with `lootable = false` and nothing to harvest offers neither prompt. That happens if your table leaves its class out,
+or it was already harvested. `Npc.setHarvestTable({})` turns off gutting for all animals. Any hints your server puts on the carcass
+are then the only prompts there.
 
 An `npcHarvest` handler can return its own yield for this harvest, as `{ items: [{ item, amount }] }`. It can have up to 16 rows,
 checked like the table's. The class must still be in the table, and `[]` is enough.
