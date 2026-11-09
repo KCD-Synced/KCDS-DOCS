@@ -197,6 +197,65 @@ a walk at first, so it is retried for a few seconds before `npcIntentDone` repor
 A walking NPC (`moveTo`, `flee` and a patrol's legs) steps around a player or another NPC standing in its way, passing about
 1.5 m beside it, and then walks on to where it was going.
 
+### Sitting and lying down
+
+`npc.useObject(object, { place, side })` makes an NPC sit on a seat or lie on a bed of a
+[smart object](level-editing.md#placing-smart-objects) a script placed, as the game's own people do. It walks to the seat, sits down with the game's
+own animation and stays seated. `npc.stopUsingObject()` gets it up again, and `npc.usingObject` says what it uses.
+`npcObjectUseStarted` fires when it sits, and `npcObjectUseEnded` when the use ends: `'stopped'`, `'blocked'` (it could
+not walk there), `'interrupted'` (another order, a hit, its death, or the object's removal) or `'refused'`. A seat takes
+one NPC at a time, and a player who comes later sees the NPC seated.
+
+```js
+const bench = kcds.world.SmartObject.spawn({ blueprint: 'Bench/bench_2places_low', position: [10, 20, 30] });
+const villager = kcds.characters.Npc.create({ position: { x: 14, y: 20, z: 30 } });
+
+villager.useObject(bench);
+kcds.core.Events.on('npcObjectUseStarted', (npc) => {
+  if (npc === villager) {
+    setTimeout(() => villager.stopUsingObject(), 60000);
+  }
+});
+```
+
+```ts
+const bench = kcds.world.SmartObject.spawn({ blueprint: 'Bench/bench_2places_low', position: [10, 20, 30] });
+const villager = kcds.characters.Npc.create({ position: { x: 14, y: 20, z: 30 } });
+
+villager.useObject(bench);
+kcds.core.Events.on('npcObjectUseStarted', (npc) => {
+  if (npc === villager) {
+    setTimeout(() => villager.stopUsingObject(), 60000);
+  }
+});
+```
+
+```lua
+local bench = kcds.world.SmartObject.spawn({ blueprint = "Bench/bench_2places_low", position = { 10, 20, 30 } })
+local villager = kcds.characters.Npc.create({ position = { x = 14, y = 20, z = 30 } })
+
+villager:useObject(bench)
+kcds.core.Events.on("npcObjectUseStarted", function(npc)
+  if npc == villager then
+    setTimeout(function() villager:stopUsingObject() end, 60000)
+  end
+end)
+```
+
+```cs
+var bench = SmartObject.Spawn(new { blueprint = "Bench/bench_2places_low", position = new[] { 10, 20, 30 } });
+var villager = Npc.Create(new { position = new { x = 14, y = 20, z = 30 } });
+
+villager.UseObject(bench);
+Events.On("npcObjectUseStarted", (Npc npc) =>
+{
+    if (npc.Id == villager.Id)
+    {
+        Timers.SetTimeout(() => villager.StopUsingObject(), 60000);
+    }
+});
+```
+
 ## Patrol routes
 
 ```js
