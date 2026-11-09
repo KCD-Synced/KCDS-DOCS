@@ -45,9 +45,9 @@ Events.fromClient('duel', (player, target) => {
   if (offers.get(opponent.id) === player.id) {
     offers.delete(opponent.id);
     player.startFight(opponent);
-  } else {
-    offers.set(player.id, opponent.id);
+    return;
   }
+  offers.set(player.id, opponent.id);
 });
 
 Events.on('playerFightEnded', (player, opponent, reason) => {
@@ -55,6 +55,88 @@ Events.on('playerFightEnded', (player, opponent, reason) => {
     const winner = player.knockedOut ? opponent : player;
     Chat.sendToAll(`${winner.nickname} won the duel`);
   }
+});
+```
+
+```ts
+// server: a duel both players agreed to starts at once
+const { Events, Chat } = kcds.core;
+const offers = new Map<number, number>();
+
+Events.fromClient('duel', (player, target) => {
+  const opponent = kcds.players.Player.getById(Number(target));
+  if (!opponent) {
+    return;
+  }
+  if (offers.get(opponent.id) === player.id) {
+    offers.delete(opponent.id);
+    player.startFight(opponent);
+    return;
+  }
+  offers.set(player.id, opponent.id);
+});
+
+Events.on('playerFightEnded', (player, opponent, reason) => {
+  if (reason === 'knockedOut') {
+    const winner = player.knockedOut ? opponent : player;
+    Chat.sendToAll(`${winner.nickname} won the duel`);
+  }
+});
+```
+
+```lua
+-- server: a duel both players agreed to starts at once
+local Events, Chat = kcds.core.Events, kcds.core.Chat
+local offers = {}
+
+Events.fromClient("duel", function(player, target)
+  local opponent = kcds.players.Player.getById(tonumber(target))
+  if not opponent then
+    return
+  end
+  if offers[opponent.id] == player.id then
+    offers[opponent.id] = nil
+    player:startFight(opponent)
+    return
+  end
+  offers[player.id] = opponent.id
+end)
+
+Events.on("playerFightEnded", function(player, opponent, reason)
+  if reason == "knockedOut" then
+    local winner = player.knockedOut and opponent or player
+    Chat.sendToAll(winner.nickname .. " won the duel")
+  end
+end)
+```
+
+```cs
+// server: a duel both players agreed to starts at once
+var offers = new Dictionary<double, double>();
+
+Events.FromClient("duel", (Player player, JsValue target) =>
+{
+    var opponent = Player.GetById(target.AsNumber());
+    if (opponent == null)
+    {
+        return;
+    }
+    if (offers.TryGetValue(opponent.Id, out var asked) && asked == player.Id)
+    {
+        offers.Remove(opponent.Id);
+        player.StartFight(opponent);
+        return;
+    }
+    offers[player.Id] = opponent.Id;
+});
+
+Events.On("playerFightEnded", (Player player, Player opponent, string reason) =>
+{
+    if (reason == "knockedOut")
+    {
+        var winner = player.KnockedOut ? opponent : player;
+        Chat.SendToAll($"{winner.Nickname} won the duel");
+    }
 });
 ```
 
