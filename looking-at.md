@@ -134,4 +134,121 @@ Key.Bind("e", new Func<Task>(async () =>
 Do not treat a client's answer as proof. A server that must rely on it should check for itself. On the server,
 `World.raycast` asks a player's game and returns a promise.
 
-Reference: [Camera](/docs/api/camera), [World](/docs/api/world).
+## Acting on the target, checked by the server
+
+A target action takes three parts:
+
+1. Offer it on the game's own prompt with an [action hint](action-hints.md), beside or instead of the game's own Talk
+   or Loot.
+2. When the player presses it, the client finds the target with `World.raycast` (line of sight included) and tells the
+   server.
+3. The server checks it again with `player.canReach(target, range)` before it acts: the player is up, the target is in
+   their dimension and within range (3.5 m by default).
+
+```js
+// client
+const { ActionHint, Camera } = kcds.ui;
+const { World } = kcds.world;
+
+ActionHint.create({ key: 'script_action', text: 'Greet' }, () => {
+  const ray = Camera.rayFromScreen({ range: 4 });
+  const hit = ray && World.raycast(ray.origin, ray.target, { mode: 'anything' });
+  if (hit && hit.player) {
+    kcds.core.Events.toServer('greet', hit.player.id);
+  }
+});
+```
+
+```ts
+// client
+const { ActionHint, Camera } = kcds.ui;
+const { World } = kcds.world;
+
+ActionHint.create({ key: 'script_action', text: 'Greet' }, () => {
+  const ray = Camera.rayFromScreen({ range: 4 });
+  const hit = ray && World.raycast(ray.origin, ray.target, { mode: 'anything' });
+  if (hit && hit.player) {
+    kcds.core.Events.toServer('greet', hit.player.id);
+  }
+});
+```
+
+```lua
+-- client
+local ActionHint, Camera = kcds.ui.ActionHint, kcds.ui.Camera
+local World = kcds.world.World
+
+ActionHint.create({ key = "script_action", text = "Greet" }, function()
+  local ray = Camera.rayFromScreen({ range = 4 })
+  local hit = ray and World.raycast(ray.origin, ray.target, { mode = "anything" })
+  if hit and hit.player then
+    kcds.core.Events.toServer("greet", hit.player.id)
+  end
+end)
+```
+
+```cs
+// client
+ActionHint.Create(new { key = "script_action", text = "Greet" }, new Func<Task>(async () =>
+{
+    var ray = Camera.RayFromScreen(new { range = 4 });
+    if (ray.IsNull)
+    {
+        return;
+    }
+    var hit = await World.Raycast(ray["origin"], ray["target"], new { mode = "anything" });
+    if (!hit.IsNull && !hit["player"].IsNull)
+    {
+        Events.ToServer("greet", hit["player"]["id"]);
+    }
+}));
+```
+
+```js
+// server
+kcds.core.Events.fromClient('greet', (player, targetId) => {
+  const target = kcds.players.Player.getById(Number(targetId));
+  if (!target || !player.canReach(target)) {
+    return;
+  }
+  kcds.core.Chat.sendToPlayer(target, `${player.nickname} greets you.`);
+});
+```
+
+```ts
+// server
+kcds.core.Events.fromClient('greet', (player, targetId) => {
+  const target = kcds.players.Player.getById(Number(targetId));
+  if (!target || !player.canReach(target)) {
+    return;
+  }
+  kcds.core.Chat.sendToPlayer(target, `${player.nickname} greets you.`);
+});
+```
+
+```lua
+-- server
+kcds.core.Events.fromClient("greet", function(player, targetId)
+  local target = kcds.players.Player.getById(tonumber(targetId))
+  if not target or not player:canReach(target) then
+    return
+  end
+  kcds.core.Chat.sendToPlayer(target, player.nickname .. " greets you.")
+end)
+```
+
+```cs
+// server
+Events.FromClient("greet", (Player player, JsValue targetId) =>
+{
+    var target = Player.GetById(targetId.AsNumber());
+    if (target == null || !player.CanReach(target))
+    {
+        return;
+    }
+    Chat.SendToPlayer(target, $"{player.Nickname} greets you.");
+});
+```
+
+Reference: [Camera](/docs/api/camera), [World](/docs/api/world), [ActionHint](/docs/api/actionhint),
+[Player](/docs/api/player).
