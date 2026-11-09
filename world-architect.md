@@ -469,6 +469,12 @@ models (the assets folder) go into the resource's `stream/` folder for every pla
 carpet is taken away for every player where Clear nature cleared it and on the floor of each building you placed
 (`Terrain.hideGrass` in `client.js`; a game before 1.0.3 keeps its grass).
 
+On the game's own maps, every building you placed also closes the game's navmesh under its floor (`Terrain.blockNavmesh`
+in `client.js`): the game's people and animals plan their paths around it instead of through its walls. The navmesh is
+closed polygon by polygon, as the game does for its own obstacles, so on open ground the closed part can reach a few
+metres past the walls. A custom map needs none of this: **Bake** leaves the ground under your buildings out of its
+navmesh.
+
 ## Blender
 
 **Export for Blender** (Details with nothing selected, under EXPORT) writes your work and the ground around it into
