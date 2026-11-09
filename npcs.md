@@ -276,6 +276,10 @@ An NPC copies the route when ordered, so later changes only affect new patrols. 
 `kill(killer?)`, `revive(health?)`, and `setCombatSkill({ defense, damage })`, which sets how well it parries and how hard it
 hits. Events are `npcDamage`, `npcDeath` and `npcRevive`.
 
+**Before a hit lands:** `npcHit(npc, attacker, hit)` fires before a blow, a shot, a fall or other harm takes an NPC's
+health. Return `false` to refuse it, or set `hit.damage` for the health it takes (`0` takes none); `hit.bodyPart` and
+`hit.reason` say where and why. `npcDamage` follows with what the NPC lost.
+
 Three switches control behaviour. Each is true by default, and each is also an option of `Npc.create`. Animals have them too.
 
 | Switch       | When false                                                                                                                                                   |
