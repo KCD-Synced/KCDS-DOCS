@@ -71,8 +71,168 @@ Each setter returns `true` when it worked and `false` when a value is out of ran
 | `setWeather(preset, seconds?)`     | name of 1 to 64 characters from `A-Z a-z 0-9 _ . -`; fade of 0 to 21600 game seconds |
 | `setRain(intensity, amount?)`      | both 0 to 1; `amount` defaults to 1                                             |
 | `setWind({ x, y, z })`             | metres per second; a missing component is 0; above 50 m/s is refused            |
+| `setSnow({ amount, frost, freezing, flakes })` | `amount` 0 to 10, `frost` and `freezing` 0 to 1, `flakes` a whole number 0 to 10000; `{}` melts it ([Snow](#snow)) |
 
 `setWeather` also returns `false` while an earlier fade is still running.
+
+## Snow
+
+`World.setSnow` covers every player's world in snow. It lies on everything that faces up, such as the ground, roofs and
+rocks, and flakes fall around each player. A missing part counts as 0, so `World.setSnow({})` melts it all. Players who
+join later get the snow as it is, and `World.snow` reads it back.
+
+| Part       | Values          | What it does                                                         |
+| ---------- | --------------- | -------------------------------------------------------------------- |
+| `amount`   | 0 to 10         | how much lies on surfaces: 1 is a light cover, 10 deep snow          |
+| `frost`    | 0 to 1          | frost on surfaces                                                    |
+| `freezing` | 0 to 1          | how frozen the surfaces look                                         |
+| `flakes`   | 0 to 10000      | falling flakes around each player                                    |
+
+The cover costs no frame time of its own, but the flakes do: about a tenth of a game's frame rate for 1000 flakes and a
+quarter for 3000. Keep heavy snowfall short, or stay at about 1000.
+
+```js
+const { World } = kcds.world;
+
+World.setSnow({ amount: 4, frost: 0.5, freezing: 0.3, flakes: 400 });
+if (World.snow.amount > 0) {
+  kcds.core.Chat.sendToAll('Snow lies on the land.');
+}
+World.setSnow({}); // melt it
+```
+
+```ts
+const { World } = kcds.world;
+
+World.setSnow({ amount: 4, frost: 0.5, freezing: 0.3, flakes: 400 });
+if (World.snow.amount > 0) {
+  kcds.core.Chat.sendToAll('Snow lies on the land.');
+}
+World.setSnow({}); // melt it
+```
+
+```lua
+local World = kcds.world.World
+
+World.setSnow({ amount = 4, frost = 0.5, freezing = 0.3, flakes = 400 })
+if World.snow.amount > 0 then
+  kcds.core.Chat.sendToAll("Snow lies on the land.")
+end
+World.setSnow({}) -- melt it
+```
+
+```cs
+World.SetSnow(new { amount = 4, frost = 0.5, freezing = 0.3, flakes = 400 });
+if (World.Snow["amount"].AsNumber() > 0)
+{
+    Chat.SendToAll("Snow lies on the land.");
+}
+World.SetSnow(new { }); // melt it
+```
+
+## Several maps on one server
+
+One server can run more than one of the game's maps at once: list them in `maps` in `server.json`, such as
+`"maps": ["kutnohorsko"]` next to `"level": "trosecko"` ([Settings](server.md#settings-serverjson)). Players start on
+`level`. Each map is a world of its own: a player sees only the players and things on their map, `player.map` says which
+one it is, and `World.maps` lists them, `level` first.
+
+- **The game's own travel.** A fast travel to one of a map's travel points to another level, such as the nomads' cart to
+  Kuttenberg, takes the player to that map when the server runs it. `playerTravelling(player, trip)` fires first, with
+  `trip` as `{ from, to, position, rotation, available }`. Return `false` to keep it an ordinary fast travel, or
+  `{ map, position, rotation }` to send them somewhere else on any of the server's maps.
+  `World.setLevelTravel(false)` turns these trips off for the whole server, and `World.levelTravel` reads it.
+- **A script's travel.** `player.setMap(map, position?)` sends a player to another map: their game loads that level and
+  they stand at `position`, or where the level puts a new player. On their own map it only places them.
+- **Arriving.** `playerMapChanged(player, map, from)` fires once they stand on the new map, before `playerSpawned`.
+
+```js
+const { Events } = kcds.core;
+
+// Kuttenberg is closed until the player has a pass.
+Events.on('playerTravelling', (player, trip) => {
+  if (trip.to === 'kutnohorsko' && player.state.get('pass') !== true) {
+    return false;
+  }
+});
+
+Events.on('playerCommand', (player, command) => {
+  if (command === 'kuttenberg') {
+    player.setMap('kutnohorsko', { x: 3100, y: 752, z: 56 });
+  }
+});
+
+Events.on('playerMapChanged', (player, map, from) => {
+  console.info(`${player.nickname} went from ${from} to ${map}`);
+});
+```
+
+```ts
+const { Events } = kcds.core;
+
+// Kuttenberg is closed until the player has a pass.
+Events.on('playerTravelling', (player, trip) => {
+  if (trip.to === 'kutnohorsko' && player.state.get('pass') !== true) {
+    return false;
+  }
+});
+
+Events.on('playerCommand', (player, command) => {
+  if (command === 'kuttenberg') {
+    player.setMap('kutnohorsko', { x: 3100, y: 752, z: 56 });
+  }
+});
+
+Events.on('playerMapChanged', (player, map, from) => {
+  console.info(`${player.nickname} went from ${from} to ${map}`);
+});
+```
+
+```lua
+local Events = kcds.core.Events
+
+-- Kuttenberg is closed until the player has a pass.
+Events.on("playerTravelling", function(player, trip)
+  if trip.to == "kutnohorsko" and player.state:get("pass") ~= true then
+    return false
+  end
+end)
+
+Events.on("playerCommand", function(player, command)
+  if command == "kuttenberg" then
+    player:setMap("kutnohorsko", { x = 3100, y = 752, z = 56 })
+  end
+end)
+
+Events.on("playerMapChanged", function(player, map, from)
+  print(player.nickname .. " went from " .. from .. " to " .. map)
+end)
+```
+
+```cs
+// Kuttenberg is closed until the player has a pass.
+Events.On("playerTravelling", (Player player, JsValue trip) =>
+{
+    if (trip["to"].AsString() == "kutnohorsko" && player.State.Get("pass").AsBool() != true)
+    {
+        return (bool?)false;
+    }
+    return null;
+});
+
+Events.On("playerCommand", (Player player, string command, string[] args) =>
+{
+    if (command == "kuttenberg")
+    {
+        player.SetMap("kutnohorsko", new { x = 3100, y = 752, z = 56 });
+    }
+});
+
+Events.On("playerMapChanged", (Player player, string map, string from) =>
+{
+    Log.Info($"{player.Nickname} went from {from} to {map}");
+});
+```
 
 ## Reading the world
 
@@ -82,11 +242,15 @@ Each setter returns `true` when it worked and `false` when a value is out of ran
 | Weather  | `weather` (target preset), `lastWeather`, `weatherFade`, `weatherLeft` |
 | Rain     | `rainStrength`, `rainLevel`, `wetness` (0 to 3), `puddles` (0 to 1) |
 | Wind     | `wind` (a `Vector3`), `windSpeed`                              |
+| Snow     | `snow` (`{ amount, frost, freezing, flakes }`)                 |
+| Maps     | `maps`, `levelTravel`                                          |
 
 ## Events
 
 - `worldDayChange(day)`: midnight passed.
 - `worldWeatherChange(preset, previous, seconds)`: a weather fade started.
+- `playerTravelling(player, trip)` and `playerMapChanged(player, map, from)`: a player's travel between maps
+  ([Several maps](#several-maps-on-one-server)).
 
 ## Items placed by the level
 

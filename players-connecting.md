@@ -166,6 +166,104 @@ Events.On("playerDisconnect", (Player player) =>
 });
 ```
 
+## Waiting in a lobby
+
+A server that makes a character, logs players in or lets them choose something before they play holds them out of the
+world with [`player.setLobby(true)`](/docs/api/player). While held, a player stands in a world of their own: nobody sees,
+hears, hits or meets them, nor they anyone. They are frozen, out of voice chat both ways, and their game makes no sound of
+the world. `player.setLobby(false)` lets them in, and gives back their dimension, freeze and voice as they were.
+
+- `player.inLobby` says whether a player is held, and the event `playerLobbyChanged(player, held)` follows each change.
+- A hold lasts when their world loads again, and ends when they leave.
+- Your server's loading page ([`LoadingScreen`](/docs/api/loadingscreen), `kcds.loadingScreen` in `package.json`) stays up
+  for as long as they are held, so a client script can show a page of its own there with `LoadingScreen.show(url)`, such
+  as a login form or a character creator, and send the result to the server.
+
+Hold a player who has no character yet, and let them in when their client sends one:
+
+```js
+const { Events } = kcds.core;
+const withCharacter = new Set(); // Steam ids; load and save it with your data
+
+Events.on('playerConnect', (player) => {
+  if (!withCharacter.has(player.steamId)) {
+    player.setLobby(true);
+  }
+});
+
+Events.fromClient('myserver:characterMade', (player) => {
+  withCharacter.add(player.steamId);
+  player.setLobby(false);
+});
+
+Events.on('playerLobbyChanged', (player, held) => {
+  console.info(`${player.nickname} ${held ? 'waits' : 'comes in'}`);
+});
+```
+
+```ts
+const { Events } = kcds.core;
+const withCharacter = new Set<string>(); // Steam ids; load and save it with your data
+
+Events.on('playerConnect', (player) => {
+  if (!withCharacter.has(player.steamId)) {
+    player.setLobby(true);
+  }
+});
+
+Events.fromClient('myserver:characterMade', (player) => {
+  withCharacter.add(player.steamId);
+  player.setLobby(false);
+});
+
+Events.on('playerLobbyChanged', (player, held) => {
+  console.info(`${player.nickname} ${held ? 'waits' : 'comes in'}`);
+});
+```
+
+```lua
+local Events = kcds.core.Events
+local withCharacter = {} -- Steam ids; load and save it with your data
+
+Events.on("playerConnect", function(player)
+  if not withCharacter[player.steamId] then
+    player:setLobby(true)
+  end
+end)
+
+Events.fromClient("myserver:characterMade", function(player)
+  withCharacter[player.steamId] = true
+  player:setLobby(false)
+end)
+
+Events.on("playerLobbyChanged", function(player, held)
+  print(player.nickname .. (held and " waits" or " comes in"))
+end)
+```
+
+```cs
+var withCharacter = new HashSet<string>(); // Steam ids; load and save it with your data
+
+Events.On("playerConnect", (Player player) =>
+{
+    if (!withCharacter.Contains(player.SteamId.AsString()!))
+    {
+        player.SetLobby(true);
+    }
+});
+
+Events.FromClient("myserver:characterMade", (Player player) =>
+{
+    withCharacter.Add(player.SteamId.AsString()!);
+    player.SetLobby(false);
+});
+
+Events.On("playerLobbyChanged", (Player player, bool held) =>
+{
+    Log.Info($"{player.Nickname} {(held ? "waits" : "comes in")}");
+});
+```
+
 ## Identifying the player
 
 `player.steamId`, or `epicId` for a player who owns the game on Epic, `store` and `storeAccount` come from the licence pass and are verified.

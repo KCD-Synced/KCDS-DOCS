@@ -119,4 +119,70 @@ Events.FromClient("peace", (Player player) =>
 });
 ```
 
+## Leading on a rope
+
+`player.setLeadRope(target, options?)` gives the player a rope from their hand to another body, such as a guard leading a
+cuffed prisoner or a herder an animal. The target is a player, an NPC or a horse. Every player sees it, those who join
+later too: it hangs while the two stand close and pulls straight at its length. It is only drawn, so it holds nobody back;
+pair it with `setCuffed` or `setPace` for a prisoner who must keep up. `null` takes it away, and a player has one rope at a
+time. `player.leadRope` reads it as `{ target, from, to, length }`, or `null`. A horse that follows someone gets its own rope
+with `horse.follow(target, { rope: true })` ([Horses](horses-dogs.md#orders)).
+
+| Option   | Default   | Meaning                                                                       |
+| -------- | --------- | ----------------------------------------------------------------------------- |
+| `from`   | `'right'` | `'right'`, `'left'` or a joint of the leading player's body                   |
+| `to`     | `'Spine'` | a joint of the target's body (the waist); a name it does not have falls back to it |
+| `length` | 2.5       | metres, 0.5 to 20                                                             |
+
+```js
+// /lead <nickname> ties the named player to you; /lead alone lets go.
+kcds.core.Events.on('playerCommand', (guard, command, args) => {
+  if (command !== 'lead') {
+    return;
+  }
+  const prisoner = kcds.players.Player.all().find((p) => p.nickname === args[0]);
+  guard.setLeadRope(prisoner ?? null, { to: 'Spine', length: 2 });
+});
+```
+
+```ts
+// /lead <nickname> ties the named player to you; /lead alone lets go.
+kcds.core.Events.on('playerCommand', (guard, command, args) => {
+  if (command !== 'lead') {
+    return;
+  }
+  const prisoner = kcds.players.Player.all().find((p) => p.nickname === args[0]);
+  guard.setLeadRope(prisoner ?? null, { to: 'Spine', length: 2 });
+});
+```
+
+```lua
+-- /lead <nickname> ties the named player to you; /lead alone lets go.
+kcds.core.Events.on("playerCommand", function(guard, command, args)
+  if command ~= "lead" then
+    return
+  end
+  local prisoner = nil
+  for _, p in ipairs(kcds.players.Player.all()) do
+    if p.nickname == args[1] then
+      prisoner = p
+    end
+  end
+  guard:setLeadRope(prisoner, { to = "Spine", length = 2 })
+end)
+```
+
+```cs
+// /lead <nickname> ties the named player to you; /lead alone lets go.
+Events.On("playerCommand", (Player guard, string command, string[] args) =>
+{
+    if (command != "lead")
+    {
+        return;
+    }
+    var prisoner = Player.All().FirstOrDefault((p) => args.Length > 0 && p.Nickname == args[0]);
+    guard.SetLeadRope(prisoner, new { to = "Spine", length = 2 });
+});
+```
+
 Reference: [Player](/docs/api/player).

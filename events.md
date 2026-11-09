@@ -105,7 +105,7 @@ These events ask: `cartEntering`, `craftingCompleting`, `craftingStarting`, `doo
 `gatheringHarvest`, `horseGearChanging`, `horseMounting`, `npcHarvest`, `npcLoot`, `playerCarrying`,
 `playerCarryingItem`, `playerConsuming`, `playerConsumptionEffects`, `playerHarm`, `playerHit`, `playerLoot`,
 `playerPerkLearning`, `playerPickpocketStart`, `playerPoisonAbsorbing`, `playerPreparing`,
-`playerTreeChop`, `playerTreeFell`, `playerTrunkChop`, `playerTrunkCut`, `playerXpGaining`,
+`playerTravelling`, `playerTreeChop`, `playerTreeFell`, `playerTrunkChop`, `playerTrunkCut`, `playerXpGaining`,
 `propPlaceConfirm`, `siegeEngineUse`, `siegeLadderUse`, `stashInteract`, `tradeItem`, `tradeOpen`,
 `treeRegrow` and `worldItemPickup`.
 
@@ -200,6 +200,9 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `loadingProgress` (client) | `stage, percent` | How far the game has loaded ([Web views](web-views.md)). |
 | `playerTeleported`     | `player, position` | A player a script moved now stands there (their game reported the body within 3 m). |
 | `playerStanceChanged`  | `player, stance, previous` | Their game chose another stance for the body (`player.bodyStance`). |
+| `playerLobbyChanged`   | `player, held`   | `player.setLobby` held them out of the world or let them in ([Waiting in a lobby](players-connecting.md#waiting-in-a-lobby)). |
+| `playerTravelling`     | `player, trip`   | They began the game's travel to another map; return `false` to keep it an ordinary trip ([Several maps](world.md#several-maps-on-one-server)). |
+| `playerMapChanged`     | `player, map, from` | `player.setMap` or a travel brought them to another map, before `playerSpawned`. |
 
 ### Players: chat and commands
 
@@ -536,6 +539,7 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `bookOpened` (client)              | `id`                       | A `Book` opened.                                  |
 | `bookTextChanged` (client)         | `id, text, reason`         | The text in an open book changed.                 |
 | `bookWritingEnded` (client)        | `id, text`                 | The player stopped writing in a book.             |
+| `characterCreatorChanged` (client) | `appearance`               | The character creator's figure shows another look. |
 | `characterCreatorClosed` (client)  | `appearance, reason`       | The character creator closed.                     |
 | `chatKey` (client)                 |                            | The player pressed the chat key while a resource hid the game's chat (`Chat.setUIVisible(false)`). |
 | `chatMessage` (client)             | `message`                  | A chat message arrived.                           |
@@ -543,6 +547,8 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `followStarted` (client)           | `target`                   | The local player's scripted follow started.       |
 | `followStopped` (client)           | `target, reason`           | The local player's follow ended.                  |
 | `gameResolutionChanged` (client)   | `width, height`            | The game's frame changed size.                    |
+| `localPlayerKnockedOut` (client)   |                            | The local player was knocked out (`LocalPlayer.knockedOut`). |
+| `localPlayerRevived` (client)      |                            | The local player, knocked out, was revived.       |
 | `locationDiscovered` (client)      | `locationId`               | The player discovered a map location.             |
 | `mapClosed` (client)               |                            | The local player closed the map.                  |
 | `mapOpened` (client)               |                            | The local player opened the map.                  |
@@ -551,6 +557,8 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `monologueSuppressed` (client)     | `text, textKey`            | KCDS silenced one of the character's remarks.     |
 | `nativeMenuClosed` (client)        |                            | The game's Esc menu closed.                       |
 | `nativeMenuOpened` (client)        |                            | The game's Esc menu opened.                       |
+| `nativeScreenClosed` (client)      | `name`                     | One of the game's own screens went away (`NativeUI.openScreens`). |
+| `nativeScreenOpened` (client)      | `name`                     | One of the game's own screens opened, such as the inventory (`ApseInventoryList`). |
 | `noclipAllowedChanged` (client)    | `allowed`                  | The server allowed or forbade NoClip.             |
 | `noclipChanged` (client)           | `enabled, reason`          | NoClip went on or off.                            |
 | `poiDiscovered` (client)           | `poiId`                    | The player discovered a point of interest.        |
