@@ -9,8 +9,8 @@ it on and no resource script can open it. What you make goes to your server as a
 
 ## Opening it
 
-In KCDS's main menu, press **ANIM / ASSETS** in the row above the server list, between the
-refresh button and **WORLD ARCHITECT**. The game you pressed it in goes into its developer mode
+In KCDS's main menu, press **ANIM / ASSETS STUDIO** in the row above the server list, between
+**WORLD ARCHITECT** and **JOIN DISCORD**. The game you pressed it in goes into its developer mode
 and loads the studio's own empty level straight from the main menu, with no second game. From
 then on it shows no server list and joins no server. KCDS's loading screen stays up until the
 studio is drawn, and the studio opens with the scene you left there last time. **WORLD ARCHITECT** next to it loads
