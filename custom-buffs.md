@@ -132,6 +132,7 @@ again returns the same GUID. A different definition throws `Custom buff myres:bl
 | `name`         | required; the text the player sees, up to 256 bytes                      |
 | `description`  | optional text, up to 4096 bytes                                          |
 | `visual`       | required; the game buff, by name or GUID, whose status icon it borrows   |
+| `image`        | optional; a `.dds` your resource ships to clients, shown in place of the visual's icon |
 | `duration`     | seconds, above 0 and up to 7 days; `-1` (default) has no end             |
 | `tickInterval` | 0.1 to 86400 seconds; `0` (default) has no ticks                         |
 | `stackable`    | whether a player can have several instances; default `false`             |
@@ -140,6 +141,65 @@ again returns the same GUID. A different definition throws `Custom buff myres:bl
 | `modifiers`    | `{ stat: points }` or `{ stat: { operation, value } }`; `Buffs.modifiers` lists the stats |
 
 An unknown key, wrong value, or `visual` that is not a game buff throws `Invalid custom buff: ...`.
+
+### Your own picture
+
+`image` gives the buff a picture of its own in the status list. It is the path of a `.dds` that your resource
+ships to clients, listed in the manifest's `files`, such as `"files": ["icons/*.dds"]`. The game's buff icons are
+64 x 64 pixels; a picture of another size must be an uncompressed 32-bit `.dds`, which clients scale to 64 x 64.
+A file the resource does not ship, or one that does not fit, throws when the buff is registered.
+
+The player's client loads the picture the first time the buff shows. If it has not arrived after five
+seconds, the buff shows with the icon of its `visual` instead.
+
+```js
+const thirst = kcds.players.Buffs.register('needs:thirst', {
+  name: 'Thirst',
+  visual: 'hangover',
+  image: 'icons/thirst.dds',
+  duration: 300,
+  modifiers: { staminaRegeneration: { operation: 'multiply', value: 0.8 } },
+});
+
+player.addBuff(thirst);
+```
+
+```ts
+const thirst = kcds.players.Buffs.register('needs:thirst', {
+  name: 'Thirst',
+  visual: 'hangover',
+  image: 'icons/thirst.dds',
+  duration: 300,
+  modifiers: { staminaRegeneration: { operation: 'multiply', value: 0.8 } },
+});
+
+player.addBuff(thirst);
+```
+
+```lua
+local thirst = kcds.players.Buffs.register("needs:thirst", {
+  name = "Thirst",
+  visual = "hangover",
+  image = "icons/thirst.dds",
+  duration = 300,
+  modifiers = { staminaRegeneration = { operation = "multiply", value = 0.8 } },
+})
+
+player:addBuff(thirst)
+```
+
+```cs
+var thirst = Buffs.Register("needs:thirst", new
+{
+    name = "Thirst",
+    visual = "hangover",
+    image = "icons/thirst.dds",
+    duration = 300,
+    modifiers = new { staminaRegeneration = new { operation = "multiply", value = 0.8 } },
+});
+
+player.AddBuff(thirst);
+```
 
 ### Modifiers
 
