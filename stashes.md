@@ -189,8 +189,9 @@ where returning `false` refuses it.
 Sacks, barrels, wardrobes and chests placed by the level belong to the game, and each player's game fills them
 as the level says.
 
-- `Stash.levelChests(position?, radius?)` lists them, by default within 20 m, as `{ placedGuid, position,
-  model, lockedAtBoot, canBePicked, lockLevel }`.
+- `Stash.levelChests(position?, radius?)` lists them, by default within 20 m, as `{ placedGuid, sourceName,
+  position, model, lockedAtBoot, canBePicked, lockLevel }`. `sourceName` is the level entity's own name, which
+  tells apart chests that share a model.
 - `Stash.adopt(placedGuid)` hands one to the server. It starts empty and holds what the server gives it, keeps
   the level's lock until a script changes it, and opens like a server chest for all players.
 - `destroy()` hands it back to the game.
