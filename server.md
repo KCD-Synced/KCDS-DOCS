@@ -1,7 +1,7 @@
 # Running a server
 
 A KCDS server is a small native program with a Node.js host for your resources. It uses one port number, UDP for the game and TCP for
-the resources' files, and appears in the in-game server browser.
+the resources' files, and appears in the in-game server browser once you turn its listing on ([The server browser](#the-server-browser)).
 
 ## Requirements
 
@@ -64,7 +64,7 @@ If a setting is given in several places, the first of these wins:
 | `maxPlayers`                          | `KCDS_SERVER_MAX_PEERS`            | `32`                                       | most players at once, 1 to 1024                          |
 | `password`                            | `KCDS_SERVER_PASSWORD`             | none                                       | see [Password](#password)                                |
 | `requireDiscord`                      | `KCDS_REQUIRE_DISCORD`             | `off`                                      | see [Discord](#verified-discord-accounts)                |
-| `master`                              | `KCDS_MASTER_URL`                  | `https://master.kcdsynced.com`             | `off` keeps the server private                           |
+| `master`                              | `KCDS_MASTER_URL`                  | `off` (not listed)                         | `on` lists the server in the server browser ([The server browser](#the-server-browser)); `off` keeps it private; another address lists it on that master |
 | `publicAddress`                       | `KCDS_SERVER_PUBLIC_ADDRESS`       |                                            | the `host:port` players dial                             |
 | `image`                               | `KCDS_SERVER_IMAGE_URL`            |                                            | the browser's card art, an `https://` address            |
 | `description`                         | `KCDS_SERVER_DESCRIPTION`          |                                            | a short text players read when they open your server in the browser, up to about 300 characters |
@@ -85,8 +85,17 @@ file set.
 
 ## The server browser
 
-The server lists itself through <https://master.kcdsynced.com>, with its name, map, players, version and address. The listing refreshes every 15
-seconds and is removed when the server stops.
+A server is not listed until you turn it on with `"master": "on"` in `server.json` (or `KCDS_MASTER_URL=on`). It then lists itself through
+<https://master.kcdsynced.com>, with its name, map, players, version and address. The listing refreshes every 15 seconds and is removed when the
+server stops. Without it, the server log says `MASTER private, not listed`, and players join by address or a join link
+([Private servers and join links](#private-servers-and-join-links)).
+
+```json
+{
+  "name": "My KCDS server",
+  "master": "on"
+}
+```
 
 | Variable                     | Meaning                                                                                           |
 | ---------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -96,7 +105,7 @@ seconds and is removed when the server stops.
 | `KCDS_SERVER_DESCRIPTION`    | optional short description, up to about 300 characters, shown when a player opens your server's row |
 | `KCDS_SERVER_TAGS`           | optional tags, comma separated, from the fixed list below; at most 8                              |
 | `KCDS_SERVER_WEBSITE`        | optional `http://` or `https://` address; the browser shows an **Open website** button that opens it in the player's own web browser |
-| `KCDS_MASTER_URL`            | `off` means not listed; another address lists it on that master instead                           |
+| `KCDS_MASTER_URL`            | `on` lists the server; `off` or unset means not listed; another address lists it on that master instead |
 
 A server bound to `127.0.0.1` is listed only if `KCDS_SERVER_PUBLIC_ADDRESS` is set. Each of these can also be set in `server.json`.
 
@@ -338,7 +347,7 @@ for good.
 
 ## Private servers and join links
 
-A private server is one the browser does not list, because of `KCDS_MASTER_URL=off` or a bind to `127.0.0.1`. Players join by address through Direct connect, or by a join
+A private server is one the browser does not list: every server whose `master` is not `on` (the default), and one bound to `127.0.0.1`. Players join by address through Direct connect, or by a join
 link. It still admits only legally owned games, like any KCDS server.
 
 A join link opens KCDS and joins from the browser, so the password prompt and refusals appear there as usual:
