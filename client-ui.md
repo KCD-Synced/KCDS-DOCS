@@ -88,6 +88,62 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 `DialogLeft`, `DialogRight`, `Cursor`, `Crime`, `Wanted`, `Buffs`, `Trespassing` and `Vignette`; see
 [Hud](/docs/api/hud) for all. A part stays hidden while any resource hides it.
 
+## The character panel's stats
+
+The inventory's character panel shows each stat in a fixed place with its own icon. `Hud.setCharacterStats`
+changes it: `hide` takes a stat off the panel, icon and all, and the stats below it in its column move up; `set`
+shows your own label and whole number in a stat's place, such as a server's thirst and needs instead of speech
+and noise. The stat names are `'lvl'`, `'health'`, `'exhaust'`, `'hunger'`, `'charisma'`, `'rsb'` (speed),
+`'evi'` (visibility), `'con'` (conspicuousness), `'noi'` (noise), `'strength'`, `'agility'`, `'vitality'`
+and `'speech'`. The panel fills each time the inventory opens, so call it again when a value changes, and `null`
+brings the game's own panel back. `Hud.characterStats()` reads it back.
+
+```js
+// client
+kcds.ui.Hud.setCharacterStats({
+  hide: ['charisma'],
+  set: [
+    { stat: 'speech', label: 'Thirst', value: 40 },
+    { stat: 'noi', label: 'Toilet', value: 75 },
+  ],
+});
+```
+
+```ts
+// client
+kcds.ui.Hud.setCharacterStats({
+  hide: ['charisma'],
+  set: [
+    { stat: 'speech', label: 'Thirst', value: 40 },
+    { stat: 'noi', label: 'Toilet', value: 75 },
+  ],
+});
+```
+
+```lua
+-- client
+kcds.ui.Hud.setCharacterStats({
+  hide = { "charisma" },
+  set = {
+    { stat = "speech", label = "Thirst", value = 40 },
+    { stat = "noi", label = "Toilet", value = 75 },
+  },
+})
+```
+
+```cs
+// client
+Hud.SetCharacterStats(new
+{
+    hide = new[] { "charisma" },
+    set = new[]
+    {
+        new { stat = "speech", label = "Thirst", value = 40 },
+        new { stat = "noi", label = "Toilet", value = 75 },
+    },
+});
+```
+
 ## Screen effects
 
 ```js
