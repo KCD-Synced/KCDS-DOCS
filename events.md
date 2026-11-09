@@ -103,7 +103,7 @@ refuses the action, and it is undone for everyone. All handlers still run, in th
 
 These events ask: `cartEntering`, `craftingCompleting`, `craftingStarting`, `doorInteract`,
 `gatheringHarvest`, `horseGearChanging`, `horseMounting`, `npcHarvest`, `npcLoot`, `playerCarrying`,
-`playerCarryingItem`, `playerConsuming`, `playerConsumptionEffects`, `playerHit`, `playerLoot`,
+`playerCarryingItem`, `playerConsuming`, `playerConsumptionEffects`, `playerHarm`, `playerHit`, `playerLoot`,
 `playerPerkLearning`, `playerPickpocketStart`, `playerPoisonAbsorbing`, `playerPreparing`,
 `playerTreeChop`, `playerTreeFell`, `playerTrunkChop`, `playerTrunkCut`, `playerXpGaining`,
 `propPlaceConfirm`, `siegeEngineUse`, `siegeLadderUse`, `stashInteract`, `tradeItem`, `tradeOpen`,
@@ -217,6 +217,7 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `playerCombatCancelled` | `player, opponent`                           | `player.stopFight` ended melee combat.              |
 | `playerDamage`          | `player, attacker, amount, bodyPart, reason` | A player's game took health off them.               |
 | `playerDied`            | `player, killer, reason`                     | A player was knocked out.                           |
+| `playerHarm`            | `player, harm`                               | An NPC's blow, a fall, fire or a collision is about to take health. |
 | `playerHit`             | `player, attacker, hit`                      | Another player's blow or shot is about to take health. |
 | `playerMissileHit`      | `player, hit`                                | A player's arrow or bolt came to rest, with what it struck. |
 | `playerInjured`         | `player, limb`                               | A limb was injured.                                 |

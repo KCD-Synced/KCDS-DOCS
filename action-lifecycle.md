@@ -27,6 +27,7 @@ from a web service or a database (see [Inventory and items](inventory.md)).
 | Taking from or giving to another player's inventory view | `playerInventoryTake`, `playerInventoryGive` | `playerInventoryChanged` |
 | Taking from a body | `playerLoot`, `npcLoot` | `playerLooted` |
 | Another player's blow or shot on a player | `playerHit` (refuse, or change the damage) | `playerDamage` |
+| An NPC's blow, a fall, fire or a collision on a player | `playerHarm` (refuse, or change the damage) | `playerDamage` |
 | Any hit on an NPC | `npcHit` (refuse, or change the damage) | `npcDamage`, `npcDeath` |
 | A knock-out | | `playerDied` with the episode |
 | A revive | `revive({ episode })` ends only that knock-out | `playerRevived` |

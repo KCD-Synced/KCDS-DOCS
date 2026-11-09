@@ -264,6 +264,64 @@ Events.On("playerDied", (Player player, Player killer, string reason, double epi
 });
 ```
 
+**Harm before it lands:** `playerHarm(player, harm)` asks before an NPC's blow, a fall, fire or a collision takes a
+player's health. Return `false` to refuse it, or set `harm.damage` (0 takes none). `harm.reason` and `harm.bodyPart` are
+as in `playerDamage`, and `harm.attacker` is the NPC that struck, or null. The player's game waits for the answer (a
+round trip to the server), so keep the handler short. While no resource handles `playerHarm` nothing waits. Bleeding,
+poison and starvation are never asked about, and another player's blow comes as `playerHit`.
+
+```js
+// A safe town: no fall damage, and the town's NPCs strike at half strength.
+kcds.core.Events.on('playerHarm', (player, harm) => {
+  if (harm.reason === 'fall') {
+    return false;
+  }
+  if (harm.attacker) {
+    harm.damage = harm.damage / 2;
+  }
+});
+```
+
+```ts
+// A safe town: no fall damage, and the town's NPCs strike at half strength.
+kcds.core.Events.on('playerHarm', (player, harm) => {
+  if (harm.reason === 'fall') {
+    return false;
+  }
+  if (harm.attacker) {
+    harm.damage = harm.damage / 2;
+  }
+});
+```
+
+```lua
+-- A safe town: no fall damage, and the town's NPCs strike at half strength.
+kcds.core.Events.on("playerHarm", function(player, harm)
+  if harm.reason == "fall" then
+    return false
+  end
+  if harm.attacker then
+    harm.damage = harm.damage / 2
+  end
+end)
+```
+
+```cs
+// A safe town: no fall damage, and the town's NPCs strike at half strength.
+Events.On("playerHarm", object? (Player player, JsValue harm) =>
+{
+    if (harm["reason"].AsString() == "fall")
+    {
+        return false;
+    }
+    if (!harm["attacker"].IsNull)
+    {
+        harm.Set("damage", harm["damage"].AsNumber() / 2);
+    }
+    return null;
+});
+```
+
 ## Looks and body
 
 - `setAppearance({ gender, body, head, hair, beard })` takes names from [Appearances](/docs/api/appearances);
