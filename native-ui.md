@@ -194,9 +194,38 @@ hud.Call("ShowInfoText", new object[] { "Hello", 0, 3000, false });
 
 An element ([NativeElement](/docs/api/nativeelement)) has `call`, `setVariable`, `getVariable`,
 `setClip`, `gotoClip`, `load`, `show`, `hide` and its own events. `call` runs one of the movie's
-ActionScript functions by its name; it does not take a clip's path. To put your own picture into a
-clip of a game screen, such as a stat row's icon, use `load(clip, picture)` with the clip's path below
-`_root` (`'g_Content.stats.icon'`) and a `.dds` your resource ships, or an `img://` address.
+ActionScript functions by its name; it does not take a clip's path, so `call('row.icon.loadMovie', ...)`
+does nothing. To put your own picture into a clip of a game screen, such as a stat row's icon, use
+`load(clip, picture)` with the clip's path below `_root`, written with dots
+(`'main.stats.soulProperties.soulProperty12.icon'`), and a `.dds` your resource ships, or an `img://` address.
+A shipped `.dds` is listed in the manifest's `files` and named by its path in the resource
+(`'icons/thirst.dds'`); KCDS sends it and mounts it for the game, as `Book.image` does. `load` returns `false`
+when the element has no such clip.
+
+The game fills its screens each time they open, so load your picture after the screen opens:
+`nativeScreenOpened` names the screen. [HUD and messages](client-ui.md#your-own-icon-on-a-stat-row) shows it for
+the inventory's stat rows.
+
+### The game's screens
+
+`nativeScreenOpened` and `nativeScreenClosed` fire with the name of the screen's element, the frame the game
+shows or hides it, and `NativeUI.openScreens()` lists the open ones. A menu of several panels opens several:
+
+| Screen                    | Elements                                                     |
+| ------------------------- | ------------------------------------------------------------ |
+| Inventory                 | `ApseInventoryList`, `ApseInventoryInfo`, `ApseCharacter` (the character panel and its stats) |
+| Player                    | `ApsePlayerList`, `ApsePlayerInfo`                           |
+| Map                       | `ApseMap`, `ApseMapLegendList`                               |
+| Journal                   | `ApseQuestLogList`, `ApseQuestLogDiary`                      |
+| Codex                     | `ApseCodexList`                                              |
+| Crafting                  | `ApseCraftingList`, `ApseCraftingContent`                    |
+| Chests and other containers | `ItemTransfer`                                             |
+| Horse                     | `HorseInspect`                                               |
+| Lockpicking, pickpocketing | `LockPicking`, `Pickpocketing`                              |
+| Waiting and sleeping      | `SkipTime`                                                   |
+| Books, recipes, plans     | `GeneralBook`, `AlchemyBook`, `ForgeBuilderPlan`             |
+| Questions and messages    | `ApseModalDialog`                                            |
+| Other                     | `ItemSelection`                                              |
 
 ## Closing menu pages
 

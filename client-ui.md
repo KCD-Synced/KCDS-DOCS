@@ -88,6 +88,10 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 `DialogLeft`, `DialogRight`, `Cursor`, `Crime`, `Wanted`, `Buffs`, `Trespassing` and `Vignette`; see
 [Hud](/docs/api/hud) for all. A part stays hidden while any resource hides it.
 
+The KCD2 Synced watermark in the bottom left corner is not a part: the client draws it last, over the game's HUD
+and every web view, and nothing turns it off. The [Server hosting rules](/server-rules) forbid hiding or covering
+it in any other way.
+
 ## The character panel's stats
 
 The inventory's character panel shows each stat in a fixed place with its own icon. `Hud.setCharacterStats`
@@ -148,6 +152,83 @@ The Player screen's list (Attributes, Derived) follows the same settings: a hidd
 one shows your label and number in its row. The list fills each time the Player screen opens. The client log names
 the stats of both the first time each fills (`HUD character stats: the game's inventory panel rows` and
 `the game's Player screen rows`).
+
+### Your own icon on a stat row
+
+A stat you `set` keeps the game's icon. To show your own, load a picture into the row's icon with
+[NativeElement](/docs/api/nativeelement)`.load` once the panel is open: the inventory's character panel is the
+element `ApseCharacter`, and the game fills it again each time it opens. Each stat keeps its row clip, also when
+`hide` moves it up:
+
+| Stat       | Icon clip                                        |
+| ---------- | ------------------------------------------------ |
+| `health`   | `main.stats.soulProperties.soulProperty1.icon`   |
+| `exhaust`  | `main.stats.soulProperties.soulProperty2.icon`   |
+| `hunger`   | `main.stats.soulProperties.soulProperty3.icon`   |
+| `charisma` | `main.stats.soulProperties.soulProperty4.icon`   |
+| `rsb`      | `main.stats.soulProperties.soulProperty5.icon`   |
+| `evi`      | `main.stats.soulProperties.soulProperty6.icon`   |
+| `con`      | `main.stats.soulProperties.soulProperty7.icon`   |
+| `noi`      | `main.stats.soulProperties.soulProperty8.icon`   |
+| `strength` | `main.stats.soulProperties.soulProperty9.icon`   |
+| `agility`  | `main.stats.soulProperties.soulProperty10.icon`  |
+| `vitality` | `main.stats.soulProperties.soulProperty11.icon`  |
+| `speech`   | `main.stats.soulProperties.soulProperty12.icon`  |
+
+The picture is a `.dds` your resource lists in the manifest's `files` (`"files": ["icons/*.dds"]`), named by its
+path in the resource. A square picture of 64 x 64 pixels shows at the size of the game's own icon.
+
+```js
+// client: thirst in place of speech, with its own icon
+kcds.ui.Hud.setCharacterStats({ set: [{ stat: 'speech', label: 'Thirst', value: 40 }] });
+
+kcds.core.Events.on('nativeScreenOpened', (name) => {
+  if (name === 'ApseCharacter') {
+    kcds.ui.NativeUI.element('ApseCharacter').load(
+      'main.stats.soulProperties.soulProperty12.icon',
+      'icons/thirst.dds',
+    );
+  }
+});
+```
+
+```ts
+// client: thirst in place of speech, with its own icon
+kcds.ui.Hud.setCharacterStats({ set: [{ stat: 'speech', label: 'Thirst', value: 40 }] });
+
+kcds.core.Events.on('nativeScreenOpened', (name: string) => {
+  if (name === 'ApseCharacter') {
+    kcds.ui.NativeUI.element('ApseCharacter').load(
+      'main.stats.soulProperties.soulProperty12.icon',
+      'icons/thirst.dds',
+    );
+  }
+});
+```
+
+```lua
+-- client: thirst in place of speech, with its own icon
+kcds.ui.Hud.setCharacterStats({ set = { { stat = "speech", label = "Thirst", value = 40 } } })
+
+kcds.core.Events.on("nativeScreenOpened", function(name)
+  if name == "ApseCharacter" then
+    kcds.ui.NativeUI.element("ApseCharacter"):load("main.stats.soulProperties.soulProperty12.icon", "icons/thirst.dds")
+  end
+end)
+```
+
+```cs
+// client: thirst in place of speech, with its own icon
+Hud.SetCharacterStats(new { set = new[] { new { stat = "speech", label = "Thirst", value = 40 } } });
+
+Events.On("nativeScreenOpened", (string name) =>
+{
+    if (name == "ApseCharacter")
+    {
+        NativeUI.Element("ApseCharacter").Load("main.stats.soulProperties.soulProperty12.icon", "icons/thirst.dds");
+    }
+});
+```
 
 ## Screen effects
 

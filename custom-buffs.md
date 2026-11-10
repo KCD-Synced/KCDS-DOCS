@@ -17,7 +17,7 @@ const { Events } = kcds.core;
 const blessing = Buffs.register('myres:blessing', {
   name: 'Blessing',
   description: 'A priest blessed you.',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 120,
   tickInterval: 10,
   stackable: true,
@@ -45,7 +45,7 @@ const { Events } = kcds.core;
 const blessing = Buffs.register('myres:blessing', {
   name: 'Blessing',
   description: 'A priest blessed you.',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 120,
   tickInterval: 10,
   stackable: true,
@@ -73,7 +73,7 @@ local Events = kcds.core.Events
 local blessing = Buffs.register("myres:blessing", {
   name = "Blessing",
   description = "A priest blessed you.",
-  visual = "well_rested",
+  visual = "hangover",
   duration = 120,
   tickInterval = 10,
   stackable = true,
@@ -99,7 +99,7 @@ var blessing = Buffs.Register("myres:blessing", new
 {
     name = "Blessing",
     description = "A priest blessed you.",
-    visual = "well_rested",
+    visual = "hangover",
     duration = 120,
     tickInterval = 10,
     stackable = true,
@@ -131,7 +131,7 @@ again returns the same GUID. A different definition throws `Custom buff myres:bl
 | `id`           | 1 to 128 characters of `A-Z a-z 0-9 : _ . -`; not the name of a game buff |
 | `name`         | required; the text the player sees, up to 256 bytes                      |
 | `description`  | optional text, up to 4096 bytes                                          |
-| `visual`       | required; the game buff, by name or GUID, whose status icon it borrows   |
+| `visual`       | required; the game buff, by name or GUID, whose status icon it borrows; pick one the status list shows (below) |
 | `image`        | optional; a `.dds` your resource ships to clients, shown in place of the visual's icon |
 | `duration`     | seconds, above 0 and up to 7 days; `-1` (default) has no end             |
 | `tickInterval` | 0.1 to 86400 seconds; `0` (default) has no ticks                         |
@@ -237,7 +237,7 @@ worn armour, is `0.8`. Rattling armour is a buff that multiplies `noise` above 1
 ```js
 const rattling = kcds.players.Buffs.register('myres:rattling_armour', {
   name: 'Rattling armour',
-  visual: 'well_rested',
+  visual: 'hangover',
   modifiers: { noise: { operation: 'multiply', value: 1.4 } },
 });
 ```
@@ -245,7 +245,7 @@ const rattling = kcds.players.Buffs.register('myres:rattling_armour', {
 ```ts
 const rattling = kcds.players.Buffs.register('myres:rattling_armour', {
   name: 'Rattling armour',
-  visual: 'well_rested',
+  visual: 'hangover',
   modifiers: { noise: { operation: 'multiply', value: 1.4 } },
 });
 ```
@@ -253,7 +253,7 @@ const rattling = kcds.players.Buffs.register('myres:rattling_armour', {
 ```lua
 local rattling = kcds.players.Buffs.register("myres:rattling_armour", {
   name = "Rattling armour",
-  visual = "well_rested",
+  visual = "hangover",
   modifiers = { noise = { operation = "multiply", value = 1.4 } },
 })
 ```
@@ -262,7 +262,7 @@ local rattling = kcds.players.Buffs.register("myres:rattling_armour", {
 var rattling = Buffs.Register("myres:rattling_armour", new
 {
     name = "Rattling armour",
-    visual = "well_rested",
+    visual = "hangover",
     modifiers = new { noise = new { operation = "multiply", value = 1.4 } },
 });
 ```
@@ -276,12 +276,12 @@ const { Buffs } = kcds.players;
 
 const brokenArm = Buffs.register('myres:broken_arm', {
   name: 'Broken arm',
-  visual: 'well_rested',
+  visual: 'hangover',
   modifiers: { attackSpeed: { operation: 'multiply', value: 0.8 } },
 });
 const brokenLeg = Buffs.register('myres:broken_leg', {
   name: 'Broken leg',
-  visual: 'well_rested',
+  visual: 'hangover',
   modifiers: { noSprint: true, runSpeed: -0.5 },
 });
 
@@ -300,12 +300,12 @@ const { Buffs } = kcds.players;
 
 const brokenArm = Buffs.register('myres:broken_arm', {
   name: 'Broken arm',
-  visual: 'well_rested',
+  visual: 'hangover',
   modifiers: { attackSpeed: { operation: 'multiply', value: 0.8 } },
 });
 const brokenLeg = Buffs.register('myres:broken_leg', {
   name: 'Broken leg',
-  visual: 'well_rested',
+  visual: 'hangover',
   modifiers: { noSprint: true, runSpeed: -0.5 },
 });
 
@@ -324,12 +324,12 @@ local Buffs = kcds.players.Buffs
 
 local brokenArm = Buffs.register("myres:broken_arm", {
   name = "Broken arm",
-  visual = "well_rested",
+  visual = "hangover",
   modifiers = { attackSpeed = { operation = "multiply", value = 0.8 } },
 })
 local brokenLeg = Buffs.register("myres:broken_leg", {
   name = "Broken leg",
-  visual = "well_rested",
+  visual = "hangover",
   modifiers = { noSprint = true, runSpeed = -0.5 },
 })
 
@@ -347,13 +347,13 @@ end)
 var brokenArm = Buffs.Register("myres:broken_arm", new
 {
     name = "Broken arm",
-    visual = "well_rested",
+    visual = "hangover",
     modifiers = new { attackSpeed = new { operation = "multiply", value = 0.8 } },
 });
 var brokenLeg = Buffs.Register("myres:broken_leg", new
 {
     name = "Broken leg",
-    visual = "well_rested",
+    visual = "hangover",
     modifiers = new { noSprint = true, runSpeed = -0.5 },
 });
 
@@ -378,21 +378,21 @@ const { Buffs } = kcds.players;
 
 Buffs.register('myres:giant', {
   name: 'Giant',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 600,
   modifiers: { maxStamina: { operation: 'multiply', value: 1.5 }, carryCapacity: 100, charisma: 5 },
 });
 
 Buffs.register('myres:marathon', {
   name: 'Marathon',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 600,
   modifiers: { hungerDrain: 0.2, energyDrain: 0.1 },
 });
 
 Buffs.register('myres:feast', {
   name: 'Feast',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 300,
   modifiers: { hunger: { operation: 'set', value: 100 }, healthRegeneration: 0.5 },
 });
@@ -403,21 +403,21 @@ const { Buffs } = kcds.players;
 
 Buffs.register('myres:giant', {
   name: 'Giant',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 600,
   modifiers: { maxStamina: { operation: 'multiply', value: 1.5 }, carryCapacity: 100, charisma: 5 },
 });
 
 Buffs.register('myres:marathon', {
   name: 'Marathon',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 600,
   modifiers: { hungerDrain: 0.2, energyDrain: 0.1 },
 });
 
 Buffs.register('myres:feast', {
   name: 'Feast',
-  visual: 'well_rested',
+  visual: 'hangover',
   duration: 300,
   modifiers: { hunger: { operation: 'set', value: 100 }, healthRegeneration: 0.5 },
 });
@@ -428,21 +428,21 @@ local Buffs = kcds.players.Buffs
 
 Buffs.register("myres:giant", {
   name = "Giant",
-  visual = "well_rested",
+  visual = "hangover",
   duration = 600,
   modifiers = { maxStamina = { operation = "multiply", value = 1.5 }, carryCapacity = 100, charisma = 5 },
 })
 
 Buffs.register("myres:marathon", {
   name = "Marathon",
-  visual = "well_rested",
+  visual = "hangover",
   duration = 600,
   modifiers = { hungerDrain = 0.2, energyDrain = 0.1 },
 })
 
 Buffs.register("myres:feast", {
   name = "Feast",
-  visual = "well_rested",
+  visual = "hangover",
   duration = 300,
   modifiers = { hunger = { operation = "set", value = 100 }, healthRegeneration = 0.5 },
 })
@@ -452,7 +452,7 @@ Buffs.register("myres:feast", {
 Buffs.Register("myres:giant", new
 {
     name = "Giant",
-    visual = "well_rested",
+    visual = "hangover",
     duration = 600,
     modifiers = new { maxStamina = new { operation = "multiply", value = 1.5 }, carryCapacity = 100, charisma = 5 },
 });
@@ -460,7 +460,7 @@ Buffs.Register("myres:giant", new
 Buffs.Register("myres:marathon", new
 {
     name = "Marathon",
-    visual = "well_rested",
+    visual = "hangover",
     duration = 600,
     modifiers = new { hungerDrain = 0.2, energyDrain = 0.1 },
 });
@@ -468,7 +468,7 @@ Buffs.Register("myres:marathon", new
 Buffs.Register("myres:feast", new
 {
     name = "Feast",
-    visual = "well_rested",
+    visual = "hangover",
     duration = 300,
     modifiers = new { hunger = new { operation = "set", value = 100 }, healthRegeneration = 0.5 },
 });
