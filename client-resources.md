@@ -23,13 +23,19 @@ and other server files never are.
 ```
 
 <!-- only sealed -->
-Every file of up to 4 MB a resource sends is sealed (AES-256-GCM) with a secret the server makes when
-the resource starts. Each player's game gets the secret over its session to the server and opens the
-files in memory. The download cache keeps them sealed, so a copy of the cache opens nowhere: not in
-the plain game, not in another mod, and not on another server. The resource's scripts see the plain
-files as before, nothing changes for them. The files a screen, a book or a stream mount uses stay
-in the game's memory too: none is written to disk as a plain copy. Restarting a resource gives it a
-new secret, and its files download again on the next join.
+Every file of up to 4 MB a resource sends is sealed (AES-256-GCM) with the resource's secret, which
+comes from the server's seal key. Each player's game gets the secret over its session to the server
+and opens the files in memory. The download cache keeps them sealed, so a copy of the cache opens
+nowhere: not in the plain game, not in another mod, and not on another server. The resource's
+scripts see the plain files as before, nothing changes for them. The files a screen, a book or a
+stream mount uses stay in the game's memory too: none is written to disk as a plain copy.
+
+An unchanged file seals to the same bytes every time, so restarting a resource or the whole server
+does not make players download it again: only changed files download on the next join. The server
+makes its seal key on the first start and keeps it in the resources folder as `resource-seal.key`.
+Keep that file private (leave it out of a repository you share): with it and a player's cache, the
+cached files of your server open. Deleting it gives every file a new seal, and players download
+everything once more.
 
 A bigger file (a video, a large model) is not sealed: it downloads as it is and stays in the
 download cache on the disk, so a player's game never holds it all in memory until a page or the
@@ -37,8 +43,8 @@ game reads it. Keep what must not be copied in files of up to 4 MB.
 <!-- end -->
 
 The game caches downloads in `%LOCALAPPDATA%\KCDS\cache\resources`, named by SHA-256, up to 1 GB, and
-removes the least recently used files first. Rejoining the server while the resource runs reads
-from this cache. Each file is checked against its hash before use, and a damaged or changed one
+removes the least recently used files first. Rejoining the server, after a restart too, reads
+unchanged files from this cache. Each file is checked against its hash before use, and a damaged or changed one
 downloads again. Changed files download before the new version starts.
 
 <!-- only sealed -->
