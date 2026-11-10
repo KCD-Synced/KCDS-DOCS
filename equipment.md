@@ -134,6 +134,10 @@ out, and the client log says `the outfit cannot use the slot`.
 Equip does with arrows, and only then does the game count them as equipped: the inventory marks the bow and the arrows, and the HUD shows
 the bow with the number of arrows. Wearing the arrows (`equipped`) is not enough. The player draws the selected set with their weapon key.
 
+`Player.equip` does this for you: a weapon becomes the weapon of the selected set (the one there stays in the inventory), a bow takes
+the arrows the player has on, and arrows go into the set of the bow. `player.equip('bow_b')` and then `player.equip('arrow_normal')`
+leave the bow selected with its arrows. With `Inventory.set` you place them yourself, as below.
+
 ```js
 // The bow in the first weapon set with its arrows, selected.
 function readyBow(player, bowName, arrowName) {
