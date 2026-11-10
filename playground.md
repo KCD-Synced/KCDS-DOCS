@@ -12,7 +12,7 @@ network or a small rented one is enough. This `server.json` keeps it off the pub
 {
   "name": "My test server",
   "bind": "0.0.0.0",
-  "master": "off"
+  "master": false
 }
 ```
 
