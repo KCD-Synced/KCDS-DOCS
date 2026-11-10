@@ -558,7 +558,7 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `nativeMenuClosed` (client)        |                            | The game's Esc menu closed.                       |
 | `nativeMenuOpened` (client)        |                            | The game's Esc menu opened.                       |
 | `nativeScreenClosed` (client)      | `name`                     | One of the game's own screens went away (`NativeUI.openScreens`). |
-| `nativeScreenOpened` (client)      | `name`                     | One of the game's own screens opened, such as the inventory (`ApseInventoryList`). |
+| `nativeScreenOpened` (client)      | `name`                     | One of the game's own screens opened, such as the inventory (`ApseInventoryList`); [the names](native-ui.md#the-games-screens). |
 | `noclipAllowedChanged` (client)    | `allowed`                  | The server allowed or forbade NoClip.             |
 | `noclipChanged` (client)           | `enabled, reason`          | NoClip went on or off.                            |
 | `poiDiscovered` (client)           | `poiId`                    | The player discovered a point of interest.        |

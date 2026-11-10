@@ -126,6 +126,158 @@ new.
 Weapons and ammunition use `equipped` too. `quickslots` in `Inventory.set` decides which weapon sits in which quick slot. A belt adds weapon
 slots and a pouch adds item slots.
 
+`quickslots.weapons` holds four weapon sets, each `{ primary, secondary }` with row ids or `null`, and `activeWeapon` is the set the player
+has selected (from 0), the one their weapon key draws. A body without a belt has only the first set: a weapon put in another one is left
+out, and the client log says `the outfit cannot use the slot`.
+
+**Arrows and bolts** are equipped in the set of the bow or crossbow that shoots them, as its `secondary`. That is what the game's own
+Equip does with arrows, and only then does the game count them as equipped: the inventory marks the bow and the arrows, and the HUD shows
+the bow with the number of arrows. Wearing the arrows (`equipped`) is not enough. The player draws the selected set with their weapon key.
+
+```js
+// The bow in the first weapon set with its arrows, selected.
+function readyBow(player, bowName, arrowName) {
+  const { Inventory } = kcds.players;
+  const current = Inventory.get(player);
+  if (!current || !current.quickslots) {
+    return false;
+  }
+  const bow = current.items.find((row) => row.name === bowName);
+  const arrows = current.items.find((row) => row.name === arrowName);
+  if (!bow || !arrows) {
+    return false;
+  }
+  const quickslots = current.quickslots;
+  quickslots.weapons[0] = { primary: bow.id, secondary: arrows.id };
+  quickslots.activeWeapon = 0;
+  return Inventory.set(player, { items: current.items, quickslots, revision: current.revision }).ok;
+}
+
+kcds.core.Events.on('playerCommand', (player, command) => {
+  if (command === 'archer') {
+    player.equip('bow_b');
+    kcds.players.Inventory.add(player, { item: 'arrow_normal', amount: 40 });
+    readyBow(player, 'bow_b', 'arrow_normal');
+  }
+});
+```
+
+```ts
+// The bow in the first weapon set with its arrows, selected.
+function readyBow(player: kcds.players.Player, bowName: string, arrowName: string) {
+  const { Inventory } = kcds.players;
+  const current = Inventory.get(player);
+  if (!current || !current.quickslots) {
+    return false;
+  }
+  const bow = current.items.find((row) => row.name === bowName);
+  const arrows = current.items.find((row) => row.name === arrowName);
+  if (!bow || !arrows) {
+    return false;
+  }
+  const quickslots = current.quickslots;
+  quickslots.weapons[0] = { primary: bow.id, secondary: arrows.id };
+  quickslots.activeWeapon = 0;
+  return Inventory.set(player, { items: current.items, quickslots, revision: current.revision }).ok;
+}
+
+kcds.core.Events.on('playerCommand', (player, command) => {
+  if (command === 'archer') {
+    player.equip('bow_b');
+    kcds.players.Inventory.add(player, { item: 'arrow_normal', amount: 40 });
+    readyBow(player, 'bow_b', 'arrow_normal');
+  }
+});
+```
+
+```lua
+-- The bow in the first weapon set with its arrows, selected.
+local function readyBow(player, bowName, arrowName)
+  local Inventory = kcds.players.Inventory
+  local current = Inventory.get(player)
+  if not current or not current.quickslots then
+    return false
+  end
+  local bow, arrows
+  for _, row in ipairs(current.items) do
+    if row.name == bowName then
+      bow = row
+    elseif row.name == arrowName then
+      arrows = row
+    end
+  end
+  if not bow or not arrows then
+    return false
+  end
+  local weapons = {}
+  for index, set in ipairs(current.quickslots.weapons) do
+    weapons[index] = set
+  end
+  weapons[1] = { primary = bow.id, secondary = arrows.id }
+  local quickslots = {
+    weapons = weapons,
+    items = current.quickslots.items,
+    activeWeapon = 0,
+    activeItem = current.quickslots.activeItem,
+  }
+  return Inventory.set(player, { items = current.items, quickslots = quickslots, revision = current.revision }).ok
+end
+
+kcds.core.Events.on("playerCommand", function(player, command)
+  if command == "archer" then
+    player:equip("bow_b")
+    kcds.players.Inventory.add(player, { item = "arrow_normal", amount = 40 })
+    readyBow(player, "bow_b", "arrow_normal")
+  end
+end)
+```
+
+```cs
+// The bow in the first weapon set with its arrows, selected.
+bool ReadyBow(Player player, string bowName, string arrowName)
+{
+    var current = Inventory.Get(player);
+    if (current.IsNull || current["quickslots"].IsNull)
+    {
+        return false;
+    }
+    var rows = current["items"].ToList();
+    var bow = rows.FindIndex((row) => row["name"].AsString() == bowName);
+    var arrows = rows.FindIndex((row) => row["name"].AsString() == arrowName);
+    if (bow < 0 || arrows < 0)
+    {
+        return false;
+    }
+    var bowSet = new { primary = rows[bow]["id"], secondary = rows[arrows]["id"] };
+    var weapons = current["quickslots"]["weapons"]
+        .Select((set, index) => index == 0 ? (object)bowSet : set)
+        .ToList();
+    var answer = Inventory.Set(player, new
+    {
+        items = current["items"],
+        quickslots = new
+        {
+            weapons,
+            items = current["quickslots"]["items"],
+            activeWeapon = 0,
+            activeItem = current["quickslots"]["activeItem"],
+        },
+        revision = current["revision"],
+    });
+    return answer["ok"].AsBool();
+}
+
+Events.On("playerCommand", (Player player, string command, string[] args) =>
+{
+    if (command == "archer")
+    {
+        player.Equip("bow_b");
+        Inventory.Add(player, new { item = "arrow_normal", amount = 40 });
+        ReadyBow(player, "bow_b", "arrow_normal");
+    }
+});
+```
+
 ## Dressing or undressing one piece
 
 ```js
