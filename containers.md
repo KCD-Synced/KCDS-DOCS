@@ -57,6 +57,10 @@ docker stop kcds && docker rm kcds
 docker run -d --name kcds ... ghcr.io/kcd-synced/kcds-server:<new version>
 ```
 
+From 1.0.4 the image carries GitHub's build provenance, as the downloads do: `gh attestation verify
+oci://ghcr.io/kcd-synced/kcds-server:<version> --repo KCD-Synced/KCDS` shows that the release workflow of
+the public repository built it.
+
 The server writes its own data (crash reports, backups, bans and admin accounts) inside the
 container under `/opt/kcds`. To keep it across a new container, keep that data on a volume or in
 your mounted folders, as your setup needs.

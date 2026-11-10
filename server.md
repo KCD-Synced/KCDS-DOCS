@@ -23,6 +23,17 @@ self-built client is refused at connection.
 
 You can then type [console commands](#console-commands) into the server's terminal.
 
+**Checking a download:** every file of a release (from 1.0.4) carries GitHub's build provenance: a signed record that the release
+workflow of the public repository [KCD-Synced/KCDS](https://github.com/KCD-Synced/KCDS) built it from the release's commit. With the
+GitHub CLI:
+
+```text
+gh attestation verify KCDS-Server-1.0.4-linux.tar.gz --repo KCD-Synced/KCDS
+```
+
+It answers with the workflow and the commit that built the file, or fails for a file that was changed or built anywhere else.
+`SHA256SUMS.txt` and `SHA256SUMS-linux.txt` beside the downloads hold each file's checksum.
+
 **Logs:** everything the terminal shows is also written to `logs/server.log`, next to `start-server.sh`. The log never fills the disk: at
 20 MB the file becomes `server.log.1` (the one before `server.log.2`, and so on) and only 5 files are kept, so at most 100 MB. Change this
 with environment variables when you start the server:
