@@ -142,6 +142,9 @@ again returns the same GUID. A different definition throws `Custom buff myres:bl
 
 An unknown key, wrong value, or `visual` that is not a game buff throws `Invalid custom buff: ...`.
 
+The status list (the Player screen's Buffs tab) shows a custom buff only when its `visual` is a buff the game lists
+there. `hangover` is listed; `well_rested` is not, so a buff that borrows it still works but has no entry in the list.
+
 ### Your own picture
 
 `image` gives the buff a picture of its own in the status list. It is the path of a `.dds` that your resource
