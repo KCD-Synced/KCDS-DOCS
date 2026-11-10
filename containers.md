@@ -8,7 +8,7 @@ ghcr.io/kcd-synced/kcds-server:<version>
 ghcr.io/kcd-synced/kcds-server:latest
 ```
 
-Use the version tag your players' clients have, for example `1.0.0`: a client and a server of
+Use the version tag your players' clients have, for example `1.0.4`: a client and a server of
 different versions refuse each other when joining. The image runs the same Linux server as the
 server package, with Node.js for the resources, and starts it with `start-server.sh`.
 
@@ -20,7 +20,7 @@ docker run -d --name kcds \
   --log-opt max-size=20m --log-opt max-file=5 \
   -e KCDS_SERVER_NAME="My server" \
   -v "$PWD/resources:/opt/kcds/resources" \
-  ghcr.io/kcd-synced/kcds-server:1.0.0
+  ghcr.io/kcd-synced/kcds-server:1.0.4
 ```
 
 - **Ports:** players connect over UDP 7777, and the game downloads your resources' files over TCP

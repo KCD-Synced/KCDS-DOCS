@@ -77,7 +77,7 @@ If a setting is given in several places, the first of these wins:
 | `maxPlayers`                          | `KCDS_SERVER_MAX_PEERS`            | `32`                                       | most players at once, 1 to 1024                          |
 | `password`                            | `KCDS_SERVER_PASSWORD`             | none                                       | see [Password](#password)                                |
 | `requireDiscord`                      | `KCDS_REQUIRE_DISCORD`             | `off`                                      | see [Discord](#verified-discord-accounts)                |
-| `master`                              | `KCDS_MASTER_URL`                  | `off` (not listed)                         | `on` lists the server in the server browser ([The server browser](#the-server-browser)); `off` keeps it private; another address lists it on that master |
+| `master`                              | `KCDS_MASTER_URL`                  | `false` (not listed)                       | `true` lists the server in the server browser ([The server browser](#the-server-browser)); `false` keeps it private; another address lists it on that master. The older `"on"` and `"off"` still work |
 | `publicAddress`                       | `KCDS_SERVER_PUBLIC_ADDRESS`       |                                            | the `host:port` players dial                             |
 | `image`                               | `KCDS_SERVER_IMAGE_URL`            |                                            | the browser's card art, an `https://` address            |
 | `description`                         | `KCDS_SERVER_DESCRIPTION`          |                                            | a short text players read when they open your server in the browser, up to about 300 characters |
@@ -98,7 +98,8 @@ file set.
 
 ## The server browser
 
-A server is not listed until you turn it on with `"master": "on"` in `server.json` (or `KCDS_MASTER_URL=on`). It then lists itself through
+A server is not listed until you turn it on with `"master": true` in `server.json` (or `KCDS_MASTER_URL=on`; `"master": "on"`
+from before 1.0.4 works too). It then lists itself through
 <https://master.kcdsynced.com>, with its name, map, players, version and address. The listing refreshes every 15 seconds and is removed when the
 server stops. Without it, the server log says `MASTER private, not listed`, and players join by address or a join link
 ([Private servers and join links](#private-servers-and-join-links)).
@@ -106,7 +107,7 @@ server stops. Without it, the server log says `MASTER private, not listed`, and 
 ```json
 {
   "name": "My KCDS server",
-  "master": "on"
+  "master": true
 }
 ```
 
