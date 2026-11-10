@@ -150,8 +150,48 @@ aspect ratio kept and the rest transparent.
 | `recipeImage`            | alchemy book, 1024 x 1024                                                   |
 | `bookPicturesFrom`       | instead of those two, the `RecipeId` of a game alchemy recipe to borrow from |
 
-Without any, the book shows no pictures. Clients receive pictures in parts after the recipe, taking about a second for
-the large one.
+Without any, the book shows the game's placeholder squares in their place. Clients receive pictures in parts after the
+recipe, taking about a second for the large one.
+
+### Alchemy recipes in the player's book
+
+The book at an alchemy table lists a recipe only for players who know it through a perk, as the game does for its own
+recipes. A recipe of yours needs a perk of its own and a row linking that perk to the recipe's id. Both are table patches
+in your resource's `replace/` folder:
+
+```text
+my-alchemy/
+  replace/Libs/Tables/rpg/perk__my_alchemy.xml          the perk
+  replace/Libs/Tables/rpg/perk_recipe__my_alchemy.xml   the perk teaches recipe 910001
+```
+
+The perk is written like the game's own recipe perks: hidden from the perk screen (`visibility="0"`) and never given by
+a level (`autolearnable="false"`), with a GUID of your own:
+
+```xml
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<perks version="1">
+		<perk autolearnable="false" perk_id="6b1f3c2e-951a-4d7e-9a51-c0de00910001" perk_name="Alch recipe - sage tonic" visibility="0" />
+	</perks>
+</database>
+```
+
+```xml
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<perk_recipes version="1">
+		<perk_recipe perk_id="6b1f3c2e-951a-4d7e-9a51-c0de00910001" recipe_id="910001" />
+	</perk_recipes>
+</database>
+```
+
+When the resource starts, the server log says `recipe perks 6b1f3c2e-... -> 910001 added from perk_recipe__my_alchemy.xml`,
+and the recipe's `perks` lists the perk. Players' games load both files with the game's own tables at their next start,
+as they load [custom perks](custom-perks.md): a player who joins before that sees "This server has perks of its own.
+Restart the game to have them." From then on, `player.learnRecipe(id)` or `Crafting.grantKnowledge(player, 910001,
+536870911)` gives the perk, and the recipe is in their book with its name, usage text and steps. `Crafting.knowledge`
+reports it whole. The same works for a row of your own `AlchemyRecipe__<name>.xml`.
 
 **Errors:** it throws if the definition is malformed or names an unknown item, if the game or another resource has
 the id, or if the id is already yours with other contents. The recipe's table row with its texts can be at most 40 KiB, which
