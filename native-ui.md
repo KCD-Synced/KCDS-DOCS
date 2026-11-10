@@ -193,7 +193,10 @@ hud.Call("ShowInfoText", new object[] { "Hello", 0, 3000, false });
 ```
 
 An element ([NativeElement](/docs/api/nativeelement)) has `call`, `setVariable`, `getVariable`,
-`setClip`, `gotoClip`, `show`, `hide` and its own events.
+`setClip`, `gotoClip`, `load`, `show`, `hide` and its own events. `call` runs one of the movie's
+ActionScript functions by its name; it does not take a clip's path. To put your own picture into a
+clip of a game screen, such as a stat row's icon, use `load(clip, picture)` with the clip's path below
+`_root` (`'g_Content.stats.icon'`) and a `.dds` your resource ships, or an `img://` address.
 
 ## Closing menu pages
 
