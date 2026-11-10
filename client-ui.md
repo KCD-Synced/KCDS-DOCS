@@ -144,6 +144,11 @@ Hud.SetCharacterStats(new
 });
 ```
 
+The Player screen's list (Attributes, Derived) follows the same settings: a hidden stat leaves the list, and a set
+one shows your label and number in its row. The list fills each time the Player screen opens. The client log names
+the stats of both the first time each fills (`HUD character stats: the game's inventory panel rows` and
+`the game's Player screen rows`).
+
 ## Screen effects
 
 ```js
