@@ -85,7 +85,9 @@ if (vaultDoor != null)
 **Read only:** `id`, `guid` (sixteen lower-case hex digits), `name`, `dimension`, `lockKey`, `canBePicked`,
 `builtLocked`, `position`, `open`, `side`, `lockedByScript`.
 
-**`locked`** can also be written. Players cannot open a lock a script set.
+**`locked`** can also be written. Players cannot open a lock a script set, and neither can NPCs: while a script
+keeps a door locked, its doorway is taken out of the game's NPC navigation, so the level's people walk other ways
+and do not wait at it. Unlocked, the doorway is open to them again.
 
 **`lockLevel`** is the lock's difficulty, from 0 (easy) to 1 (hard). A number overrides the level's value for all
 players in that dimension, and `null` restores it.
