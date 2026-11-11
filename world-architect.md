@@ -176,8 +176,10 @@ yours: props of their meshes and plants of their kinds. The ground's shape and p
 
 **To ground** (G, or the button in Details) drops the selection, or the group it is in, until its foot stands on what
 is under it: the terrain, a floor or a table. A prop sunk into the ground comes up onto it. Use it after the terrain
-changed, when things on a yard hang in the air or stand in the ground. It is one Undo step, and it does not tilt a
-thing to the slope.
+changed, when things on a yard hang in the air or stand in the ground. It looks at the ground under the middle of each
+thing and under the corners of its footprint, and puts the foot on the lowest of them: a house on a slope has no corner
+in the air, and its uphill side stands in the ground like a foundation (the message says how deep when it is more than
+a hand). It is one Undo step, and it does not tilt a thing to the slope.
 
 ## The camera
 
@@ -587,7 +589,8 @@ paving) and `materials` (the names it takes), `texture` (a material of your own 
 [Bringing a Blender model into the game](#bringing-a-blender-model-into-the-game)), `assets` (your
 models and materials, the folder looked at again) and `set_material` (a placed prop drawn with one of your materials),
 `clear_nature`,
-`add_nature`, `new_map` (a new flat custom map, made on this PC; then `switch_map` to it), `undo`, `redo`, `history`, `ground_height`, `raycast` (also meets
+`add_nature`, `new_map` (a new flat custom map, made on this PC; then `switch_map` to it), `undo`, `redo`, `history`, `ground_height`, `to_ground` (things already placed, by `id` or `ids`, put on the ground as with G),
+`raycast` (also meets
 the drawn faces of your own models, such as an opened building's vault, which the game's own rays pass through: such a
 hit says `drawn: true`), `screenshot` (the view as a picture, so the
 assistant sees what it built, with its light and colour measured), `review` (below), `make_texture`, `slots` and `set_slot` (see [A model's slots](#a-models-slots)), `light` (a light of Effects >
