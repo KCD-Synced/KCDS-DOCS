@@ -351,6 +351,68 @@ Inventory.BeforeCommit((JsValue transaction, JsValue verdict) =>
 
 `Inventory.stopBeforeCommit(id)` removes a handler; a resource's handlers also go when it stops.
 
+#### Confirming the transaction afterwards
+
+A transaction's `id` is unique, also across server restarts, so a database outside the server can keep its records
+under it. After a transaction settles:
+
+- every `playerInventoryChanged` its commit caused carries the id as `change.transaction`;
+- then `playerInventoryTransaction(player, outcome)` fires once, with `{ id, kind, applied, code, reason, revision }`.
+  `applied` is true when the action changed the inventories. Otherwise `code` says why: `refused` or `timeout` when
+  the handlers refused it (`reason` holds the refusing handler's reason), or the action's own refusal, such as
+  `inventoryCapacity`, when it no longer fitted. `revision` is the player's inventory revision afterwards.
+
+So a hold made in `beforeCommit` can be confirmed or rolled back:
+
+```js
+const { Events } = kcds.core;
+
+// The bank's hold becomes a booking, or is dropped.
+Events.on('playerInventoryTransaction', (player, outcome) => {
+  if (outcome.kind !== 'vendor') {
+    return;
+  }
+  const action = outcome.applied ? 'confirm' : 'release';
+  fetch(`https://bank.example.com/${action}`, {
+    method: 'POST',
+    body: JSON.stringify({ id: outcome.id }),
+  }).catch(() => console.warn(`bank: ${action} ${outcome.id} failed`));
+});
+```
+
+```ts
+const { Events } = kcds.core;
+
+// The bank's hold becomes a booking, or is dropped.
+Events.on('playerInventoryTransaction', (player, outcome) => {
+  if (outcome.kind !== 'vendor') {
+    return;
+  }
+  const action = outcome.applied ? 'confirm' : 'release';
+  fetch(`https://bank.example.com/${action}`, {
+    method: 'POST',
+    body: JSON.stringify({ id: outcome.id }),
+  }).catch(() => console.warn(`bank: ${action} ${outcome.id} failed`));
+});
+```
+
+```lua
+local Events = kcds.core.Events
+
+-- Each settled transaction in the server log.
+Events.on("playerInventoryTransaction", function(player, outcome)
+  print(outcome.id .. (outcome.applied and " applied" or " refused (" .. outcome.code .. ")"))
+end)
+```
+
+```cs
+// Each settled transaction in the server log.
+Events.On("playerInventoryTransaction", (Player player, JsValue outcome) =>
+{
+    Log.Info($"{outcome["id"]} {(outcome["applied"].AsBool() ? "applied" : $"refused ({outcome["code"]})")}");
+});
+```
+
 ## Your own item types
 
 `Items.register` creates a type that borrows the look of a miscellaneous item, crafting material or document. It works
