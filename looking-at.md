@@ -134,6 +134,44 @@ Key.Bind("e", new Func<Task>(async () =>
 Do not treat a client's answer as proof. A server that must rely on it should check for itself. On the server,
 `World.raycast` asks a player's game and returns a promise.
 
+The server has no world of its own, so `World.snapToGround(player, position)` also asks a player's game for the
+ground under a point. With `null` for the player, any ready player on the map answers, and with nobody there it
+resolves with `answered: false` and `reason: 'no player'`. An answer traced from the top (no `z` given) is kept for
+ten minutes per half-metre cell, so the same place is known again without asking anyone (`reason: 'kept'`).
+
+```js
+// server: the ground under a camp, whoever is online
+const { answered, z } = await kcds.world.World.snapToGround(null, { x: 512, y: 1800 });
+if (answered && z !== null) {
+  console.info(`the camp stands at ${z.toFixed(1)} m`);
+}
+```
+
+```ts
+// server: the ground under a camp, whoever is online
+const { answered, z } = await kcds.world.World.snapToGround(null, { x: 512, y: 1800 });
+if (answered && z !== null) {
+  console.info(`the camp stands at ${z.toFixed(1)} m`);
+}
+```
+
+```lua
+-- server: the ground under a camp, whoever is online
+local ground = kcds.world.World.snapToGround(nil, { x = 512, y = 1800 }):await()
+if ground.answered and ground.z ~= nil then
+  print("the camp stands at " .. tostring(ground.z) .. " m")
+end
+```
+
+```cs
+// server: the ground under a camp, whoever is online
+var result = await World.SnapToGround(null, new { x = 512, y = 1800 });
+if (result["answered"].AsBool() && !result["z"].IsNull)
+{
+    Log.Info($"the camp stands at {result["z"].AsNumber():F1} m");
+}
+```
+
 ## Acting on the target, checked by the server
 
 A target action takes three parts:
