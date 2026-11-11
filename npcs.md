@@ -677,6 +677,38 @@ sees the same bubble. The game's own people (`levelPeople`) also keep their own 
 - `"enabled": false` turns the lines off. Without the file, or without lines, nobody speaks them. A file the server cannot use
   is logged and changes nothing.
 
+### A voice line from an NPC
+
+`npc.playVoice(file, options)` plays a spoken line from the NPC's body for the players near it: one of the game's own lines
+under `Localization/dialog/`, or an `.ogg` your resource ships. `purpose` picks the game's voice event, which sets how far it
+is heard: `'inner'`, `'10'`, `'20'`, `'35'`, `'50'` (the default), `'100'` or `'200'` metres, or `'sfp_dialog'`,
+`'sfp_cutscene'` or `'sfp_music'`. `range` sets which players are told, up to 200 m. The line is told once, so a player who
+comes near later does not hear it. It returns whether any player was told.
+
+```js
+// server: the smith greets whoever is near, in the game's own voice
+const smith = kcds.characters.Npc.create({ position: new kcds.math.Vector3(14, 20, 30) });
+smith.playVoice('Localization/dialog/smith_greeting_01', { purpose: '20' });
+```
+
+```ts
+// server: the smith greets whoever is near, in the game's own voice
+const smith = kcds.characters.Npc.create({ position: new kcds.math.Vector3(14, 20, 30) });
+smith.playVoice('Localization/dialog/smith_greeting_01', { purpose: '20' });
+```
+
+```lua
+-- server: the smith greets whoever is near, in the game's own voice
+local smith = kcds.characters.Npc.create({ position = kcds.math.Vector3.new(14, 20, 30) })
+smith:playVoice("Localization/dialog/smith_greeting_01", { purpose = "20" })
+```
+
+```cs
+// server: the smith greets whoever is near, in the game's own voice
+var smith = Npc.Create(new { position = new Vector3(14, 20, 30) });
+smith.PlayVoice("Localization/dialog/smith_greeting_01", new { purpose = "20" });
+```
+
 ## Bodies for one player
 
 For a body only one player sees, such as a preview or a menu guide, see `LocalNpc` in
