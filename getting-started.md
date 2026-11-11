@@ -103,6 +103,18 @@ budget](server.md#capacity-and-tuning).
   off.
 - This default is prepared for crowd testing. Correct appearance at 1,000 players has not been verified.
 
+### Clothing colour capacity
+
+`KCDS_MATERIAL_FEATURE_SCALE` reserves extra storage for the colours and patterns of clothing. When
+the game's own storage is full, every further piece of clothing is drawn white; with the game's
+default this starts at roughly 200 dressed characters in view.
+
+- Accepts whole numbers from 1 to 16. The default is 8, and 1 keeps the game's capacity.
+- The default adds about 47 MiB of system memory, plus 47 MiB of graphics-buffer storage per
+  rendering pipeline, compared with the game's default.
+- 500 players in army outfits used about 30 % of the default.
+- An invalid value or an unsupported game binary turns the override off.
+
 ### Distance detail (experimental)
 
 With `KCDS_REMOTE_DISTANCE_LOD=1`, the game can use lower detail for idle remote players at least 80
