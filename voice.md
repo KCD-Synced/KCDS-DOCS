@@ -94,12 +94,12 @@ Voice.SetIndicator(false);
 
 ## What a player can set
 
-The voice chat settings are in the game's own **Settings > Sound Settings** page, below the game's volume
-sliders, in the ESC menu and in the main menu. A player chooses push to talk or voice activation and its
-sensitivity, the microphone and output devices, how loud others hear them, and how loud they hear others.
+The voice chat settings are on the **KCDS** page of the game's settings, in the ESC menu and in the main
+menu. A player chooses push to talk or voice activation and its sensitivity, the microphone and output
+devices, how loud others hear them, and how loud they hear others.
 On a server, **Microphone test** moves while they speak. A player on speakers turns on echo cancellation, so others do not
-hear their own voices come back. A change is heard at once; **Confirm** keeps it, leaving with **No** puts
-the settings back, and **Reset** sets the defaults, as for the game's own volumes.
+hear their own voices come back. A change is heard and kept at once; leaving the page with **Back** or Esc
+keeps it.
 
 The keys are in the game's own **Settings > Key bindings**, in the **Voice chat** group: **Talk (push to talk)**
 (Mouse 4 by default) and **Whisper, normal or shout** (F9 by default). A player's keys are kept on their computer and
