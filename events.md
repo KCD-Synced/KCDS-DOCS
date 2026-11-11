@@ -252,6 +252,7 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `playerInventoryChanged`   | `player, change`              | Rows in their inventory changed.                      |
 | `playerInventoryGive`      | `player, owner, line`         | A player is about to put an item into another player's inventory through a view of it. Return false to refuse. |
 | `playerInventoryGiven`     | `player, owner, items`        | A player put items into another player's inventory.   |
+| `playerInventoryTransaction` | `player, outcome`           | An action under `Inventory.beforeCommit` settled: applied or refused, with its id. |
 | `playerInventoryTake`      | `player, owner, line`         | A player is about to take an item from another player's inventory through a view of it. Return false to refuse. |
 | `playerInventoryTaken`     | `player, owner, items`        | A player took items from another player's inventory.  |
 | `playerInventoryReady`     | `player`                      | Their game shows the inventory the server holds.      |
