@@ -53,6 +53,42 @@ fence.Restore();
 
 **Entities:** `kind: 'entity'` with a `guid` edits a level entity, and `position`, `rotation` and `scale` move it.
 
+**Story states:** the level keeps each state the story puts a place in (a yard before and after a siege, a forge broken
+and rebuilt) as layers, and the game shows one state of each place. `kind: 'layer'` with a layer's full `name` turns that
+layer off (`hidden: true`) or on for every player, with its buildings, their collision, its entities and lights, so you can
+mix the states of different places. `restore()` gives the layer back as the level has it. World Architect's
+[Story tab](world-architect.md#story-states) and its `story_layers` MCP tool list the layers of each place.
+
+```js
+const { LevelEdit } = kcds.world;
+
+// Nebakov's yard as it stood before the siege.
+LevelEdit.apply({ kind: 'layer', name: 'beforeSiege_cf5fd30a-16c1-49d6-be2e-eebaa2bec480' });
+LevelEdit.apply({ kind: 'layer', name: 'afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40', hidden: true });
+```
+
+```ts
+const { LevelEdit } = kcds.world;
+
+// Nebakov's yard as it stood before the siege.
+LevelEdit.apply({ kind: 'layer', name: 'beforeSiege_cf5fd30a-16c1-49d6-be2e-eebaa2bec480' });
+LevelEdit.apply({ kind: 'layer', name: 'afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40', hidden: true });
+```
+
+```lua
+local LevelEdit = kcds.world.LevelEdit
+
+-- Nebakov's yard as it stood before the siege.
+LevelEdit.apply({ kind = "layer", name = "beforeSiege_cf5fd30a-16c1-49d6-be2e-eebaa2bec480" })
+LevelEdit.apply({ kind = "layer", name = "afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40", hidden = true })
+```
+
+```cs
+// Nebakov's yard as it stood before the siege.
+LevelEdit.Apply(new { kind = "layer", name = "beforeSiege_cf5fd30a-16c1-49d6-be2e-eebaa2bec480" });
+LevelEdit.Apply(new { kind = "layer", name = "afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40", hidden = true });
+```
+
 **Swapping a model:** `model` replaces the object with another mesh from the props catalogue, as static scenery at the same spot
 or wherever a move puts it. `LevelEdit.apply({ ...object, model: 'stump_fagus_sylvatica_a' })` leaves a stump where a tree was, and
 `edit.model = ''` brings the object back.
