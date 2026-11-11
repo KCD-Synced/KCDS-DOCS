@@ -94,7 +94,7 @@ KCDS reads the `"kcds"` section of `package.json`. A resource is identified by i
 | `loadingScreen`         | none     | your page over joining and loading, sent first; see [Web views](web-views.md)               |
 | `exports`               | `[]`     | names shared with other resources; see [Imports and exports](imports-exports.md)            |
 | `requires`              | `[]`     | resources that must run first: names, or `{ "name": "x", "optional": true }`                |
-| `errorBehavior`         | `"stop"` | what an uncaught error does: `stop`, `restart` (after one second) or `continue`             |
+| `errorBehavior`         | `"stop"` | what an error at start, in a timer or in a promise nothing handles does: `stop`, `restart` (after one second) or `continue`; one thrown in an event handler is only logged ([Debugging](debugging.md#what-errors-do)) |
 | `priority`              | `0`      | recorded, but does not change the start order                                               |
 
 ### File patterns
@@ -151,6 +151,21 @@ bigger one throws `Event payload too long`. Split big data into several events o
 A resource over a limit is not sent to players. The server logs
 `<name>: not sent to players: ...`, its server scripts still run, and everything else carries on. If a refresh
 pushes a resource over a limit, players keep the version they have.
+
+### Limits
+
+What the server holds each resource to while it runs, so one resource cannot hold up the others:
+
+| What                                     | Limit                                                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `fetch`                                  | 16 requests in flight and 256 waiting per resource; 30 s for an answer; 16 MiB of body     |
+| `WebSocket`                              | 64 open sockets per resource; a further one is refused                                     |
+| `Http` routes                            | 64 routes per resource; 10 s for an answer; 20 requests a second per address, bursts of 40 |
+| `Messages.request`                       | 10 000 waiting in all, 1 000 per resource                                                  |
+| `Inventory.beforeCommit`                 | 8 actions of one player waiting, then the next is refused as `busy`; a reason up to 128 characters |
+| `player.emit` before client scripts run  | 512 events held per player; the oldest goes first                                          |
+| Chat text                                | 2 048 bytes sent to a player, 1 024 bytes from a player                                    |
+| Run time                                 | a call into Lua fails after 5 s; JavaScript and C# have none, so an endless loop holds up every script of its side |
 
 ## What scripts can load
 

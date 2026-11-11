@@ -75,6 +75,9 @@ Coming from an older version? See [API changes](api-changes.md). <!-- only apich
 | [Door](/docs/api/door), [Gate](/docs/api/gate), [Stash](/docs/api/stash), [Cart](/docs/api/cart)                                     | things players use                    |
 | [LevelEdit](/docs/api/leveledit), [WorldResource](/docs/api/worldresource), [Gizmo](/docs/api/gizmo)                                 | changing the level                    |
 | [SiegeEngine](/docs/api/siegeengine), [SiegeLadder](/docs/api/siegeladder), [StonePile](/docs/api/stonepile)                         | siege                                 |
+| [Light](/docs/api/light), [SmartObject](/docs/api/smartobject), [Grave](/docs/api/grave), [Trees](/docs/api/trees)                   | lights, stations players use, graves and tree felling |
+| [Tabletop](/docs/api/tabletop), [TabletopPiece](/docs/api/tabletoppiece), [TabletopDeck](/docs/api/tabletopdeck), [DeckPiece](/docs/api/deckpiece) | board and card games at a table |
+| [Terrain](/docs/api/terrain), [Vegetation](/docs/api/vegetation), [Collision](/docs/api/collision), [Prefab](/docs/api/prefab)       | client only: ground, plants, invisible walls and the game's prefabs in this game |
 
 ## Gameplay
 
@@ -90,6 +93,8 @@ Coming from an older version? See [API changes](api-changes.md). <!-- only apich
 
 - [Queue](/docs/api/queue): the join queue on a full server
 - [Http](/docs/api/http): a resource's HTTP routes, next to the server's status API
+- [Bans](/docs/api/bans): this server's own bans, as KCDS-Admin keeps them
+- [Voice](/docs/api/voice): the proximity voice chat built into the server
 
 ## Server switches
 
@@ -102,7 +107,8 @@ Coming from an older version? See [API changes](api-changes.md). <!-- only apich
 | Type                                                                                                                                                 | Purpose                                          |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | [Hud](/docs/api/hud), [ActionHint](/docs/api/actionhint), [Book](/docs/api/book), [Compass](/docs/api/compass), [WorldMap](/docs/api/worldmap), [Travel](/docs/api/travel) | on-screen information, the map and travel        |
-| [Key](/docs/api/key), [Controls](/docs/api/controls)                                                                                                 | input                                            |
+| [Key](/docs/api/key), [Controls](/docs/api/controls), [Keybinds](/docs/api/keybinds), [ActionMenu](/docs/api/actionmenu)                            | input, the game's key bindings and action menus  |
+| [LoadingScreen](/docs/api/loadingscreen), [LocalVoice](/docs/api/localvoice)                                                                         | the server's loading page and this player's voice chat |
 | [Web](/docs/api/web)                                                                                                                                 | HTML pages over the game                         |
 | [NativeUI](/docs/api/nativeui), [NativeScreen](/docs/api/nativescreen), [NativeElement](/docs/api/nativeelement), [NativeClip](/docs/api/nativeclip) | the game's own interface                         |
 | [NoClip](/docs/api/noclip), [CharacterCreator](/docs/api/charactercreator), [LocalNpc](/docs/api/localnpc), [LocalPlayer](/docs/api/localplayer), [Gizmos](/docs/api/gizmos) | the free camera, character creator and local objects |
