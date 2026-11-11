@@ -136,6 +136,59 @@ The page receives normal browser key events, with `key`, `code` (the physical ke
 `Digit1` or `Enter`), `keyCode` and the modifiers Shift, Ctrl and Alt. So `event.code` checks work as in
 any browser.
 
+## Sound
+
+A page's sound, such as a video, plays in the player's game. The server sets how loud web views play for
+each player with `player.webVolume`, from 0 to 100 (100 by default), and silences them with
+`player.webMuted`. The player's own Browser volume, on the KCDS page of the game's settings, applies on top:
+50 here and 50 there is a quarter.
+
+```js
+// server: quieter pages while a performance plays, none for a prisoner
+kcds.core.Events.on('playerConnect', (player) => {
+  player.webVolume = 30;
+});
+
+function jail(player) {
+  player.webMuted = true;
+}
+```
+
+```ts
+// server: quieter pages while a performance plays, none for a prisoner
+kcds.core.Events.on('playerConnect', (player) => {
+  player.webVolume = 30;
+});
+
+function jail(player: kcds.players.Player) {
+  player.webMuted = true;
+}
+```
+
+```lua
+-- server: quieter pages while a performance plays, none for a prisoner
+kcds.core.Events.on("playerConnect", function(player)
+  player.webVolume = 30
+end)
+
+local function jail(player)
+  player.webMuted = true
+end
+```
+
+```cs
+// server: quieter pages while a performance plays, none for a prisoner
+Events.On("playerConnect", (Player player) =>
+{
+    player.WebVolume = 30;
+});
+
+void Jail(Player player)
+{
+    player.WebMuted = true;
+}
+```
+
 ## When a page is slow
 
 If a focused page has not finished loading after 6 seconds, the player gets the mouse and keyboard back,
