@@ -458,6 +458,7 @@ statue.Brain = true; // it thinks again
 - `playAnimation(fragment, { tags })` plays a Mannequin fragment, as for players, and `playAnimation('', { clip })` plays a clip.
 - `say(text)` speaks.
 - With `interactable`, pressing the use key on it fires `npcInteract`.
+- `nameShown = false` (or `nameShown: false` in `Npc.create`) leaves its name out of the bottom right corner of the HUD when a player looks at it; its prompts stay.
 
 ## Animals
 
