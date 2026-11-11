@@ -84,6 +84,10 @@ everyone, and the game's AI still reacts as usual.
 
 ## Camera
 
+Players switch the view with F5: each press goes from the first person to the third person close behind the shoulder,
+then farther, then farthest, and back to the first person. `ThirdPerson.setMode` decides what F5 may do: `'disabled'`
+keeps the first person, and `'forced'` keeps the third person, so F5 only changes the distance.
+
 ```js
 kcds.ui.ThirdPerson.setMode('disabled'); // 'allowed' is the default (F5 switches), or 'forced'
 kcds.ui.Freecam.setEnabled(false); // the game's photo mode on F1
