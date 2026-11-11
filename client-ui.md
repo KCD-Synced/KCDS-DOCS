@@ -62,6 +62,31 @@ The HUD also has the game's perk, combo, reputation and XP notices, such as `not
 tutorials through `showTutorial(name)`. These calls return `false` when there is no HUD, such as in the main menu
 or during a level load.
 
+The game's own progress notices, the new level reached and the "increased" XP bar at the top right when a stat or
+skill gains XP, are off on KCDS, so a server decides what its players see. `Hud.setXpNotices(true)` lets them show
+on this player's screen for the session, and `Hud.xpNoticesOn()` says whether they do. `notifyXp`, `notifyPerk` and
+the perk notice always show.
+
+```js
+// client
+kcds.ui.Hud.setXpNotices(true);
+```
+
+```ts
+// client
+kcds.ui.Hud.setXpNotices(true);
+```
+
+```lua
+-- client
+kcds.ui.Hud.setXpNotices(true)
+```
+
+```cs
+// client
+Hud.SetXpNotices(true);
+```
+
 ## Hiding parts of the HUD
 
 ```js
