@@ -90,6 +90,53 @@ if (vaultDoor != null)
 **`lockLevel`** is the lock's difficulty, from 0 (easy) to 1 (hard). A number overrides the level's value for all
 players in that dimension, and `null` restores it.
 
+**`lock`** is what each side takes to get through the door while it is locked, as the game's own doors have it:
+
+| Kind | While locked |
+| --- | --- |
+| `'none'` | No lock to work: whoever opens it unlocks it. |
+| `'bolt'` | A bolt: it opens from inside only. |
+| `'boltAndKey'` | A bolt inside and a key outside. |
+| `'key'` | A key from either side: only a player carrying the door's key gets through, and nobody inside is offered the bolt. |
+
+Many village doors have a bolt inside, so a house a script locks still offers "Open" from inside, and the server then
+refuses it. Set `'key'` to keep such a house shut from both sides. The kind holds for all players in the dimension,
+including later arrivals, and `null` gives the door its own back. For a level door, reading it gives the kind a script
+set, or `null` (the server does not know the level's own). It is not saved.
+
+```js
+const houseDoor = kcds.world.Door.find('ab');
+if (houseDoor) {
+  houseDoor.lock = 'key';
+  houseDoor.locked = true;
+}
+```
+
+```ts
+const houseDoor = kcds.world.Door.find('ab');
+if (houseDoor) {
+  houseDoor.lock = 'key';
+  houseDoor.locked = true;
+}
+```
+
+```lua
+local houseDoor = kcds.world.Door.find("ab")
+if houseDoor then
+  houseDoor.lock = "key"
+  houseDoor.locked = true
+end
+```
+
+```cs
+var houseDoor = Door.Find("ab");
+if (houseDoor != null)
+{
+    houseDoor.Lock = "key";
+    houseDoor.Locked = true;
+}
+```
+
 **`setOpen(open, side?)`** opens or closes it with nobody pushing, and opening also unlocks. It returns `false` if it
 was already in that state.
 
