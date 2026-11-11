@@ -430,6 +430,10 @@ Events.On("playerCustomItemUse", (Player player, JsValue row, double revision) =
 });
 ```
 
+Any resource can read a registered type back: `Items.info('myres:sealed_letter')` (or its GUID) has the `displayName`
+and `description` it was registered with, so a shop or an admin menu of another resource can show it by name. The
+game's own items have `null` there; their names are translated in each player's game.
+
 ## Changing the game's items
 
 `Items.override(item, { weight, price, max, ...stats })` changes an item for all players, where `max` is the most units
