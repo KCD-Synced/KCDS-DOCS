@@ -101,7 +101,7 @@ On a server, **Microphone test** moves while they speak. A player on speakers tu
 hear their own voices come back. A change is heard and kept at once; leaving the page with **Back** or Esc
 keeps it.
 
-The keys are in the game's own **Settings > Key bindings**, in the **Voice chat** group: **Talk (push to talk)**
+The keys are in the game's own **Settings > Key bindings**, in the **KCDS** group: **Talk (push to talk)**
 (Mouse 4 by default) and **Whisper, normal or shout** (F9 by default). A player's keys are kept on their computer and
 are the same on every server; a server's resources cannot change them.
 
