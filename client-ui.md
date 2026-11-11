@@ -153,6 +153,43 @@ one shows your label and number in its row. The list fills each time the Player 
 the stats of both the first time each fills (`HUD character stats: the game's inventory panel rows` and
 `the game's Player screen rows`).
 
+The game fills the panel and the list in the same moment when the menu opens, so a resource cannot switch settings
+between them. To give the list settings of its own, add `list`: its own `{ hide, set }`, or `null` to leave the game's
+list as it is while the panel shows yours.
+
+```js
+// client
+kcds.ui.Hud.setCharacterStats({
+  set: [{ stat: 'speech', label: 'Thirst', value: 40 }],
+  list: { hide: ['speech'] },
+});
+```
+
+```ts
+// client
+kcds.ui.Hud.setCharacterStats({
+  set: [{ stat: 'speech', label: 'Thirst', value: 40 }],
+  list: { hide: ['speech'] },
+});
+```
+
+```lua
+-- client
+kcds.ui.Hud.setCharacterStats({
+  set = { { stat = "speech", label = "Thirst", value = 40 } },
+  list = { hide = { "speech" } },
+})
+```
+
+```cs
+// client
+Hud.SetCharacterStats(new
+{
+    set = new[] { new { stat = "speech", label = "Thirst", value = 40 } },
+    list = new { hide = new[] { "speech" } },
+});
+```
+
 ### Your own icon on a stat row
 
 A stat you `set` keeps the game's icon. To show your own, load a picture into the row's icon with
