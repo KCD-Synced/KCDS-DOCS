@@ -637,6 +637,10 @@ them, they fight back, and players cannot talk to them. Within 150 m of a player
 `Npc.setPopulation` changes); farther away each game keeps them to itself until a player comes near. People a quest stages stay
 off, as with the default people.
 
+The dogs the level places (a village's or a farm's dog) are then the game's own too, with the game's brain and their routine,
+when the [animal population](#animals) is on: they come with it, and `Npc.setAnimalSpecies('Dog', 0)` keeps them away. Without
+`levelPeople`, the population's dogs walk a small round of their own about where they live instead of standing still.
+
 ### Where the people spend the night
 
 `npcHouses` in `server.json` says whether the level's people own houses:
