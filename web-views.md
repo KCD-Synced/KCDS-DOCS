@@ -108,6 +108,24 @@ arrives as a window event, with the data in `detail`:
 from `Web.screenSize()`. Both follow the game's resolution when the player changes it, so a responsive
 page lays itself out again. A smaller view keeps its size, so read `Web.screenSize()` again to place it.
 
+## Item icons
+
+A page can show an item's inventory icon without shipping a copy of it. Use
+`kcds://icons/item/<name or GUID>` as a picture address:
+
+```html
+<img src="kcds://icons/item/bread" alt="Bread">
+<img src="kcds://icons/item/86e4ff24-88db-4024-abe6-46545fa0fbd1" alt="Bread">
+<img src="kcds://icons/item/market:sealed_letter" alt="Sealed letter">
+```
+
+- A game item is found by its name, in any case, or by its GUID.
+- An item registered with `Items.register` is found by its id or its GUID. It shows its own `icon`, or else
+  the icon of its `visual`, as the inventory shows it.
+- The answer is a PNG with transparency, 64 x 64 pixels for the game's icons. An unknown item answers 404,
+  so the picture's `error` event fires.
+- Any page can use the address, also with `fetch` or on a canvas.
+
 ## Keyboard and mouse
 
 While a view has focus, the player types into it and key binds pause. The third-person camera also stops
