@@ -67,6 +67,14 @@ LevelEdit.apply({ kind: 'layer', name: 'beforeSiege_cf5fd30a-16c1-49d6-be2e-eeba
 LevelEdit.apply({ kind: 'layer', name: 'afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40', hidden: true });
 ```
 
+```ts
+const { LevelEdit } = kcds.world;
+
+// Nebakov's yard as it stood before the siege.
+LevelEdit.apply({ kind: 'layer', name: 'beforeSiege_cf5fd30a-16c1-49d6-be2e-eebaa2bec480' });
+LevelEdit.apply({ kind: 'layer', name: 'afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40', hidden: true });
+```
+
 ```lua
 local LevelEdit = kcds.world.LevelEdit
 
