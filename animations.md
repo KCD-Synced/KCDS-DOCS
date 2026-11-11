@@ -617,7 +617,9 @@ master with no `Slave`. `playerAnimationEnd` follows for each.
 ## Pointing
 
 While a player holds **B**, by key position, their right arm points where their camera looks and follows it. The legs keep walking, and other players see the arm
-move. It works while no server `playAnimation` is in place, either before the first or after `stopAnimation`. It is on by default, and you can turn it off:
+move. It works while no server `playAnimation` is in place, either before the first or after `stopAnimation`. While pointing is on, the game's own
+quick-access menu on B is off, so B does not draw the quick-access weapon; turning pointing off gives B back to the game. It is on by default, and you can
+turn it off:
 
 ```js
 kcds.players.Interactions.set('pointing', false); // for everyone
