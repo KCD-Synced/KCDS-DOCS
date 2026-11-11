@@ -375,6 +375,11 @@ for good.
 A private server is one the browser does not list: every server whose `master` is not `on` (the default), and one bound to `127.0.0.1`. Players join by address through Direct connect, or by a join
 link. It still admits only legally owned games, like any KCDS server.
 
+Players can also keep it in their Favourites: **ADD BY IP / DNS** on the Favourites list, or the star beside Direct connect.
+It then shows like a listed server, marked "by address", with the name, players and ping the game asks the server itself
+for (`/kcds/info.json` on the game port, over TCP, the same answer as the [status API](#status-api)'s `info.json`). Only
+that player sees it. The server needs the TCP game port open, as it does for fast resource downloads.
+
 A join link opens KCDS and joins from the browser, so the password prompt and refusals appear there as usual:
 
 | Link                                | Joins                                                                                             |
@@ -424,6 +429,9 @@ a Discord bot or a server list. `KCDS_HTTP_BIND` picks the interface, by default
 | `GET /info.json`    | `name`, `image`, `level`, `players`, `maxPlayers`, `version`, `protocol`, `password` (whether joining asks for one), `playerList` (whether `/players.json` is public), `licence` (`stores` and `familySharing`), `resources` (those running), `joinLink` (`""` while unlisted), `uptime` (seconds) |
 | `GET /dynamic.json` | `name`, `level`, `players`, `maxPlayers`: what changes, for polling                                        |
 | `GET /players.json` | the scoreboard, `[{ "id": 3, "name": "Hans" }, ...]`; `KCDS_PUBLIC_PLAYER_LIST=off` makes it private (403) |
+
+`info.json` is also always answered on the game port over TCP, at `/kcds/info.json`, without `KCDS_HTTP_PORT`: the server browser
+asks it there for a player's favourites by address.
 
 ```text
 > curl http://my-server:30120/dynamic.json
