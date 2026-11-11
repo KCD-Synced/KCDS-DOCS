@@ -281,6 +281,7 @@ Events.On("playerResourcesReady", (Player player) =>
 
 ## Errors on the server
 
-`errorBehavior` in the manifest sets what an uncaught server error does: `stop`, `restart` or
-`continue`. Catch errors in your callbacks and promise chains, because `continue` does not repair game
-state.
+`errorBehavior` in the manifest sets what a server error at start, in a timer or in a promise nothing
+handles does: `stop`, `restart` or `continue`. An error thrown in an event handler is only logged, and the
+resource keeps running ([Debugging](debugging.md#what-errors-do)). Catch errors in your callbacks and promise
+chains, because neither `continue` nor a logged handler error repairs game state.

@@ -60,7 +60,8 @@ built to `.dll` files). Each side uses one language, picked from its scripts' ex
 - `files` holds the files that are sent to players but do not run, such as pages, pictures and data.
 - `exports` lists the names a resource offers to other resources. `requires` names the resources that must
   run first, and `{ "name": "economy", "optional": true }` names one that may be missing.
-- `errorBehavior` sets what an uncaught error does: `stop` (the default), `restart` or `continue`.
+- `errorBehavior` sets what an error at start, in a timer or in a promise nothing handles does: `stop` (the
+  default), `restart` or `continue`. An error thrown in an event handler is only logged.
 - A C# side lists the `.dll` files it was built into, never `.cs` sources.
 
 ## The API
@@ -158,7 +159,9 @@ Events.FromClient("hello", (Player sender, JsValue payload) =>
 7. **Saving.** Nothing in memory survives a restart of the resource or the server. In JavaScript, save under
    `kcds.core.Runtime.serverDir`, because the resource's own folder may be replaced. Lua and C# scripts have no
    files: call the exports of a JavaScript resource that saves, or a web service.
-8. **Errors.** An uncaught error stops the resource by default. Catch errors where you can handle them,
+8. **Errors.** An error at start, in a timer callback or in a promise nothing handles stops the resource by
+   default; one thrown in an event handler, or the rejected promise it returns, is logged and the resource
+   keeps running. Catch errors where you can handle them,
    especially around `await`. SDK functions throw `TypeError` for a wrong type and `RangeError` for a value out
    of range, naming the argument.
 9. **Between resources.** Exports and imports share values and functions on the same side
@@ -170,8 +173,10 @@ Events.FromClient("hello", (Player sender, JsValue payload) =>
     resource's `node_modules`, `fetch` and `WebSocket`. Lua server scripts have `fetch` and `WebSocket`, and C#
     server scripts have `Network.Fetch`. Client scripts can load only the resource's own `.js`, `.cjs` and
     `.json` files (in Lua, its own `.lua` files): no Node modules, no `process` and no disk.
-11. **Time limits.** A call into Lua fails after 5 seconds without returning. C# has no limit, so an endless
-    loop holds up every script of its side. Keep handlers short and use timers or `await` to wait.
+11. **Time limits.** A call into Lua fails after 5 seconds without returning. JavaScript and C# have no
+    limit, so an endless loop holds up every script of its side. Keep handlers short and use timers or
+    `await` to wait. The other limits (fetch, HTTP routes, pending requests, held events, chat length) are
+    listed in [Resources](https://kcdsynced.com/docs/resources#limits).
 
 ## A small resource in each language
 

@@ -52,8 +52,9 @@ The launcher's own log is at `%LOCALAPPDATA%\KCDS\logs\launcher.log`.
 
 ## What errors do
 
-An uncaught error, or a rejected promise nobody handles, is logged with its stack. What happens next depends
-on `errorBehavior` in the manifest:
+An error while the resource starts, an error thrown in a timer callback (`setTimeout`, `setInterval`), and a
+rejected promise that nothing handles are logged with their stack, and then `errorBehavior` in the manifest
+decides what happens:
 
 | `errorBehavior`    | Result                                                                                                    |
 | ------------------ | --------------------------------------------------------------------------------------------------------- |
@@ -61,7 +62,9 @@ on `errorBehavior` in the manifest:
 | `restart`          | the resource stops and starts again one second later                                                      |
 | `continue`         | handlers, timers and exports keep running; what it spawned in the world (NPCs, props, chests, areas and so on) is removed, and nothing else is undone |
 
-So catch errors where you can deal with them, especially around `await`:
+An error thrown in an event handler, or a rejected promise that the handler returns, is only logged: the
+resource keeps running, and the event's other handlers still run. Catch errors where you can deal with them all
+the same, especially around `await`, so the player hears what went wrong and your own state stays right:
 
 ```js
 kcds.core.Events.fromClient('shop:buy', async (player, payload) => {

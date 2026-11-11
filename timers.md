@@ -76,8 +76,8 @@ resource's log.
 | --------------- | ---------------------------------------- |
 | `isClient`      | true in a client script                  |
 | `isServer`      | true in a server script                  |
-| `apiVersion`    | the version of the script API            |
-| `serverVersion` | the version configured for this server   |
+| `apiVersion`    | the version of the script API, which follows the KCDS release, such as `1.0.5` |
+| `serverVersion` | the KCDS version on this side: the server's in server scripts, the game client's in client scripts |
 
 ## Console commands of your own
 
