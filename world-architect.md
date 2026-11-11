@@ -445,14 +445,33 @@ at once; `set_material` then draws a prop with it, as the Material row does:
 answers `{ "material": "objects/kcds/praha/tyn_wall", "texture": "objects/kcds/praha/textures/tyn_wall_diff.dds",
 "size": { "width": 1024, "height": 512 }, "from": { "width": 1600, "height": 900 } }`.
 
-## Your work on a server
+## Story states
+
+The game's maps hold every state the story puts a place in: Nebákov's yard before and after the siege, a forge broken
+and rebuilt, a camp abandoned or lived in. The game shows one state of each place as the story goes. The **Story** tab
+(beside AI) lets you choose the state of each place yourself and mix them: one fortress before its siege, the village
+beside it after.
+
+- The tab lists the states of the places around the camera (120 m), nearest first, five to a page (**<** and **>**
+  turn the pages). **Near** lists them again where the camera is now. Each row shows whether that state is **On** or
+  **Off**, its name, where it is in the map (such as `tneb_nebakov / fortress / series_Predhradi`) and how many of its
+  meshes are drawn there now (`40 of 40 meshes drawn`). A state you switched is marked **changed**.
+- A press on a row switches that state on or off: all the layers the level keeps for it (its buildings, their
+  collision, its people and lights) at once, as one Undo step. To show a place after its story instead of before, turn
+  the "before" state off and the "after" state on.
+- **Level's own** puts every state back as the level has it.
+
+The states you switched are kept with the work and in saves, switched again when the work is opened, and go with
+**Export for server**: every player on the server then sees the places as you set them.
+
 
 **Export for server** (Details with nothing selected, under EXPORT) writes your work as a resource folder,
 `Documents\KCDS\World Architect\exports\architect_<map>`, and copies its path. Copy the folder into your server's
 `resources` folder and run the server on the same map. Every player then sees it:
 
 - from the server: your buildings and props (your [doors and gates](#doors-and-gates-of-your-own) with their use
-  prompt), the level's objects you hid, moved or scaled, your zones (as areas),
+  prompt), the level's objects you hid, moved or scaled, the [story states](#story-states) you switched
+  (`LevelEdit.apply` with `kind: 'layer'`), your zones (as areas),
   effects and lights, and your **People** as the server's NPCs (`Npc.create`), each walking back and forth between
   where it stood and where you last sent it with **Walk to** (`patrol`, ping-pong), so the walk you tried on the navmesh
   in the editor goes on on the server;
@@ -592,7 +611,10 @@ the drawn faces of your own models, such as an opened building's vault, which th
 hit says `drawn: true`), `screenshot` (the view as a picture, so the
 assistant sees what it built, with its light and colour measured), `review` (below), `make_texture`, `slots` and `set_slot` (see [A model's slots](#a-models-slots)), `light` (a light of Effects >
 Lights placed from a preset or changed by id: `color` as `[r, g, b]` or a colour row's name, `intensity`, `radius`,
-`shadows`, one Undo step), `effect` (a placed effect's `size` and `repeat`), `saves`, `save`, `load`, `merge`, `delete_save`, `reset_map` (the Saves tab's
+`shadows`, one Undo step), `effect` (a placed effect's `size` and `repeat`), `story_layers` (the
+[story states](#story-states) of the places around a point or the camera, `radius` up to 400 m: each with its `state`
+key, whether it is on, how many of its meshes are drawn, whether you changed it, and the layers it is made of),
+`set_story_state` (a whole state on or off by its key, one Undo step), `set_story_layer` (one layer by its name), `saves`, `save`, `load`, `merge`, `delete_save`, `reset_map` (the Saves tab's
 **Reset map**, called with `confirm: true`; its answer's `keptAs` names the save the work was kept in).
 
 ### Furnishing a room and judging it
