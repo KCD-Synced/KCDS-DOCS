@@ -126,6 +126,95 @@ A page can show an item's inventory icon without shipping a copy of it. Use
   so the picture's `error` event fires.
 - Any page can use the address, also with `fetch` or on a canvas.
 
+## Screens in the world
+
+`Web.setViewWorldScreen(view, screen)` puts a view on a screen in the world, such as a cinema screen or a
+notice board. `screen` gives its middle (`position`), the way the page faces (`heading`, in degrees, 0 north
+and 90 east), its `width` and `height` in metres, and optionally how far it leans back (`tilt`). The page is
+drawn in perspective with the camera, and hides while the camera is behind it or a game menu is open. Other
+things in the world do not cover it. `null` draws the view flat again.
+
+With `texture: true` the page is drawn into the world itself: into the texture of your own screen model
+standing at that place. Ship the model in your resource's `stream/` folder and place it with `Prop.spawn`
+(see [Sounds and game files](/docs/audio-and-assets)). Its texture must be one level of sRGB BGRA pixels,
+exactly as large as the page. Open the view before the model appears. The world then hides the page behind
+hands, walls and people, and lights it like the rest of the scene.
+
+- Several screens can show at once. Each screen drawn into a model's texture needs a page size of its own,
+  because the game's texture is found by its size.
+- `bar`, with `texture`, names another of your views as wide as the page, shown above it on the same screen,
+  such as an address bar. Any site can show under it, even one that refuses to be framed. The texture is then
+  as high as both.
+- `Web.worldScreens()` lists your screens, and `Web.nearestWorldScreen(point, range)` gives the one nearest a
+  point, or `null`.
+- A focused screen gets the mouse where it points, with a pointer drawn on the screen itself. Escape gives
+  the mouse and keyboard back to the game and fires `webViewUnfocused`.
+
+```js
+// client: a screen in the village square; F8 works the nearest screen
+const { Web, Key } = kcds.ui;
+const screen = Web.open('https://example.com/board', { width: 1280, height: 720 });
+Web.setViewWorldScreen(screen, { position: new kcds.math.Vector3(128, 2048, 60), heading: 225, width: 8, height: 4.5 });
+
+Key.bind('f8', () => {
+  const me = kcds.players.LocalPlayer?.position;
+  const nearest = me ? Web.nearestWorldScreen(me, 15) : null;
+  if (nearest !== null) {
+    Web.focus(nearest, true);
+  }
+});
+```
+
+```ts
+// client: a screen in the village square; F8 works the nearest screen
+const { Web, Key } = kcds.ui;
+const screen = Web.open('https://example.com/board', { width: 1280, height: 720 });
+Web.setViewWorldScreen(screen, { position: new kcds.math.Vector3(128, 2048, 60), heading: 225, width: 8, height: 4.5 });
+
+Key.bind('f8', () => {
+  const me = kcds.players.LocalPlayer?.position;
+  const nearest = me ? Web.nearestWorldScreen(me, 15) : null;
+  if (nearest !== null) {
+    Web.focus(nearest, true);
+  }
+});
+```
+
+```lua
+-- client: a screen in the village square; F8 works the nearest screen
+local Web = kcds.ui.Web
+local screen = Web.open("https://example.com/board", { width = 1280, height = 720 })
+Web.setViewWorldScreen(screen, { position = kcds.math.Vector3.new(128, 2048, 60), heading = 225, width = 8, height = 4.5 })
+
+kcds.ui.Key.bind("f8", function()
+  local me = kcds.players.LocalPlayer and kcds.players.LocalPlayer.position
+  local nearest = me and Web.nearestWorldScreen(me, 15) or nil
+  if nearest ~= nil then
+    Web.focus(nearest, true)
+  end
+end)
+```
+
+```cs
+// client: a screen in the village square; F8 works the nearest screen
+var screen = Web.Open("https://example.com/board", new { width = 1280, height = 720 });
+Web.SetViewWorldScreen(screen, new { position = new Vector3(128, 2048, 60), heading = 225, width = 8, height = 4.5 });
+
+Key.Bind("f8", () =>
+{
+    var me = LocalPlayer.Current?.Position;
+    if (me == null)
+    {
+        return;
+    }
+    var nearest = Web.NearestWorldScreen(me, 15);
+    if (nearest != null)
+    {
+        Web.Focus(nearest.Value, true);
+    }
+});
+```
+
 ## Keyboard and mouse
 
 While a view has focus, the player types into it and key binds pause. The third-person camera also stops
