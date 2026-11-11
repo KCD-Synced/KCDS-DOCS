@@ -480,6 +480,35 @@ Other calls: `Inventory.setWearRates({ default, armor, ... })` makes items wear 
 `Inventory.renameItem(item, name)` renames an item for everyone, and `Inventory.itemPrice` prices one unit as the game
 does.
 
+### Food that spoils
+
+Food spoils in players' inventories as the game makes it, and the server can change how fast in two ways:
+
+- `Items.override(food, { decayTime })` sets how long one kind of food keeps before it spoils, as a stat of the food
+  like its `health` or `nutrition`; `Items.clearOverride(food)` gives it back the game's own.
+- `Inventory.setWearRates` scales every drop in an item's condition, and spoiling is one: the `food` category (or one
+  food by its name) sets how fast food spoils, 0 keeps it fresh and 2 spoils it twice as fast.
+
+```js
+// Food spoils half as fast as the game's, everything else wears as the game makes it.
+kcds.players.Inventory.setWearRates({ food: 0.5 });
+```
+
+```ts
+// Food spoils half as fast as the game's, everything else wears as the game makes it.
+kcds.players.Inventory.setWearRates({ food: 0.5 });
+```
+
+```lua
+-- Food spoils half as fast as the game's, everything else wears as the game makes it.
+kcds.players.Inventory.setWearRates({ food = 0.5 })
+```
+
+```cs
+// Food spoils half as fast as the game's, everything else wears as the game makes it.
+Inventory.SetWearRates(new Dictionary<string, object?> { ["food"] = 0.5 });
+```
+
 ## Items on the ground
 
 `kcds.world.GroundItem` is a stack in the world that all players see and can pick up. Items players drop and arrows
