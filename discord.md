@@ -18,6 +18,10 @@ server, KCDS adds the player count, such as "Players online (5 of 32)", after yo
 set one. Scripts cannot change that count. A server joined by address appears as "a KCDS server", so
 an IP address is never displayed.
 
+Discord shows the activity set last. Since 1.0.6 KCDS sets its presence again every 30 seconds, so it
+stays on the player's profile when another program, such as a clip recorder, sets an activity for the
+game too.
+
 ## Adding your server's details
 
 ```js
