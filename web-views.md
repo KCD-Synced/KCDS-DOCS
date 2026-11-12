@@ -225,6 +225,11 @@ The page receives normal browser key events, with `key`, `code` (the physical ke
 `Digit1` or `Enter`), `keyCode` and the modifiers Shift, Ctrl and Alt. So `event.code` checks work as in
 any browser.
 
+Since 1.0.6 a focused page gets each key, click and pointer move as it happens, even while the world
+loads or the game is busy, so a login form shown during loading can be typed into right away. Text
+selection by dragging, double clicks, dead keys and AltGr work as in a browser. Alt+F4, Alt+Tab and the
+Windows keys stay with Windows.
+
 ## Sound
 
 A page's sound, such as a video, plays in the player's game. The server sets how loud web views play for
