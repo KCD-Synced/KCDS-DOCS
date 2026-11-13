@@ -113,9 +113,64 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 `DialogLeft`, `DialogRight`, `Cursor`, `Crime`, `Wanted`, `Buffs`, `Trespassing` and `Vignette`; see
 [Hud](/docs/api/hud) for all. A part stays hidden while any resource hides it.
 
-The KCD2 Synced watermark in the bottom left corner is not a part: the client draws it last, over the game's HUD
-and every web view, and nothing turns it off. The [Server hosting rules](/server-rules) forbid hiding or covering
-it in any other way.
+The KCD2 Synced watermark is not a part: the client draws it last, over the game's HUD and every web view, and
+nothing turns it off. The [Server hosting rules](/server-rules) forbid hiding or covering it in any other way.
+
+A server script can move it to another corner of the screen, for everyone or for one player. It starts in the
+bottom left corner; the voice chat indicator always sits on its side toward the middle of the screen.
+
+```js
+// Server: the watermark goes to the top right corner for every player.
+kcds.world.Watermark.setCorner('topRight');
+
+// One player's own corner, until it is set back with null.
+kcds.core.Events.on('playerReady', (player) => {
+  if (player.nickname === 'Streamer') {
+    player.setWatermarkCorner('bottomRight');
+  }
+});
+```
+
+```ts
+// Server: the watermark goes to the top right corner for every player.
+kcds.world.Watermark.setCorner('topRight');
+
+// One player's own corner, until it is set back with null.
+kcds.core.Events.on('playerReady', (player) => {
+  if (player.nickname === 'Streamer') {
+    player.setWatermarkCorner('bottomRight');
+  }
+});
+```
+
+```lua
+-- Server: the watermark goes to the top right corner for every player.
+kcds.world.Watermark.setCorner("topRight")
+
+-- One player's own corner, until it is set back with nil.
+kcds.core.Events.on("playerReady", function(player)
+  if player.nickname == "Streamer" then
+    player:setWatermarkCorner("bottomRight")
+  end
+end)
+```
+
+```cs
+// Server: the watermark goes to the top right corner for every player.
+Watermark.SetCorner("topRight");
+
+// One player's own corner, until it is set back with null.
+Events.On("playerReady", (Player player) =>
+{
+    if (player.Nickname == "Streamer")
+    {
+        player.SetWatermarkCorner("bottomRight");
+    }
+});
+```
+
+The corners are `'bottomLeft'`, `'bottomRight'`, `'topRight'` and `'topLeft'`; anything else throws a TypeError.
+See [Watermark](/docs/api/watermark).
 
 ## The character panel's stats
 

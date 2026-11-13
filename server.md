@@ -375,6 +375,10 @@ for good.
 A private server is one the browser does not list: every server whose `master` is not `on` (the default), and one bound to `127.0.0.1`. Players join by address through Direct connect, or by a join
 link. It still admits only legally owned games, like any KCDS server.
 
+Since 1.0.7 a private server still counts in the players online on kcdsynced.com: once a minute it tells the KCDS
+Master how many players it has. The report holds a random id made for that run of the server, the player count and
+the version, nothing else, and the server stays out of the browser. A server bound to `127.0.0.1` sends nothing.
+
 Players can also keep it in their Favourites: **ADD BY IP / DNS** on the Favourites list, or the star beside Direct connect.
 It then shows like a listed server, marked "by address", with the name, players and ping the game asks the server itself
 for (`/kcds/info.json` on the game port, over TCP, the same answer as the [status API](#status-api)'s `info.json`). Only
