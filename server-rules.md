@@ -15,7 +15,7 @@ KCDS server until a resource turns them on, for everyone or for one player.
 | `cooking`      | the prompt and use key at the game's fires                | on         |
 | `smoking`      | the prompt and use key at smokehouses and drying racks    | on         |
 | `npcChatter`   | the barks and lines of NPCs                               | on         |
-| `pointing`     | the B key points the arm; see [Animations](animations.md) | on         |
+| `pointing`     | the V key points the arm; see [Animations](animations.md) | on         |
 | `npcTalk`      | "Talk" on an NPC, the game's own dialogue                 | always off |
 | `npcChat`      | focus chat on an NPC, where the game provokes and insults | always off |
 
