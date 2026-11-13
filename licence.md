@@ -16,16 +16,45 @@ The game server never sees a password or store token, only the store and account
 
 ## Stores
 
-| Store                            | Status                                                                                         |
-| -------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Steam                            | works and is tested in the game; Steam signs an ownership ticket and Master checks the signature |
-| Epic Games Store                 | ready, not yet tested with a real Epic copy                                                    |
-| Microsoft Store / Xbox app on PC | ready, not yet tested with a real Store copy                                                   |
-| GOG                              | not supported yet                                                                              |
+| Store                            | Check      | Status                                                                                       |
+| -------------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| Steam                            | verified   | works and is tested in the game; Steam signs an ownership ticket and Master checks the signature |
+| Epic Games Store                 | verified   | Epic signs an ownership token and Master checks it; not yet tested with a real Epic copy      |
+| Microsoft Store / Xbox app on PC | verified   | the launcher can't start this copy with KCDS yet (see below)                                  |
+| GOG                              | detected   | the game reports its install and Master judges the report                                    |
 
-If a store cannot provide proof, the player is refused on all servers. Local files, play history and earlier
-confirmations do not count. The server browser explains why ("This copy cannot be verified"): no supported
-store, the store is offline or signed out, or it says the account does not own the game.
+**Verified** means Master checked a proof the store signed. **Detected** means the player's own game reported a
+legitimate install: GOG copies are DRM-free and GOG gives no proof Master can check, so the game reports the
+fingerprints of its files, who signed GOG's own library in it, and whether known crack or emulator files sit
+beside the game. Master decides from that report and refuses a copy with crack files or a modified GOG library.
+A detected check is weaker than a verified one: a changed game client could report a clean install. Passes say
+which check a player passed.
+
+If a copy can't be verified or detected, the player is refused on all servers. Local files, play history and
+earlier confirmations don't count otherwise. The server browser explains why ("This copy cannot be verified"):
+no supported store, the store is offline or signed out, or it says the account does not own the game.
+
+## Finding and starting the game
+
+The KCDS launcher finds Kingdom Come: Deliverance II by itself: the copy you picked before, then the Steam
+libraries, then the Epic Games launcher's installs, then GOG's (with or without GOG Galaxy). If it finds none,
+it asks you to pick `KingdomCome.exe`.
+
+Each store's copy starts the way its store expects:
+
+- **Steam** and **GOG** copies start directly.
+- An **Epic Games Store** copy starts through the Epic Games launcher, which signs the game in. Keep the Epic
+  Games launcher installed and signed in.
+- A **Microsoft Store / Xbox app / PC Game Pass** copy can't be started with KCDS yet: Windows starts such a
+  copy again on its own, without KCDS. The launcher says so instead of starting the game without KCDS.
+
+If the game closes right after it starts, the launcher says that KCDS was not loaded. A game window that opens
+anyway is the game without KCDS: close it and start again from the launcher.
+
+## Do you support pirated copies?
+
+No. A copy that can't be verified or detected can't join any KCDS server, listed or private, and no server
+setting changes that.
 
 ## For server owners
 
@@ -152,6 +181,36 @@ Events.On("playerConnecting", (JsValue request) =>
     }
 });
 ```
+
+## DLCs
+
+A Steam licence lists the Kingdom Come: Deliverance II DLCs the account owns, and Master puts them in the pass
+under Steam's signature. A resource reads them, and no script can grant one:
+
+| Name                  | Steam app | The game's DLC list                                          |
+| --------------------- | --------- | ------------------------------------------------------------ |
+| `quest_for_valor`     | 3118100   | QuestForValor                                                |
+| `huntsman`            | 3118110   | GoldEditionHuntsman                                          |
+| `season_pass_shields` | 3118120   | SeasonPassShields                                            |
+| `bandit_camps`        | 3368600   | BanditCamps                                                  |
+| `forge_tycoon`        | 3368610   | ForgeTycoon                                                  |
+| `mysteria_ecclesiae`  | 3368620   | MysteriaEcclesiae, with the Sedlec monastery map `klaster`   |
+
+```js
+kcds.core.Events.on('playerConnect', (player) => {
+  if (!player.hasEntitlement('kcd2_dlc:forge_tycoon')) {
+    console.info(`${player.nickname} has no Forge Tycoon: the forge quest stays closed`);
+  }
+});
+```
+
+`player.entitlements` gives all of them as `{ kcd2Dlc: [names] }`, and so does `request.entitlements` in
+`playerConnecting`. Epic, Microsoft Store and GOG passes list no DLCs yet, so a resource should give those
+players a way around a DLC's content.
+
+The server itself keeps one map for owners: `klaster` belongs to Mysteria Ecclesiae, though its files come with
+every copy. `player.setMap('klaster')` returns `false` for a player without the DLC, and a server whose first map
+is `klaster` admits only owners. What else a player without a DLC gets is up to your resources.
 
 ## Central bans
 
