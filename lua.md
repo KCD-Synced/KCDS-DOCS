@@ -247,7 +247,8 @@ clearInterval(heartbeat)
 - `load` takes Lua source only, not compiled chunks.
 - A call into Lua may run for at most 5 seconds without returning: a file's code between two `:await()`
   calls, a handler or a timer. Past that it fails with a timeout error, so an endless loop cannot stop the
-  server or the game.
+  server or the game. A server can give its Lua scripts longer with `"luaCallLimit"` in `server.json`
+  (seconds, 1 to 600, or `KCDS_LUA_CALL_LIMIT`); players' games keep 5 seconds.
 
 A resource can also be written in [C#](csharp.md), and resources in Lua, JavaScript and C# share events,
 exports and messages with each other.

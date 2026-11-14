@@ -173,7 +173,8 @@ Events.FromClient("hello", (Player sender, JsValue payload) =>
     resource's `node_modules`, `fetch` and `WebSocket`. Lua server scripts have `fetch` and `WebSocket`, and C#
     server scripts have `Network.Fetch`. Client scripts can load only the resource's own `.js`, `.cjs` and
     `.json` files (in Lua, its own `.lua` files): no Node modules, no `process` and no disk.
-11. **Time limits.** A call into Lua fails after 5 seconds without returning. JavaScript and C# have no
+11. **Time limits.** A call into Lua fails after 5 seconds without returning (a server may raise it with
+    `luaCallLimit` in `server.json`; players' games keep 5 seconds). JavaScript and C# have no
     limit, so an endless loop holds up every script of its side. Keep handlers short and use timers or
     `await` to wait. The other limits (fetch, HTTP routes, pending requests, held events, chat length) are
     listed in [Resources](https://kcdsynced.com/docs/resources#limits).
