@@ -210,6 +210,10 @@ opens in the same light. While Freeze weather is on, the game's own weather does
   down more, Escape stops. A prefab is placed whole, with its doors, and it is solid. With "fit ground" on (the default),
   the ground under it is flattened first: its own footprint (3 to 20 m from its centre) fading out over 3 m more, so a
   house on a hillside stands level, and the ground you shaped around it stays as it is.
+  **Seats, beds, work** holds the game's prefabs people use: benches, chairs, beds, the dice table, the alchemy
+  table, the smithy, the butcher's drying rack and smokehouse, fires, cooking stations and ladders. Place these instead
+  of the models of the same things in Props: a bench, bed, fireplace or drying rack model there is only a model (its
+  tile says "model only"), nobody sits, sleeps or cooks at it.
   **People** (Man, Woman) puts one of the game's own NPCs on the ground to see where people can walk: select it, press
   **Walk to** in Details, then press a place in the world. It walks there by the game's own pathfinding on the map's
   navmesh, and Details shows Walking, then Arrived, or "No path (no navmesh)" where there is no way (a custom map
@@ -472,7 +476,9 @@ The states you switched are kept with the work and in saves, switched again when
 `resources` folder and run the server on the same map. Every player then sees it:
 
 - from the server: your buildings and props (your [doors and gates](#doors-and-gates-of-your-own) with their use
-  prompt), the level's objects you hid, moved or scaled, the [story states](#story-states) you switched
+  prompt; the prefabs of **Seats, beds, work** that are smart objects as `SmartObject.spawn`, so players sit, lie and
+  work at them; a whole ladder model as the game's climbable ladder, `SiegeLadder.spawn` of its height, which nobody
+  can push over), the level's objects you hid, moved or scaled, the [story states](#story-states) you switched
   (`LevelEdit.apply` with `kind: 'layer'`), your zones (as areas),
   effects and lights, and your **People** as the server's NPCs (`Npc.create`), each walking back and forth between
   where it stood and where you last sent it with **Walk to** (`patrol`, ping-pong), so the walk you tried on the navmesh
