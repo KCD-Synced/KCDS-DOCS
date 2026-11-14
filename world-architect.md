@@ -233,6 +233,8 @@ opens in the same light. While Freeze weather is on, the game's own weather does
     brush paints the map's own material of that kind (its cobblestones, stony mud, sand or trampled soil), and a
     patch of ground without it takes it in; a material the map does not have leaves the ground as it was, and the
     game's roads lie over the ground and hide paint under them. From far away the ground keeps the map's own colour.
+    Paint grass, meadow and pasture also grow the level's grass where they paint, as Add nature does: the kinds
+    growing under the brush, or on bare ground the ones growing within 40 m; Undo takes the paint and the grass.
   - **Clear nature** hides the level's own trees, bushes and plants under the brush in this game (they count as hidden
     level objects) and takes away your own plants there (also the ones Add nature planted, many at once). The level's grass carpet there (the low grass drawn over the
     ground) is cleared too, and comes back with Undo.
@@ -241,7 +243,7 @@ opens in the same light. While Freeze weather is on, the game's own weather does
     160 a dab), each on the terrain and
     turned at random. Where the ground grows no grass, it scatters the plant last chosen in Foliage instead, "Plants a
     dab" at a time.
-- **Foliage:** the level's Trees and Bushes. A plant stands solid and bends in the wind. With a plant chosen, the
+- **Foliage:** the level's Trees, Bushes and Grass and plants (grass clumps, edge grass, herbs and field plants). A plant stands solid and bends in the wind. With a plant chosen, the
   PAINT BRUSH rows in Details scatter it: "Plants a press" (1 to 20) and "Radius" (2 to 30 m). Each press then plants
   that many, each on the ground at a random spot within the radius and turned at random, as one undo step.
 - **Collision:** your own invisible solid shapes, drawn in orange while this mode is open: a wall (6 by 0.3 by 3 m), a floor
@@ -266,7 +268,8 @@ opens in the same light. While Freeze weather is on, the game's own weather does
   monastery's ambience, a pond, bees, insects, a torch, a forge, a big fire): it is heard around the place you put it
   until you take it away, moves like an effect and is kept in the project and in saves; Export for server takes it
   to every player's game. **Decals** are the game's 239 decal materials (soil, flour, mud, blood, a road's edge, cobbles
-  in the grass ...): one lies flat on the ground where you put it, 2 m across; it moves and turns like an effect, the
+  in the grass ...): one lies flat on the ground where you put it, 2 m across; it moves and turns like an effect (moved
+  across, it lies on the ground at its new place), the
   Scale tool sizes it (0.1 to 64 m), and Export for server places it for every player (`Marker.place` with the shape
   `decal`).
 - **Zones:** areas that block nothing, drawn in blue: Safe zone, Spawn area, Trigger area and Private ground, each with
