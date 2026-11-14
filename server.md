@@ -101,6 +101,7 @@ If a setting is given in several places, the first of these wins:
 | `npcHouses`                           | `KCDS_SERVER_NPC_HOUSES`           | `true`                                     | the level's people own houses; `false`: at night they walk out of the map along its roads and come back in the morning; see [Where the people spend the night](npcs.md#where-the-people-spend-the-night) |
 | `adminPort`, `adminPassword`, `adminBind`, `adminTlsCert`, `adminTlsKey` | `KCDS_ADMIN_*` | off, -, `127.0.0.1`      | [KCDS-Admin](#kcds-admin)                                |
 | `restartTimes`                        | `KCDS_RESTART_TIMES`               | none                                       | daily restarts, such as `["06:00", "18:00"]`             |
+| `luaCallLimit`                        | `KCDS_LUA_CALL_LIMIT`              | `5`                                        | seconds a call into a server Lua script may run, 1 to 600 ([Lua](/docs/lua)) |
 | `voiceMode`, `voiceUrl`, `voiceServerId`, `voiceSecret`, `voicePublicAddress` | `KCDS_SERVER_VOICE_MODE`, `_URL`, `_ID`, `_SECRET`, `_PUBLIC` | `embedded` | voice chat on [a separate voice server](voice.md#a-separate-voice-server) |
 | `tickRate`, `interestRadius`, `interestHysteresis`, `maxCharacters`, `snapshotWorkers`, `metrics` | `KCDS_SERVER_TICK_HZ` and others | see [Capacity and tuning](#capacity-and-tuning) |          |
 
