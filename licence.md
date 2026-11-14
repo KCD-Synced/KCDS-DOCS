@@ -204,6 +204,32 @@ kcds.core.Events.on('playerConnect', (player) => {
 });
 ```
 
+```ts
+kcds.core.Events.on('playerConnect', (player) => {
+  if (!player.hasEntitlement('kcd2_dlc:forge_tycoon')) {
+    console.info(`${player.nickname} has no Forge Tycoon: the forge quest stays closed`);
+  }
+});
+```
+
+```lua
+kcds.core.Events.on("playerConnect", function(player)
+  if not player:hasEntitlement("kcd2_dlc:forge_tycoon") then
+    print(player.nickname .. " has no Forge Tycoon: the forge quest stays closed")
+  end
+end)
+```
+
+```cs
+Events.On("playerConnect", (Player player) =>
+{
+    if (!player.HasEntitlement("kcd2_dlc:forge_tycoon"))
+    {
+        Log.Info($"{player.Nickname} has no Forge Tycoon: the forge quest stays closed");
+    }
+});
+```
+
 `player.entitlements` gives all of them as `{ kcd2Dlc: [names] }`, and so does `request.entitlements` in
 `playerConnecting`. Epic, Microsoft Store and GOG passes list no DLCs yet, so a resource should give those
 players a way around a DLC's content.
