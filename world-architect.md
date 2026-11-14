@@ -161,12 +161,13 @@ with **W A S D**; let go and the cursor is back. The editor opens while the worl
 | Ctrl+D         | Duplicates the selection beside it                        |
 | Shift + press  | Adds a thing to the group, or takes it out (Ctrl too)     |
 | Select drag    | A box: the things of yours in it become the group         |
-| Ctrl+C, Ctrl+V | Copies the group; puts the copies where you point, on any map |
+| Ctrl+C, Ctrl+V | Copies the group; the copy hangs on the cursor until a press puts it down, on any map |
+| Ctrl+S         | Keeps the work now, and writes the save named in Saves      |
 | Escape         | Stops placing; pressed again, clears the selection        |
 
 **A group** (things picked with Shift or Ctrl and Select, or by dragging a box with Select over the things of yours you
 want: their places in the box; with Shift or Ctrl the box adds to the group) moves, turns and is deleted with its selection: Move or the X, Y and
-Z arrows shift all of it by the same amount, Rotate turns all of it about the selection, and Delete takes it all away,
+Z arrows shift all of it by the same amount (while you drag, the whole group is shown moving), Rotate turns all of it about the selection, and Delete takes it all away,
 each as one Undo step. Your props and plants and the level's own objects (buildings, trees, bushes) can be in one
 group.
 
@@ -239,8 +240,10 @@ opens in the same light. While Freeze weather is on, the game's own weather does
   - **Add nature** plants the grass the ground there already grows: the kinds of the level's grass carpet under the
     brush, as often as they grow there, 1.2 clumps a square metre by default (Density in Details, 0.2 to 3; at most
     160 a dab), each on the terrain and
-    turned at random. Where the ground grows no grass, it scatters the plant last chosen in Foliage instead, "Plants a
-    dab" at a time.
+    turned at random. Where the ground grows no grass, it scatters a mixed meadow, "Plants a dab" at a time: the
+    level's grass clumps, herbs and field flowers (seven, two and one in ten), each at its own size (0.75 to 1.25)
+    and turned at random. With a plant chosen in Foliage it scatters that plant instead; the arrows of "Where none
+    grows" in Details switch between the two.
 - **Foliage:** the level's Trees and Bushes. A plant stands solid and bends in the wind. With a plant chosen, the
   PAINT BRUSH rows in Details scatter it: "Plants a press" (1 to 20) and "Radius" (2 to 30 m). Each press then plants
   that many, each on the ground at a random spot within the radius and turned at random, as one undo step.
