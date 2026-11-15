@@ -102,6 +102,7 @@ If a setting is given in several places, the first of these wins:
 | `adminPort`, `adminPassword`, `adminBind`, `adminTlsCert`, `adminTlsKey` | `KCDS_ADMIN_*` | off, -, `127.0.0.1`      | [KCDS-Admin](#kcds-admin)                                |
 | `restartTimes`                        | `KCDS_RESTART_TIMES`               | none                                       | daily restarts, such as `["06:00", "18:00"]`             |
 | `luaCallLimit`                        | `KCDS_LUA_CALL_LIMIT`              | `5`                                        | seconds a call into a server Lua script may run, 1 to 600 ([Lua](/docs/lua)) |
+| `vendorShelfLimit`                    | `KCDS_VENDOR_SHELF_LIMIT`          | `128`                                      | most rows of a vendor's shelf and of the items it buys (`Vendor.setShelf`, `setOffers`), 1 to 5000. Above 128 is experimental: the whole shelf goes to the player again after every change (5000 rows is about 500 KB) and the game's shop screen lists every row |
 | `voiceMode`, `voiceUrl`, `voiceServerId`, `voiceSecret`, `voicePublicAddress` | `KCDS_SERVER_VOICE_MODE`, `_URL`, `_ID`, `_SECRET`, `_PUBLIC` | `embedded` | voice chat on [a separate voice server](voice.md#a-separate-voice-server) |
 | `tickRate`, `interestRadius`, `interestHysteresis`, `maxCharacters`, `snapshotWorkers`, `metrics` | `KCDS_SERVER_TICK_HZ` and others | see [Capacity and tuning](#capacity-and-tuning) |          |
 
