@@ -20,7 +20,7 @@ The game server never sees a password or store token, only the store and account
 | -------------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
 | Steam                            | verified   | works and is tested in the game; Steam signs an ownership ticket and Master checks the signature |
 | Epic Games Store                 | verified   | Epic signs an ownership token and Master checks it; not yet tested with a real Epic copy      |
-| Microsoft Store / Xbox app on PC | verified   | the launcher can't start this copy with KCDS yet (see below)                                  |
+| Microsoft Store / Xbox app on PC | verified   | the game checks its licence with the player's Xbox account; the launcher starts it since 1.0.8.1 |
 | GOG                              | detected   | the game reports its install and Master judges the report                                    |
 
 **Verified** means Master checked a proof the store signed. **Detected** means the player's own game reported a
@@ -45,8 +45,9 @@ Each store's copy starts the way its store expects:
 - **Steam** and **GOG** copies start directly.
 - An **Epic Games Store** copy starts through the Epic Games launcher, which signs the game in. Keep the Epic
   Games launcher installed and signed in.
-- A **Microsoft Store / Xbox app / PC Game Pass** copy can't be started with KCDS yet: Windows starts such a
-  copy again on its own, without KCDS. The launcher says so instead of starting the game without KCDS.
+- A **Microsoft Store / Xbox app / PC Game Pass** copy starts through Windows, as the Xbox app starts it, and
+  the launcher loads KCDS into it (since 1.0.8.1; 1.0.8 refused such a copy). Keep the Xbox app installed and
+  signed in: the game checks its licence with your Xbox account.
 
 If the game closes right after it starts, the launcher says that KCDS was not loaded. A game window that opens
 anyway is the game without KCDS: close it and start again from the launcher.

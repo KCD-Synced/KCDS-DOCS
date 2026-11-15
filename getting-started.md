@@ -12,8 +12,9 @@ content. This page takes you from installation to playing.
 - A legal copy of Kingdom Come: Deliverance II, game version 1.5.5
 - Microsoft Edge WebView2 Runtime, which Windows 11 already includes
 
-Steam copies are tested. Epic Games Store and Microsoft Store copies are supported but have not yet been
-tested with a real copy. GOG is not supported yet. See [Licence](licence.md).
+Steam copies are tested, and so is a Microsoft Store / Xbox app copy (it starts with KCDS since 1.0.8.1).
+Epic Games Store copies are supported but have not yet been tested with a real copy. GOG copies are accepted
+from the report of their install. See [Licence](licence.md).
 
 ## Installing
 
