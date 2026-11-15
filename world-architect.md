@@ -211,6 +211,10 @@ opens in the same light. While Freeze weather is on, the game's own weather does
   down more, Escape stops. A prefab is placed whole, with its doors, and it is solid. With "fit ground" on (the default),
   the ground under it is flattened first: its own footprint (3 to 20 m from its centre) fading out over 3 m more, so a
   house on a hillside stands level, and the ground you shaped around it stays as it is.
+  **Seats, beds, work** holds the game's prefabs people use: benches, chairs, beds, the dice table, the alchemy
+  table, the smithy, the butcher's drying rack and smokehouse, fires, cooking stations and ladders. Place these instead
+  of the models of the same things in Props: a bench, bed, fireplace or drying rack model there is only a model (its
+  tile says "model only"), nobody sits, sleeps or cooks at it.
   **People** (Man, Woman) puts one of the game's own NPCs on the ground to see where people can walk: select it, press
   **Walk to** in Details, then press a place in the world. It walks there by the game's own pathfinding on the map's
   navmesh, and Details shows Walking, then Arrived, or "No path (no navmesh)" where there is no way (a custom map
@@ -234,6 +238,8 @@ opens in the same light. While Freeze weather is on, the game's own weather does
     brush paints the map's own material of that kind (its cobblestones, stony mud, sand or trampled soil), and a
     patch of ground without it takes it in; a material the map does not have leaves the ground as it was, and the
     game's roads lie over the ground and hide paint under them. From far away the ground keeps the map's own colour.
+    Paint grass, meadow and pasture also grow the level's grass where they paint, as Add nature does: the kinds
+    growing under the brush, or on bare ground the ones growing within 40 m; Undo takes the paint and the grass.
   - **Clear nature** hides the level's own trees, bushes and plants under the brush in this game (they count as hidden
     level objects) and takes away your own plants there (also the ones Add nature planted, many at once). The level's grass carpet there (the low grass drawn over the
     ground) is cleared too, and comes back with Undo.
@@ -244,7 +250,7 @@ opens in the same light. While Freeze weather is on, the game's own weather does
     level's grass clumps, herbs and field flowers (seven, two and one in ten), each at its own size (0.75 to 1.25)
     and turned at random. With a plant chosen in Foliage it scatters that plant instead; the arrows of "Where none
     grows" in Details switch between the two.
-- **Foliage:** the level's Trees and Bushes. A plant stands solid and bends in the wind. With a plant chosen, the
+- **Foliage:** the level's Trees, Bushes and Grass and plants (grass clumps, edge grass, herbs and field plants). A plant stands solid and bends in the wind. With a plant chosen, the
   PAINT BRUSH rows in Details scatter it: "Plants a press" (1 to 20) and "Radius" (2 to 30 m). Each press then plants
   that many, each on the ground at a random spot within the radius and turned at random, as one undo step.
 - **Collision:** your own invisible solid shapes, drawn in orange while this mode is open: a wall (6 by 0.3 by 3 m), a floor
@@ -269,7 +275,8 @@ opens in the same light. While Freeze weather is on, the game's own weather does
   monastery's ambience, a pond, bees, insects, a torch, a forge, a big fire): it is heard around the place you put it
   until you take it away, moves like an effect and is kept in the project and in saves; Export for server takes it
   to every player's game. **Decals** are the game's 239 decal materials (soil, flour, mud, blood, a road's edge, cobbles
-  in the grass ...): one lies flat on the ground where you put it, 2 m across; it moves and turns like an effect, the
+  in the grass ...): one lies flat on the ground where you put it, 2 m across; it moves and turns like an effect (moved
+  across, it lies on the ground at its new place), the
   Scale tool sizes it (0.1 to 64 m), and Export for server places it for every player (`Marker.place` with the shape
   `decal`).
 - **Zones:** areas that block nothing, drawn in blue: Safe zone, Spawn area, Trigger area and Private ground, each with
@@ -475,7 +482,9 @@ The states you switched are kept with the work and in saves, switched again when
 `resources` folder and run the server on the same map. Every player then sees it:
 
 - from the server: your buildings and props (your [doors and gates](#doors-and-gates-of-your-own) with their use
-  prompt), the level's objects you hid, moved or scaled, the [story states](#story-states) you switched
+  prompt; the prefabs of **Seats, beds, work** that are smart objects as `SmartObject.spawn`, so players sit, lie and
+  work at them; a whole ladder model as the game's climbable ladder, `SiegeLadder.spawn` of its height, which nobody
+  can push over), the level's objects you hid, moved or scaled, the [story states](#story-states) you switched
   (`LevelEdit.apply` with `kind: 'layer'`), your zones (as areas),
   effects and lights, and your **People** as the server's NPCs (`Npc.create`), each walking back and forth between
   where it stood and where you last sent it with **Walk to** (`patrol`, ping-pong), so the walk you tried on the navmesh
