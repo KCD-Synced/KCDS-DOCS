@@ -102,6 +102,9 @@ arrives as a window event, with the data in `detail`:
 - `show`, `hide`, `focus`, `resize`, `move`, `navigate` and `close` do what their names say.
 - `setBackground` keeps a view running without drawing it.
 - `setViewWorldPosition(view, point)` pins a view to a world position, such as a sign over a stall.
+- A focused view shows the pointer its page asks for with CSS `cursor`, as a browser does: `pointer` over
+  buttons, `none` for a pointer the page draws itself, or a picture with `url(...)` up to 256 by 256 pixels.
+  Without one, the game's pointer stays.
 - A resource can reach only its own views.
 
 **Size:** a view without `width` and `height` fills the screen, as does a view at 0, 0 with the size
