@@ -113,6 +113,10 @@ at once and climbs up with the game's clip, then moves along the bench. A driver
 the front plank during the climb. Getting off with the use key runs the same steps in reverse. While
 seated, the body is held on its seat, and nobody jumps while on a cart.
 
+**Get on** shows only at a free seat's entrance: to a player within about 2 m of where its climb starts, so
+nobody climbs on from the cart's side. `entranceOnly` set to `false` (or `Cart.spawn(..., { entranceOnly: false })`)
+offers it to anyone at the cart's body, from any side.
+
 `boardMode` set to `'walk'` (or `Cart.spawn(..., { boardMode: 'walk' })`) has the player walk round the cart to
 the climb's start instead; on the way their use key or a movement key calls the boarding off. `'teleport'`
 is the default.
