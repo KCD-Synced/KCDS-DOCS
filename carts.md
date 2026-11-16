@@ -106,14 +106,16 @@ range is ignored.
 - `unseatPlayer(player)` takes a player off.
 - `whoSits(seat)` returns a player or `null`, and `seatOf(player)` returns a seat or `null`.
 
-Seating is animated. The player walks to where that seat's climb starts, at the back for the benches
-and at the side for the front seats. They climb up with the game's clip and move along the bench. A
-driver takes the reins from the front plank during the climb. A player 25 m or more away is first
-placed at the start. Getting off with the use key runs the same steps in reverse. On the way to the seat,
-the player's use key or a movement key calls the boarding off, and nobody jumps while on a cart.
+Seating is animated. A seat's climb starts at the back for the benches and at the side for the front
+seats. **Get on** takes the free seat whose climb starts nearest the player, so getting on from behind
+takes a bench at the back and from the front's right side the co-driver's. The player is put at that start
+at once and climbs up with the game's clip, then moves along the bench. A driver takes the reins from
+the front plank during the climb. Getting off with the use key runs the same steps in reverse. While
+seated, the body is held on its seat, and nobody jumps while on a cart.
 
-`boardMode` set to `'teleport'` (or `Cart.spawn(..., { boardMode: 'teleport' })`) skips the walk: the player
-is put at the climb's start at once and climbs on. `'walk'` is the default.
+`boardMode` set to `'walk'` (or `Cart.spawn(..., { boardMode: 'walk' })`) has the player walk round the cart to
+the climb's start instead; on the way their use key or a movement key calls the boarding off. `'teleport'`
+is the default.
 
 ## Hints
 
