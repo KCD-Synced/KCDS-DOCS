@@ -85,11 +85,17 @@ its prefabs in `Prefabs/manmade/vehicles`, plus `cart_a`. The seats depend on th
 | covered body b, such as `wagon_b_covered`    | 2      | `driver`, `bench`, `rightBack`, `leftBack`, `rightFront`, `leftFront`, `rightMiddle`, `leftMiddle` |
 | open body b, such as `wagon_b`               | 2      | `driver`, `bench`, `rightBack`, `leftBack`                                                         |
 | body a, such as `wagon_a_chest`              | 2      | `driver`, `bench`                                                                                  |
-| body c, such as `wagon_c_empty` (driver walks) | 2    | `driver`                                                                                           |
-| `cart_b` (driver walks)                      | 1      | `driver`                                                                                           |
+| body c, such as `wagon_c_empty`              | 2      | `driver`, refused (archived, see below)                                                            |
+| `cart_b`                                     | 1      | `driver`, refused (archived, see below)                                                            |
 | `cart_a` (one model, no horses)              | 0      | `driver`, `rightBack`, `leftBack`                                                                  |
 
 A loaded wagon, such as `wagon_b_covered_sacks`, only has `driver` and `bench`.
+
+> **Archived: leading on foot.** A c wagon and `cart_b` were driven by a player walking beside their
+> horses with the reins in hand. That is archived: their horses offer no **Lead** and their `driver`
+> seat is refused, to scripts too. For a horse that walks after a player, use
+> [`Horse.follow`](/docs/api/horse) with `rope: true`, which every player sees as a lead rope, such as
+> `horse.follow(player, { radius: 2.5, speed: 'walk', rope: true })`.
 
 ## Properties
 
@@ -142,6 +148,6 @@ not detach it from the cart.
 - `cartEntering(cart, player, seat)`, where returning `false` refuses the seat
 - `cartEnter(cart, player, seat)` and `cartExit(cart, player, seat)`
 
-`cart.driverWalks` says whether the driver walks beside the horses rather than sitting at the front.
+`cart.driverWalks` (archived) says whether the blueprint is one whose driver walked beside the horses.
 
 Reference: [Cart](/docs/api/cart).
