@@ -109,7 +109,66 @@ range is ignored.
 Seating is animated. The player walks to where that seat's climb starts, at the back for the benches
 and at the side for the front seats. They climb up with the game's clip and move along the bench. A
 driver takes the reins from the front plank during the climb. A player 25 m or more away is first
-placed at the start. Getting off with the use key runs the same steps in reverse.
+placed at the start. Getting off with the use key runs the same steps in reverse. On the way to the seat,
+the player's use key or a movement key calls the boarding off, and nobody jumps while on a cart.
+
+`boardMode` set to `'teleport'` (or `Cart.spawn(..., { boardMode: 'teleport' })`) skips the walk: the player
+is put at the climb's start at once and climbs on. `'walk'` is the default.
+
+## Hints
+
+A cart shows the game's own hints: **Drive** and **Let go** on its horses, **Get on** on its body, and
+**Search** (U) on its body while it has a storage. `Cart.setDefaultHints({ drive, letGo, getOn, search })`
+changes their texts on every cart, and `cart.setHints(...)` on one. A text left out stays, and `null` hides
+that hint. `World.addInteraction({ entity: cart, ... })` puts a script's own hint on the cart's body, shown
+beside the cart's.
+
+```js
+const { Cart, World } = kcds.world;
+
+Cart.setDefaultHints({ drive: 'Řídit', letGo: 'Pustit opratě', getOn: 'Nastoupit', search: 'Otevřít náklad' });
+
+const wagon = Cart.spawn('wagon_b', new kcds.math.Vector3(100, 200, 10));
+wagon.setHints({ getOn: null });
+World.addInteraction({ entity: wagon, text: 'Board' }, (player) => {
+  wagon.seatPlayer(player, 'bench');
+});
+```
+
+```ts
+const { Cart, World } = kcds.world;
+
+Cart.setDefaultHints({ drive: 'Řídit', letGo: 'Pustit opratě', getOn: 'Nastoupit', search: 'Otevřít náklad' });
+
+const wagon = Cart.spawn('wagon_b', new kcds.math.Vector3(100, 200, 10));
+wagon.setHints({ getOn: null });
+World.addInteraction({ entity: wagon, text: 'Board' }, (player) => {
+  wagon.seatPlayer(player, 'bench');
+});
+```
+
+```lua
+local Cart, World = kcds.world.Cart, kcds.world.World
+
+Cart.setDefaultHints({ drive = "Řídit", letGo = "Pustit opratě", getOn = "Nastoupit", search = "Otevřít náklad" })
+
+local wagon = Cart.spawn("wagon_b", kcds.math.Vector3.new(100, 200, 10))
+wagon:setHints({ getOn = nil })
+World.addInteraction({ entity = wagon, text = "Board" }, function(player)
+  wagon:seatPlayer(player, "bench")
+end)
+```
+
+```cs
+Cart.SetDefaultHints(new { drive = "Řídit", letGo = "Pustit opratě", getOn = "Nastoupit", search = "Otevřít náklad" });
+
+var wagon = Cart.Spawn("wagon_b", new Vector3(100, 200, 10));
+wagon.SetHints(new { getOn = (string?)null });
+World.AddInteraction(new { entity = wagon, text = "Board" }, (Player player) =>
+{
+    wagon.SeatPlayer(player, "bench");
+});
+```
 
 ## Moving, loads and storage
 
@@ -125,9 +184,13 @@ cart's `loads`, or `''` for nothing, which is the default. Any other value throw
 | others    | none                                   |
 
 `addStorage()` gives the cart a storage and returns it as a [Stash](/docs/api/stash). Calling it again
-returns the same one. It has no chest model. Players search it with the game's Loot prompt at the cart,
-and `storage.open(player)` opens it for a player in reach of the cart. The `storage` property returns
-it or `null`.
+returns the same one. It has no chest model. Players open it with the **Search** hint (U) on the cart's
+body, and `storage.open(player)` opens it for a player in reach of the cart. The `storage` property
+returns it or `null`.
+
+`attachProp({ model, position, rotation, scale })` puts a prop on the cart that rides with it, such as logs
+on its bed: `position` and `rotation` are an offset from the cart's root, its middle on the ground. The prop
+has no physics, so it never holds the cart back, and it goes with the cart.
 
 `removeStorage()` or destroying the cart removes the storage and its contents. `storage.destroy()` does
 not detach it from the cart.
