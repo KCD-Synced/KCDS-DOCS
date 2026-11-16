@@ -254,32 +254,32 @@ Events.On("playerMapChanged", (Player player, string map, string from) =>
 
 ## Items placed by the level
 
-Tankards, tools, goods on shop counters and similar items are shared between all players. The first
-player in reach to pick one up gets it, and it then disappears for everyone, including those who join
-later. Taken items come back when the server restarts.
-
-Return `false` from `worldItemPickup(player, { item, name, position })` to refuse a pick-up.
-
-You can also remove these items altogether:
+Tankards, tools, goods on shop counters and similar items are the single-player game's loot. They are
+off by default: every game hides them, including for players who join later, and nobody can pick them
+up. Turn them on to share them between all players:
 
 ```js
-kcds.world.World.setLevelItemsEnabled(false); // hidden for all, nothing can be picked up
+kcds.world.World.setLevelItemsEnabled(true); // shown for all, the first in reach takes one
 ```
 
 ```ts
-kcds.world.World.setLevelItemsEnabled(false); // hidden for all, nothing can be picked up
+kcds.world.World.setLevelItemsEnabled(true); // shown for all, the first in reach takes one
 ```
 
 ```lua
-kcds.world.World.setLevelItemsEnabled(false) -- hidden for all, nothing can be picked up
+kcds.world.World.setLevelItemsEnabled(true) -- shown for all, the first in reach takes one
 ```
 
 ```cs
-World.SetLevelItemsEnabled(false); // hidden for all, nothing can be picked up
+World.SetLevelItemsEnabled(true); // shown for all, the first in reach takes one
 ```
 
-`setLevelItemsEnabled(true)` brings them back and `World.levelItemsEnabled` reads the setting. To start
-the server with them off, put `{ "enabled": false }` in `resources/level-items.json`.
+When they are on, the first player in reach to pick one up gets it, and it then disappears for everyone,
+including those who join later. Taken items come back when the server restarts. Return `false` from
+`worldItemPickup(player, { item, name, position })` to refuse a pick-up.
+
+`setLevelItemsEnabled(false)` hides them again and `World.levelItemsEnabled` reads the setting. To start
+the server with them on, put `{ "enabled": true }` in `resources/level-items.json`.
 
 To take the items from one spot only, such as the bowls by a camp fire or the goods on one stall, give a
 place. Every game hides the level's items within `radius` metres of `position`, with the pile or stack
@@ -317,7 +317,7 @@ var apples = World.RemoveLevelItems(new { position = stall, radius = 2, item = "
 apples.Call("restore");
 ```
 
-`setLevelItemsEnabled(false)` also hides the pile and stack looks of the level's items.
+While the level's items are off, the default, the pile and stack looks of the level's items are hidden too.
 
 To hide only some of them, such as the sausages on one drying rack, ask a player's game which level
 entities are near and hide those with a level edit. `World.levelEntitiesAround(player, center, radius,
