@@ -305,6 +305,26 @@ Events.On("craftingStationUsed", (Player player, JsValue use) =>
 - With `learn: true`, or a `sketch` usable item type, only players who learnt the recipe can craft it. See
   `Crafting.learnRecipe(player, id)`, `knowsRecipe` and `learnedRecipes`.
 
+### Your own workpieces
+
+`Crafting.defineWorkpiece(definition)` adds a smithing workpiece, the piece a smithing recipe is forged on at
+the anvil, with fields matching a row of the game's `BlacksmithWorkpieces.xml`. `like` starts from one of the
+game's four (`'sword'`, `'longsword'`, `'axe'`, `'horseshoe'`) and the other fields replace its columns: the axe
+and the horseshoe are held in the tongs, the swords lie on the anvil. Every client loads it before the recipes
+that name it, later joiners too, and a recipe of `Crafting.defineRecipe` names it as its `workpiece`. Other
+players see the workpiece on the anvil and in the smith's tongs.
+
+The model must be a character (`.cdf` or `.chr`), as the game's own workpieces are: the hammer's blows change
+its shape, and its `raycastAttachment` is where the hammer strikes. A static `.cgf` is refused. To forge on one
+of the game's props, stream a `.cdf` with the prop as the workpiece's skin:
+`Dev/tools/assets/workpieces/make_workpiece.py` makes it from the player's own game, as the helm-smithing example
+resource does.
+
+### Grindstones
+
+`grindstoneStarting(player, details)` comes before a player sharpens a weapon at one of the game's grindstones.
+Return `false` to refuse: the sharpening does not start.
+
 ## Stew pots
 
 `kcds.world.CookPot` covers the stew pots on the game's fireplaces. They hold stock per dimension: the meal (`goulash`,

@@ -239,6 +239,16 @@ Keybinds.Set("emote_menu", new { controller = Sdk.Null }); // no controller butt
 Keybinds.Reset("radio"); // back to the defaults
 ```
 
+### The pointer's look
+
+`Controls.setCursor(style)` sets the mouse pointer while your resource shows it with `Controls.showCursor`:
+`null` for the game's own, `'hidden'` for none at all, or `{ image, hotspot }`, a picture your resource ships
+(`.png`, `.bmp`, `.gif`, `.jpg` or `.ico` listed in the manifest's `files`, at most 256 by 256 pixels and 32 KB)
+with its hotspot, the pixel that points, from the top left. With `'hidden'` the mouse stays free and
+`Controls.cursorPosition` keeps reporting, so a menu of your own, such as a wheel, can draw its own pointer. The
+resource that last showed the pointer decides while it shows it; the game's own screens and a focused web view
+keep the game's pointer, and a stopping resource gives its style back.
+
 ### Removing actions
 
 A stopping resource's actions leave the screen, and `Keybinds.remove(id)` removes one while it runs. The

@@ -192,6 +192,29 @@ player.ShowOnlyTo(admin); // one other player can still see them
 
 Most spawn calls, such as `Npc.create`, `Prop.spawn` and `Vfx.spawn`, also take a `dimension`.
 
+Every player starts in the shared dimension, `World.SHARED_DIMENSION` (4294967295), where everyone sees each other.
+Dimensions are unsigned 32-bit numbers (0 to 4294967295), so store them as `BIGINT` in a database, never in a signed
+32-bit column such as PostgreSQL's `INTEGER`.
+
+## A lantern in the hand
+
+`player.setLantern(options)` lights the game's own lamp, the one its NPCs carry at night, in the player's hand, with
+the game's lantern light (a warm orange, 6 m). It hangs upright from its handle, so it stays with the player on
+foot, on a horse and in a cart. In the left hand the body holds it as the game's NPCs do, the arm bent and the lamp
+held out; in the right hand it hangs from the hand. A rider carries it in the right hand, since the left holds the
+reins, and it goes back to the chosen hand on foot. Every player sees it, later joiners too, until it is set to
+`null`, the player leaves or the resource that lit it stops. A new call replaces the lantern.
+
+## What the player's game supports
+
+`player.clientNatives` reports what the player's game build gave their client, once their world was ready:
+`{ found, combat, riding, inventory, missing }`, how many of the game's functions it found, whether combat between
+players works (without it no blow reaches or leaves them and `startFight` refuses them), whether riding works
+(without it their client makes no horses and `mount` refuses them), whether the inventory sync works (the server
+still keeps their items, but their game does not show the changes), and the names of the functions it did not find.
+It is `null` before their client reported it. After a game update, a client that lost functions may not match the
+game version; the server log names it too.
+
 ## Health and condition
 
 **Read:** `health`, `maxHealth`, `healthPercent`, `stamina`, `exhaust`, `hunger`, `bleeding`, `drunkenness`, `poisoning`,

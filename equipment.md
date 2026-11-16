@@ -282,6 +282,28 @@ Events.On("playerCommand", (Player player, string command, string[] args) =>
 });
 ```
 
+### Drawing and holstering in a client script
+
+`kcds.players.Weapons` (client) draws, holsters or toggles the local player's selected weapon set, and the torch on
+its own, with the game's own actions and animations, as the game's weapon and torch keys do. A holstered
+weapon stays equipped. Pair it with `Controls.blockAction` to take the game's own keys over, as for a hotbar
+of your own.
+
+- `Weapons.state()`: `{ slot, hasWeapon, drawn, allowed, torch, busy }` for the selected set (0 to 3) and the
+  torch in the left hand; `null` outside the world.
+- `Weapons.select(slot)` selects a set without drawing it, as the game's quick access does.
+- `Weapons.draw()`, `Weapons.holster()` and `Weapons.toggle()` draw or put away the selected set. Where the
+  game has no holster animation for the player's body, the weapon goes back where it hangs at once.
+- `Weapons.drawTorch()`, `Weapons.holsterTorch()` and `Weapons.toggleTorch()` take a torch from the inventory
+  into the left hand and back, whatever the weapon set does.
+
+Every call returns `null` once the game's action started, or why not: `'notInWorld'`, `'unavailable'`,
+`'noWeapon'`, `'alreadyDrawn'`, `'notDrawn'`, `'notAllowed'` (no such set for what the player wears; belts and
+sheaths add them), `'locked'` (cuffed or frozen), `'busy'` (an earlier call still runs) or `'refused'`. The
+client event `weaponActionEnded(action, ok, reason)` tells how it ended: `action` is `'draw'`, `'holster'`,
+`'torchDraw'` or `'torchHolster'`, and `reason` says `'interrupted'` or `'refused'` when it did not finish
+(a torch call without a torch ends `'refused'`).
+
 ## Dressing or undressing one piece
 
 ```js

@@ -474,7 +474,8 @@ they put in.
 ## Decks held in the hands
 
 A table's deck is a set of flat pieces the players really hold: playing cards by default, or your own
-(tarot, dominoes, tiles). `table.createDeck()` lays the stack face down on the table. Dealt pieces fly into
+(tarot, dominoes, tiles). `table.createDeck()` lays the stack face down on the table, and `table.decks` lists
+the table's decks, oldest first. Dealt pieces fly into
 the players' left hands. They sit as the game's dice players sit, the forearms on the table, and raise the
 left hand before the chest: the pieces stand as a fan on the inside of the fingers, the thumb across their
 faces. Each player's game shows them the faces of their own pieces and everyone else the backs, and no other

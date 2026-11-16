@@ -74,7 +74,7 @@ the player, it turns red and reads MUTED.
 
 `Voice.setIndicator(false)` hides it in every player's game, so a client resource can show its own instead
 from `kcds.ui.LocalVoice` (see [In a client script](#in-a-client-script)). Voice chat keeps working. The
-watermark always stays.
+watermark always stays. `Voice.isIndicatorShown()` reads the setting.
 
 ```js
 kcds.players.Voice.setIndicator(false);
