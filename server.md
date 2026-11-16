@@ -560,7 +560,7 @@ output before restarting. The limits bound the queued payload, not the server's 
 ## Optional server files
 
 - `resources/item-config.json` changes the game's items on your server: weight, price, the most units a player can hold, and stats. See [Items](/docs/api/items).
-- `resources/level-items.json` with `{ "enabled": false }` starts the server with the level's own items, such as tankards, tools and shop goods, removed for all players. Scripts can
-  switch this with `kcds.world.World.setLevelItemsEnabled`.
+- `resources/level-items.json` with `{ "enabled": true }` starts the server with the level's own items, such as tankards, tools and shop goods, shown for all players to pick up; they are
+  off by default. Scripts can switch this with `kcds.world.World.setLevelItemsEnabled`.
 - World exports, `<name>.world.json`, spawn props, effects, level edits, areas and patrol routes at startup. List them in `KCDS_WORLD_RESOURCES`; see
   [WorldResource](/docs/api/worldresource).
