@@ -182,6 +182,26 @@ Server scripts can also load:
 `process.cwd()` is the resource's folder, and a deployment replaces it. Save data under
 `kcds.core.Runtime.serverDir` instead, the server's folder containing `resources/` and `server.json`.
 
+## A database of your own
+
+`kcds.core.Database` gives a server resource SQLite databases, the same from JavaScript, TypeScript, Lua and C#,
+so Lua and C# resources can keep data too. Calls answer at once, with no promise to wait for: rows come back as
+objects (Lua tables).
+
+- `Database.open(file)` opens a file in the resource's folder, creating it and its folders when missing, or a
+  database in memory with `':memory:'` (the default). The file must stay inside the folder and end in `.db`,
+  `.sqlite` or `.sqlite3`; those files are never sent to players. At most 8 databases are open per resource.
+- `db.exec(sql)` runs statements without parameters, such as a schema.
+- `db.query(sql, params)` returns every row, `db.get(sql, params)` the first one or `null`, and
+  `db.run(sql, params)` changes rows and returns `{ changes, lastInsertId }`. Parameters are an array for `?`
+  placeholders or an object for `:name` ones, with numbers, strings, booleans (stored as 1 and 0) and `null`.
+- `db.transaction(fn)` runs a function in one transaction: when it throws, nothing it changed stays.
+- `db.close()` closes it; a resource's databases also close when it stops. `db.file` and `db.isOpen` read it.
+
+Queries run on the resource runtime, not the game simulation, but a long one holds the resource's scripts while
+it runs. A dimension is an unsigned 32-bit number, and the shared one, `World.SHARED_DIMENSION`, is 4294967295:
+store dimensions as `BIGINT` (or SQLite's `INTEGER`, which holds it), never a signed 32-bit column.
+
 ## Network access from server scripts
 
 Server scripts have `fetch` and `WebSocket` for things like a chat bot or a link to your services. When the

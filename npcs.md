@@ -451,6 +451,43 @@ var statue = Npc.Create(new
 statue.Brain = true; // it thinks again
 ```
 
+## Foes and factions
+
+An NPC with an `aggroRange` (in metres, 0 to 50; 0, the default, never) looks around twice a second and
+attacks the nearest player or NPC it is hostile to: a member of a hostile faction, any player while
+`npc.hostile` is `true`, or someone named with `npc.hostileTo(target)` (`hostileTo(target, false)` takes it
+back). When an NPC of its own or a friendly faction within that range is struck in a fight, it attacks the
+striker. `npc.isHostileTo(target)` says whether it would. Each such attack raises
+`npcAggro(npc, target)` first: return `false` to refuse it, and the same attack is not offered again for 5
+seconds.
+
+Factions are numbers from 1 to 65535. `Faction.setRelation(a, b, relation)` sets how two of them stand to
+each other, both ways: `'hostile'` (NPCs of one with an `aggroRange` attack the members of the other),
+`'friendly'` (they help each other in a fight) or `'neutral'` (the default). It lasts until changed or until
+the resource that set it stops. `Faction.relation(a, b)` reads one, and `Faction.relations()` lists every
+pair that is not neutral as `{ a, b, relation }`. A faction is friendly to itself, and 0 (no faction) is
+neutral to every faction.
+
+## A day of their own
+
+`npc.setSchedule(entries)` gives an NPC a day by the world clock: up to 48 entries, each with an `hour` (0 to
+below 24) and a `position`. When the world's hour reaches an entry the NPC is ordered there, with `useHere`
+when the entry has an action (`fragment`, `tags`, `clip`, `loop`, `facing`) and `moveTo` otherwise (`speed`,
+`radius`, `pathfinding`), and `npcScheduleEntry(npc, entry)` follows. Setting a schedule orders the entry that
+holds now at once; before the day's first entry the last one holds, from the evening before. Between entries
+the NPC keeps whatever order it has, so a script may give it others until the next entry comes. `null` or `[]`
+removes the schedule.
+
+`npc.useHere(position, options)` walks to any spot, not only a smart object, and does something there: once
+it has arrived it turns to `facing` (when given) and plays the fragment or clip, as `playAnimation` does.
+`npcIntentDone` reports how the walk ended and `npcAnimationEnd` how the action did. A walk that ends blocked
+or is replaced by another order plays nothing.
+
+To plan a walk yourself, a client script asks its game's navmesh: `Terrain.findPath(from, to)` answers
+`{ reaches, points }`, the way the game's NPCs would walk it (`reaches` is `false` when the goal cannot be
+walked to, and the points end where the search came nearest), and `Terrain.nearestWalkable(at, reach)` the
+nearest point where an NPC can stand. Both answer `null` where the navmesh is not loaded in that game.
+
 ## Looks, loot and interaction
 
 - `setAppearance(...)`, `setOutfit(preset)` and `wear(itemClasses)` change its look.

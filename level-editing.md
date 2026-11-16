@@ -101,6 +101,13 @@ colliders, so no invisible walls stay behind, but it has no collision at its new
 **Lifetime:** edits are in memory, so a restart restores the level. `LevelEdit.all()` and `LevelEdit.restoreAll()` list and undo
 them.
 
+**Parts of a model:** a brush's edit can hide some parts of its model and keep the rest. Its `hideParts` takes up to
+8 names of the model's sub-materials (lower case), and those parts are not drawn for any player; the rest of the
+model and its collision stay, and `[]` shows them again. Only this object changes, not the model's other copies in
+the level. The names come from the material the level gives the object, so the same mesh can name its parts
+differently: the Kuttenberg bathhouse's wide tub has `'proxy'`, `'water_tub'`, `'liquid'` and `'proxy_water'`. When a
+list is applied, the game client's log names the object's parts (`LEVEL edit parts: ... its parts: ...`).
+
 ### Finding an object from a client
 
 A client script can find the object with a ray. A hit on a brush, on a tree, bush or plant the level paints, or on a level entity,

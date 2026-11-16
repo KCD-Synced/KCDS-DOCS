@@ -170,6 +170,20 @@ connections that only receive world data do not run it. While a mounted rider re
 waits for them, and a nearby player does not take over. A horse with no rider can move to another eligible
 game during loading.
 
+### Horse theft
+
+A player who mounts a horse that is another player's raises `horseStealing(horse, player)` before
+`horseMounting`. Handlers run at once; return `false` to refuse the theft: the thief's game dismounts them,
+and `horseMounting`, `horseMount` and `horseStolen` do not follow. Allowed, `horseStolen(horse, player)`
+follows once they sit in the saddle, and `horse.thief` names them until the owner rides the horse again or
+`giveTo` hands it to someone. A thief is not asked again until the owner has ridden it.
+
+### In a cart's shafts
+
+`cart.harness(horses)` puts real horses into a cart's shafts ([Carts](carts.md#your-own-horses-in-the-shafts)).
+While harnessed a horse is out of the world, the cart's horse wears its look, and `horse.harnessedTo` names
+the cart (otherwise `null`).
+
 ## Dogs
 
 `kcds.characters.Dog` is a companion belonging to a player. It is an NPC of the game's dog class with an

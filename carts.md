@@ -206,6 +206,20 @@ has no physics, so it never holds the cart back, and it goes with the cart.
 `removeStorage()` or destroying the cart removes the storage and its contents. `storage.destroy()` does
 not detach it from the cart.
 
+## Your own horses in the shafts
+
+A cart can be drawn by real horses instead of its own. `cart.harness(horses)` puts them into the shafts of a
+cart without horses: one `Horse` for a cart, an array of two for a wagon (`horseCount`). Each must be alive,
+unridden, in no other cart, in the cart's world and within 15 m of it. While harnessed a horse leaves the
+world (`horse.harnessedTo` names the cart) and the cart's horse wears its look. `cartHarness(cart, horses)`
+comes first and may refuse it with `false`; `harness` returns `false` when it cannot.
+
+`cart.harnessed` says whether horses are in its shafts, its own or harnessed ones, and `cart.horses` lists the
+harnessed `Horse` entities, the left one first on a wagon. `cart.unharness()` takes them out: they stand
+beside the cart, back in their own world, and the cart has no horses. It returns `false` when no horses are
+harnessed or someone sits in the driver seat. `cartUnharness(cart, horses)` follows, also when the cart or one
+of the horses is removed. A cart without horses cannot be driven, but its other seats can still be used.
+
 ## Removing and finding carts
 
 `destroy()`, `Cart.all(dimension?)`, `Cart.getById(id)`, `Cart.destroyAll(dimension?)`.
@@ -213,6 +227,7 @@ not detach it from the cart.
 ## Events
 
 - `cartSpawn(cart)` and `cartDestroy(cart)`
+- `cartHarness(cart, horses)`, where returning `false` refuses the horses, and `cartUnharness(cart, horses)`
 - `cartEntering(cart, player, seat)`, where returning `false` refuses the seat
 - `cartEnter(cart, player, seat)` and `cartExit(cart, player, seat)`
 

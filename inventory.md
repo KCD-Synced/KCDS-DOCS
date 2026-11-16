@@ -731,6 +731,14 @@ To refuse a pick-up of the level's own items, use `worldItemPickup`; see [Time, 
 On the client, `kcds.players.Inventory.whenUsed(item, handler)` takes over an item's actions on the inventory screen.
 The handler receives the use, and the server decides what it does.
 
+`Inventory.use(row)` (client) uses a row's item as the game does, for a hotbar of your own: food and potions are
+eaten or drunk as the food quick slot does it (the server decides as for all eating, `playerConsuming`), and a
+document opens in the game's reading screen. `Inventory.useState(row)` says first whether that would work, as
+`{ available, enabled, reason, label }`: whether the item has an action, whether it can run now, the game's text
+key of why not (such as `'cant_use_in_combat'`) and the action's text key (such as `'ui_invhint_read'`). The
+client event `itemUseEnded(row, used, reason)` follows each use: whether the game used the item, and otherwise
+the game's reason, such as `'you_are_full'`, or `'refused'`, `'noItem'` or `'failed'`.
+
 Also: `Inventory.getWearRates()` reads the wear rates set, `Items.setEquippedWeightPercent(percent)` sets how much of
 what players wear counts toward their load (100 by default; `player.setEquippedWeightPercent` for one player), and in
 a client script `Inventory.stopWhenUsed(id)` removes a `whenUsed` handler.

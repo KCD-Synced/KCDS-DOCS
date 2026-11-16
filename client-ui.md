@@ -113,11 +113,17 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 `DialogLeft`, `DialogRight`, `Cursor`, `Crime`, `Wanted`, `Buffs`, `Trespassing` and `Vignette`; see
 [Hud](/docs/api/hud) for all. A part stays hidden while any resource hides it.
 
+`Hud.rect(part)` says where a part of the game's HUD is on the screen, as `{ x, y, width, height }` in pixels of
+the game window, read from the game's own HUD, so it follows the resolution and the HUD's scale. Use it to place
+your own elements next to the game's: `'vitals'` is the health and stamina frame at the bottom. It is `null` while
+the part is not shown.
+
 The KCD2 Synced watermark is not a part: the client draws it last, over the game's HUD and every web view, and
 nothing turns it off. The [Server hosting rules](/server-rules) forbid hiding or covering it in any other way.
 
 A server script can move it to another corner of the screen, for everyone or for one player. It starts in the
 bottom left corner; the voice chat indicator always sits on its side toward the middle of the screen.
+`player.watermarkCorner` reads the corner it stands in for a player now: their own, or else the server's.
 
 ```js
 // Server: the watermark goes to the top right corner for every player.
