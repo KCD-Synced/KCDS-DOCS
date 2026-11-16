@@ -71,7 +71,8 @@ Each setter returns `true` when it worked and `false` when a value is out of ran
 | `setWeather(preset, seconds?)`     | name of 1 to 64 characters from `A-Z a-z 0-9 _ . -`; fade of 0 to 21600 game seconds |
 | `setRain(intensity, amount?)`      | both 0 to 1; `amount` defaults to 1                                             |
 | `setWind({ x, y, z })`             | metres per second; a missing component is 0; above 50 m/s is refused            |
-| `setSnow({ amount, frost, freezing, flakes })` | `amount` 0 to 10, `frost` and `freezing` 0 to 1, `flakes` a whole number 0 to 10000; `{}` melts it ([Snow](#snow)) |
+| `setSnow({ amount, frost, freezing, flakes, flakeSize, storm })` | `amount` 0 to 10, `frost` and `freezing` 0 to 1, `flakes` a whole number 0 to 10000, `flakeSize` 0.1 to 5, `storm` 0 to 1; `{}` melts it ([Snow](#snow)) |
+| `setFog(strength)`                 | 0 to 1; 0 leaves the weather's own fog ([Fog](#fog))                            |
 
 `setWeather` also returns `false` while an earlier fade is still running.
 
@@ -87,9 +88,16 @@ join later get the snow as it is, and `World.snow` reads it back.
 | `frost`    | 0 to 1          | frost on surfaces                                                    |
 | `freezing` | 0 to 1          | how frozen the surfaces look                                         |
 | `flakes`   | 0 to 10000      | falling flakes around each player                                    |
+| `flakeSize` | 0.1 to 5       | the flakes' size; 1, the default, is the game's own                  |
+| `storm`    | 0 to 1          | how hard the wind drives the flakes: 0, the default, falls calmly, 1 is a blizzard |
 
 The cover costs no frame time of its own, but the flakes do: about a tenth of a game's frame rate for 1000 flakes and a
 quarter for 3000. Keep heavy snowfall short, or stay at about 1000.
+
+### A blizzard
+
+Big flakes (`flakeSize` around 4), about 3000 of them and `storm: 1`, with a strong wind from `World.setWind` and fog
+from `World.setFog`, make the worst of it. Keep it short: 3000 flakes cost a quarter of a game's frame rate.
 
 ```js
 const { World } = kcds.world;
@@ -98,6 +106,10 @@ World.setSnow({ amount: 4, frost: 0.5, freezing: 0.3, flakes: 400 });
 if (World.snow.amount > 0) {
   kcds.core.Chat.sendToAll('Snow lies on the land.');
 }
+// A blizzard in fog
+World.setSnow({ amount: 6, frost: 0.6, freezing: 0.5, flakes: 3000, flakeSize: 4, storm: 1 });
+World.setWind({ x: 16, y: 0, z: 0 });
+World.setFog(0.6);
 World.setSnow({}); // melt it
 ```
 
@@ -108,6 +120,10 @@ World.setSnow({ amount: 4, frost: 0.5, freezing: 0.3, flakes: 400 });
 if (World.snow.amount > 0) {
   kcds.core.Chat.sendToAll('Snow lies on the land.');
 }
+// A blizzard in fog
+World.setSnow({ amount: 6, frost: 0.6, freezing: 0.5, flakes: 3000, flakeSize: 4, storm: 1 });
+World.setWind({ x: 16, y: 0, z: 0 });
+World.setFog(0.6);
 World.setSnow({}); // melt it
 ```
 
@@ -118,6 +134,10 @@ World.setSnow({ amount = 4, frost = 0.5, freezing = 0.3, flakes = 400 })
 if World.snow.amount > 0 then
   kcds.core.Chat.sendToAll("Snow lies on the land.")
 end
+-- A blizzard in fog
+World.setSnow({ amount = 6, frost = 0.6, freezing = 0.5, flakes = 3000, flakeSize = 4, storm = 1 })
+World.setWind({ x = 16, y = 0, z = 0 })
+World.setFog(0.6)
 World.setSnow({}) -- melt it
 ```
 
@@ -127,7 +147,55 @@ if (World.Snow["amount"].AsNumber() > 0)
 {
     Chat.SendToAll("Snow lies on the land.");
 }
+// A blizzard in fog
+World.SetSnow(new { amount = 6, frost = 0.6, freezing = 0.5, flakes = 3000, flakeSize = 4, storm = 1 });
+World.SetWind(new { x = 16, y = 0, z = 0 });
+World.SetFog(0.6);
 World.SetSnow(new { }); // melt it
+```
+
+## Fog
+
+`World.setFog(strength)` lays fog over the weather's own in every player's game, from 0 (the weather's fog alone, the
+default) to 1. Around 0.3 is a misty day, 0.5 the fog and the dimmer light of the game's own fog weather, and above it
+the fog grows thicker until at 1 little more than a few metres can be seen. The sky and the exposure stay the
+weather's, so a sunny day in fog is not glaring; for an overcast sky as well, set a cloudy weather with
+`World.setWeather`. The fog lies on the ground around the players and works with any weather and with the snow.
+Players who join later get it as it is, and `World.fog` reads it back. A value outside 0 to 1 returns `false`.
+
+```js
+const { World } = kcds.world;
+
+// Morning mist that lifts after ten minutes
+World.setFog(0.4);
+setTimeout(() => World.setFog(0), 10 * 60 * 1000);
+```
+
+```ts
+const { World } = kcds.world;
+
+// Morning mist that lifts after ten minutes
+World.setFog(0.4);
+setTimeout(() => World.setFog(0), 10 * 60 * 1000);
+```
+
+```lua
+local World = kcds.world.World
+
+-- Morning mist that lifts after ten minutes
+World.setFog(0.4)
+setTimeout(function()
+  World.setFog(0)
+end, 10 * 60 * 1000)
+```
+
+```cs
+// Morning mist that lifts after ten minutes
+World.SetFog(0.4);
+Timers.SetTimeout(() =>
+{
+    World.SetFog(0);
+}, 10 * 60 * 1000);
 ```
 
 ## Several maps on one server
@@ -242,7 +310,8 @@ Events.On("playerMapChanged", (Player player, string map, string from) =>
 | Weather  | `weather` (target preset), `lastWeather`, `weatherFade`, `weatherLeft` |
 | Rain     | `rainStrength`, `rainLevel`, `wetness` (0 to 3), `puddles` (0 to 1) |
 | Wind     | `wind` (a `Vector3`), `windSpeed`                              |
-| Snow     | `snow` (`{ amount, frost, freezing, flakes }`)                 |
+| Snow     | `snow` (`{ amount, frost, freezing, flakes, flakeSize, storm }`) |
+| Fog      | `fog` (0 to 1)                                                 |
 | Maps     | `maps`, `levelTravel`                                          |
 
 ## Events
