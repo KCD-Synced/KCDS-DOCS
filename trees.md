@@ -21,8 +21,9 @@ dimension, and its mesh falls as a prop, pivoting about its foot: slowly at firs
 small bounce. The server moves it, so everyone sees the same pose, and latecomers see it lying down. On a slope
 the trunk rests along the ground.
 
-**The trunk is cut** after `trunkHits` axe blows, 6 by default. The trunk is solid until then. It disappears
-and gives `drops` to the chopper's inventory, or to the ground with `dropTo: 'ground'`.
+**The trunk is cut** after `trunkHits` axe blows, 6 by default, anywhere along its length. The trunk is solid
+until then. It disappears and gives `drops` to the chopper's inventory, or to the ground with
+`dropTo: 'ground'`. A script with its own chopping, such as a minigame, cuts it at once with `tree.cut(player)`.
 
 **The tree grows back** after `regrowMinutes`, 30 by default, once no player is within `regrowClearance`
 metres, 10 by default, so nobody sees it appear in front of them.
@@ -112,6 +113,7 @@ Trees.SetSpecies("objects/natural/vegetation/trees/normal_trees/quercus", new
 | `dropTo`          | `'inventory'`                              | `'inventory'` or `'ground'`                   |
 | `stump`           | `null`                                     | a prop model left where the tree stood        |
 | `axes`            | `null`                                     | item classes that chop; `null` means all axes |
+| `axeWear`         | `null`                                     | share of the axe's condition one counted blow costs, 0 to 1 (0: none); `null` keeps the game's own wear |
 
 The game has no log or firewood item. To use one, register it with `kcds.players.Items.register` and put it
 in `drops`.
@@ -277,8 +279,10 @@ A tree someone has chopped becomes a `Tree`, with these properties:
 | `state`                 | `'standing'`, `'falling'`, `'felled'` or `'cut'`        |
 | `felledAt`, `regrowAt`  | its times                                               |
 
-Methods: `tree.fell(direction?)` fells it at once, `tree.regrow()` brings it back and `tree.setHits(n)` sets its
-blows.
+Methods: `tree.fell(direction?)` fells it at once, `tree.regrow()` brings it back and `tree.setHits(n)` sets the
+blows of a standing tree. `tree.cut(player?)` cuts a lying trunk at once, as its last blow does: `playerTrunkCut`
+fires and the drops go to `player`, or to the ground without one. It returns `false` for a tree that does not lie
+felled or when `playerTrunkCut` refused it.
 
 ```js
 const { Trees } = kcds.world;
