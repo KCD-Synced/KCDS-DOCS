@@ -115,9 +115,6 @@ Trees.SetSpecies("objects/natural/vegetation/trees/normal_trees/quercus", new
 | `axes`            | `null`                                     | item classes that chop; `null` means all axes |
 | `axeWear`         | `null`                                     | share of the axe's condition one counted blow costs, 0 to 1 (0: none); `null` keeps the game's own wear |
 
-With `axeWear` set, it is the only wear an axe takes from chopping: the game's own wear of an axe is left out
-for 30 seconds after each blow on a tree or trunk, so `axeWear: 0` keeps the axe as it is.
-
 The game has no log or firewood item. To use one, register it with `kcds.players.Items.register` and put it
 in `drops`.
 
