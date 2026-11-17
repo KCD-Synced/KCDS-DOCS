@@ -116,7 +116,7 @@ Key.Bind("e", new Func<Task>(async () =>
 | `World.traceAll(from, to, { mode, maxHits })`                        | everything along the line, nearest first, up to 8                                          |
 | `World.groundHeight(position, { up, down })`                         | the ground's height under a point; a bridge or floor counts                                |
 | `World.snapToGround(...)`                                            | the same, as a hit                                                                         |
-| `World.entitiesAround(centre, radius, { class, max, physicalOnly })` | entities in a sphere up to 256 m, nearest first, with class, name and level GUID           |
+| `World.entitiesAround(centre, radius, { class, max, physicalOnly })` | entities in a sphere up to 256 m, nearest first, with class, name, level GUID and rotation |
 
 `mode` is `'cover'` (the world, props and doors), `'anything'` (bodies too) or `'ground'`.
 
