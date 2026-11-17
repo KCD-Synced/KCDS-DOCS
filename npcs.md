@@ -197,6 +197,10 @@ a walk at first, so it is retried for a few seconds before `npcIntentDone` repor
 A walking NPC (`moveTo`, `flee` and a patrol's legs) steps around a player or another NPC standing in its way, passing about
 1.5 m beside it, and then walks on to where it was going.
 
+While `moveTo`, `follow`, `flee` or `patrol` moves it, its brain rests: an NPC in the middle of a conversation or another
+activity of the game's own breaks it off and goes, instead of sliding away still talking. The brain runs again when the order
+ends (`hold()` or done).
+
 ### Sitting and lying down
 
 `npc.useObject(object, { place, side })` makes an NPC sit on a seat or lie on a bed of a

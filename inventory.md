@@ -216,6 +216,9 @@ Events.On("playerDisconnect", (Player player) =>
 ### Events
 
 - `playerInventoryReady`: their game now shows the server's stock
+- `playerInventoryShown`: their game shows a newer revision, with what the body wears and the weapons in its
+  quickslots on. To switch weapons, change the rows and quickslots in one `Inventory.set`, wait for its
+  `revision` here, then draw the weapon
 - `playerInventoryChanged`: with the reason for the change
 - `playerItemUsed`: food, potions, or ammunition spent
 

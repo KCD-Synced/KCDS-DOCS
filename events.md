@@ -256,6 +256,7 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `playerInventoryTake`      | `player, owner, line`         | A player is about to take an item from another player's inventory through a view of it. Return false to refuse. |
 | `playerInventoryTaken`     | `player, owner, items`        | A player took items from another player's inventory.  |
 | `playerInventoryReady`     | `player`                      | Their game shows the inventory the server holds.      |
+| `playerInventoryShown`     | `player, revision`            | Their game shows this revision, worn and quickslotted. |
 | `playerItemUsed`           | `player, item, kind, amount`  | A player used up units of an item.                    |
 | `playerLoot`               | `player, victim, line`        | A player is about to take from a knocked-out body.    |
 | `playerLooted`             | `player, victim, items`       | A player took items from a knocked-out body.          |
