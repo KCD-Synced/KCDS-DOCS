@@ -24,6 +24,8 @@ development launcher has no server list, so there Leave closes the game.
 While the editor is open, your own character is hidden; Play as player closes the editor and puts you in the world as
 your character where the camera was looking, facing the same way: on what the middle of the view looks at when it is
 within 80 m, otherwise on the ground under the camera. Press **Esc** (or **F10**) to go back to the editor; the game's pause menu does not open meanwhile.
+While you map, your character grows neither tired nor hungry: sleep and food are full when the editor's world starts and
+stay so.
 
 What you build is kept per map in `%LOCALAPPDATA%\KCDS\architect\projects\<map>.json`: the ground you shaped, the
 buildings, plants and collision shapes, the level's objects you hid, and the time of day and weather you set. It is saved a moment after each change and when
@@ -304,13 +306,18 @@ With nothing chosen in Content, a press in the world uses the tool:
   the Move tool), or turning it with Rotate, hides it and puts your own copy there, a prop of its mesh or a plant of its kind, turned as it was (or as you turn it).
   A level entity (a door, a cart, anything the level made as an entity) moves itself instead, live while you drag:
   a door still opens and closes where you put it. The Outliner lists it under **Moved in the level**; Undo puts it back.
+  The entities that make one thing with it move, turn and hide with it: a level chair takes its seat, its **Sit** and
+  where a body sits down and gets up along, so it can still be sat on where you put it. A chair (or any other
+  furniture) you placed yourself is picked whole, never as its seat alone.
   Scale (the tool, or the Scale row in Details) grows or shrinks a level object where it stands, a building, a fence, a
   rock or an entity; the level's trees and plants keep their size.
 - **Move** puts the selection where you press, on the grid.
 - **Rotate** shows a ring around the selection's foot: drag round it and the selection turns with the cursor in steps of
-  the angle snap (5, 15, 45 or 90 degrees); a press elsewhere turns it one step. A prop (and a level object, as your
-  copy) also has a red ring and a green ring standing upright: they tilt it about its own X and Y axes, forwards or
-  sideways, shown as you drag and one Undo step when you let go.
+  the angle snap (5, 15, 45 or 90 degrees); a press elsewhere turns it one step. A prop, a building you placed (and a
+  level object, as your copy) also has a red ring and a green ring standing upright: they tilt it about its own X and Y
+  axes, forwards or sideways, shown as you drag and one Undo step when you let go. A tilted building keeps its tilt in
+  the work and in **Export for server**. The rings and the move arrows follow the size of what is selected (a plate's
+  are a hand's breadth across, a house's a few metres), and are grabbed by where they are on the screen.
 - **Scale** grows a plant or a prop by a tenth (Details' Scale row goes up or down), and a collision shape by one step on
   each side. Hold the button and it keeps growing; move the mouse while you hold it, and it grows to the right or up
   and shrinks to the left or down. Everything one press did is one Undo step. Buildings keep the size the game builds

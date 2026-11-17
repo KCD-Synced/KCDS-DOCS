@@ -350,6 +350,11 @@ including those who join later. Taken items come back when the server restarts. 
 `setLevelItemsEnabled(false)` hides them again and `World.levelItemsEnabled` reads the setting. To start
 the server with them on, put `{ "enabled": true }` in `resources/level-items.json`.
 
+While they are off, the level's own containers hold nothing either: a sack, basket or chest of the level
+(`Stash`) and a corpse the level lays out (`StashCorpse`) open empty for everyone, and stay lootable for what
+players put in. A crafting station's tools and the items a player carries or wears are never taken for level
+items.
+
 To take the items from one spot only, such as the bowls by a camp fire or the goods on one stall, give a
 place. Every game hides the level's items within `radius` metres of `position`, with the pile or stack
 look the level draws for them, also for players who join later, so nobody can pick them up. `item`, a
