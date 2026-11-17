@@ -102,7 +102,7 @@ Some events ask before something happens. A handler that returns `false`, not a 
 refuses the action, and it is undone for everyone. All handlers still run, in the order added.
 
 These events ask: `cartEntering`, `craftingCompleting`, `craftingStarting`, `doorInteract`,
-`gatheringHarvest`, `horseGearChanging`, `horseMounting`, `npcHarvest`, `npcLoot`, `playerCarrying`,
+`gatheringHarvest`, `horseGearChanging`, `horseMounting`, `horsePassengerBoarding`, `npcHarvest`, `npcLoot`, `playerCarrying`,
 `playerCarryingItem`, `playerConsuming`, `playerConsumptionEffects`, `playerHarm`, `playerHit`, `playerLoot`,
 `playerPerkLearning`, `playerPickpocketStart`, `playerPoisonAbsorbing`, `playerPreparing`,
 `playerTravelling`, `playerTreeChop`, `playerTreeFell`, `playerTrunkChop`, `playerTrunkCut`, `playerXpGaining`,
@@ -333,6 +333,9 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `horseMount`        | `horse, player`                   | A player sat in the saddle.                 |
 | `horseMounting`     | `horse, player`                   | A player mounts, before the server accepts it. |
 | `horseOwnerChanged` | `horse, owner`                    | A horse got a new owner, or none.           |
+| `horsePassengerBoarding` | `horse, player`              | A player uses Ride behind, before they climb on. |
+| `horsePassengerBoarded` | `horse, player`               | A player sits behind the horse's rider.     |
+| `horsePassengerLeft` | `horse, player`                  | The passenger behind the rider is off.      |
 | `horseRevive`       | `horse`                           | A dead horse was revived.                   |
 | `horseSpawn`        | `horse`                           | A horse was spawned.                        |
 | `horseWake`         | `horse`                           | A knocked-out horse got up.                 |

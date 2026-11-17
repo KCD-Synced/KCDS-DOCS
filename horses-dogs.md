@@ -77,6 +77,79 @@ saddlebags stay the owner's. `horse.riders` lists those players, and `allowRider
 
 `player.whistle()` calls the player's horse like the game's companion key, and fires `playerWhistle`.
 
+### Riding behind
+
+A second player can ride along behind a horse's rider, men and women alike. While someone rides a horse, a
+player on foot who looks at it gets **Ride behind** on their use key. They climb on from the horse's left side
+with the game's own mount clip and sit behind the saddle in the rider's pose, and every player sees them
+there, moving with the horse. To get off, the passenger aims at their rider and uses **Get off**, which plays
+the game's dismount clip to the left. They also get off when the rider gets off or leaves the server, and are
+put down beside the horse at once when it goes down or is removed.
+
+`horse.passenger` names the player who sits there or is getting on or off, otherwise `null`. Return `false`
+from `horsePassengerBoarding(horse, player)` to refuse a player before they climb on. `horsePassengerBoarded`
+follows once they sit, and `horsePassengerLeft` once they are off again.
+
+From a script, `horse.seatPassenger(player)` puts a player there at once, without the climb, and
+`horse.removePassenger(instant?)` lets them off: with the dismount clip, or with `true` at once beside the
+horse. `horse.passengerAllowed = false` hides Ride behind on that horse; a script can still seat a passenger.
+
+```js
+// /ridealong puts the player behind a rider with a free seat
+kcds.core.Events.on('playerCommand', (player, command) => {
+  if (command !== 'ridealong') return;
+  const horse = kcds.characters.Horse.all().find((h) => h.rider && !h.passenger);
+  if (horse) {
+    horse.seatPassenger(player);
+  }
+});
+```
+
+```ts
+// /ridealong puts the player behind a rider with a free seat
+kcds.core.Events.on('playerCommand', (player, command) => {
+  if (command !== 'ridealong') return;
+  const horse = kcds.characters.Horse.all().find((h) => h.rider && !h.passenger);
+  if (horse) {
+    horse.seatPassenger(player);
+  }
+});
+```
+
+```lua
+-- /ridealong puts the player behind a rider with a free seat
+kcds.core.Events.on("playerCommand", function(player, command, args)
+  if command ~= "ridealong" then
+    return
+  end
+  for _, horse in ipairs(kcds.characters.Horse.all()) do
+    if horse.rider and not horse.passenger then
+      horse:seatPassenger(player)
+      return
+    end
+  end
+end)
+```
+
+```cs
+// /ridealong puts the player behind a rider with a free seat
+Events.On("playerCommand", (Player player, string command, string[] args) =>
+{
+    if (command != "ridealong")
+    {
+        return;
+    }
+    foreach (var horse in Horse.All())
+    {
+        if (horse.Rider != null && horse.Passenger == null)
+        {
+            horse.SeatPassenger(player);
+            return;
+        }
+    }
+});
+```
+
 ### Pace
 
 `speedScale` is the share of its pace the horse moves at in every gait, walking to galloping, ridden or led: 0.1 to 2, or
@@ -161,7 +234,7 @@ players and throw here.
 
 `horseSpawn`, `horseOwnerChanged`, `horseMounting`, `horseMount`, `horseDismount`, `horseGearChanging`,
 `horseGearChanged`, `horseDamage`, `horseDeath`, `horseKnockedOut`, `horseWake`, `horseRevive`,
-`horseDestroy`.
+`horseDestroy`, `horsePassengerBoarding`, `horsePassengerBoarded`, `horsePassengerLeft`.
 
 ### Which game simulates a horse
 
