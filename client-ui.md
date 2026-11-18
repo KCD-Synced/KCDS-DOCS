@@ -113,6 +113,37 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 `DialogLeft`, `DialogRight`, `Cursor`, `Crime`, `Wanted`, `Buffs`, `Trespassing` and `Vignette`; see
 [Hud](/docs/api/hud) for all. A part stays hidden while any resource hides it.
 
+### The crosshair while aiming
+
+`Cursor` holds the crosshair and the melee combat star together. Three of its parts can be set on their own:
+`CursorCross` (the crosshair), `CursorOutline` (its outline) and `CombatCursorCross` (the melee combat star with its
+lock arrows). Instead of `true` or `false`, `'rangedOnly'` shows a part only while the local player aims: a bow, a
+crossbow or a gun drawn and aimed, or a siege engine worked. So this hides the crosshair except while aiming and keeps
+the combat star in melee:
+
+```js
+// client
+kcds.ui.Hud.setHudPart('CursorCross', 'rangedOnly');
+```
+
+```ts
+// client
+kcds.ui.Hud.setHudPart('CursorCross', 'rangedOnly');
+```
+
+```lua
+-- client
+kcds.ui.Hud.setHudPart("CursorCross", "rangedOnly")
+```
+
+```cs
+// client
+Hud.SetHudPart("CursorCross", "rangedOnly");
+```
+
+For anything else that should follow the aim, `LocalPlayer.aiming` reads it and the client events
+`localPlayerAimStart` and `localPlayerAimEnd` tell each change.
+
 `Hud.rect(part)` says where a part of the game's HUD is on the screen, as `{ x, y, width, height }` in pixels of
 the game window, read from the game's own HUD, so it follows the resolution and the HUD's scale. Use it to place
 your own elements next to the game's: `'vitals'` is the health and stamina frame at the bottom. It is `null` while
