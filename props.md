@@ -190,11 +190,13 @@ World.AddInteraction(new { entity = barrel, text = "Open the barrel", radius = 2
 
 ### Gliding
 
-`prop.glideTo(position, rotation?, { ms, arc })` moves a prop smoothly: every player's game glides it there over `ms`
-milliseconds (400 by default, up to 10000), eased in and out and turning on the way, lifted on an arc `arc` metres
-high at the middle (0 by default, a straight line; up to 5). The server sends the end once, not every step, so a
-thrown card or a hopping game piece costs one message. For the server, and for a player who joins meanwhile, the
-prop is at the end at once. A rigid prop moves by its physics and throws.
+`prop.glideTo(position, rotation?, { ms, arc, ease })` moves a prop smoothly: every player's game glides it there
+frame by frame over `ms` milliseconds (400 by default, up to 10000), turning on the way, lifted on an arc `arc` metres
+high at the middle (0 by default, a straight line; up to 5). `ease: 'smooth'` (the default) slows down at both ends
+under a sine arc, as a card laid down; `ease: 'linear'` (since 1.1.2) goes at an even pace on a parabola, the flight
+of a thrown body. The server sends the end once, not every step, so a thrown card or a hopping game piece costs one
+message. For the server, and for a player who joins meanwhile, the prop is at the end at once. A rigid prop moves by
+its physics and throws.
 
 ```js
 // A card thrown onto the table half a metre away, turning as it flies.
@@ -222,6 +224,93 @@ card:glideTo(Vector3.new(120, 200.5, 10.75), { x = 0, y = 0, z = 30 }, { ms = 45
 var card = Prop.Spawn("objects/kcds_cards/as.cgf", new Vector3(120, 200, 10.9));
 card.GlideTo(new Vector3(120, 200.5, 10.75), new { x = 0, y = 0, z = 30 }, new { ms = 450, arc = 0.12 });
 ```
+
+### Throws and paths
+
+Since 1.1.2 a script that works a throw out itself (where it flies, where it bounces, where it stops) gives the whole
+path at once, and every player's game plays it frame by frame, key after key without stopping:
+
+- `prop.followPath(keys, { ease, spin })`: up to 32 keys `{ ms, position, rotation?, arc? }`, each reached `ms` after
+  the start (rising, the last at most 10000), lifted `arc` metres on the way to it (up to 5); a key without a rotation
+  keeps the one before. `ease` is `'linear'` by default, so each way between two keys is a thrown body's parabola.
+  `spin`, a `Vector3` of radians a second about the world's axes (each up to 100), tumbles it on top of the keys'
+  rotations, and it stops in that tumbled turn.
+- `prop.launch(velocity, { ms, gravity, spin })`: throws it from where it stands at `velocity` (m/s). It flies the
+  throw's parabola under `gravity` (9.81 by default) for `ms` and stops where that leaves it, for a flight that lands
+  somewhere the script knows. A rigid prop is handed to its physics instead (`setVelocity`, with `spin` as its
+  angular velocity), and it lands and rolls by itself.
+
+Both cost one message. For the server, and a player who joins meanwhile, the prop is at the path's end at once; the
+keys are where you put them, so give positions on the ground where it should land.
+
+```js
+// A stone thrown 4 m along flat ground (height 10) that bounces once and rolls to a stop, tumbling.
+const { Vector3 } = kcds.math;
+const groundZ = 10;
+const stone = kcds.world.Prop.spawn('gneiss_stone_a_small', new Vector3(100, 200, 11.5));
+const apple = kcds.world.Prop.spawn('apple', new Vector3(102, 200, 11.5));
+const from = stone.position;
+stone.followPath(
+  [
+    { ms: 500, position: new Vector3(from.x + 4, from.y, groundZ), arc: 1.2 },
+    { ms: 750, position: new Vector3(from.x + 5, from.y, groundZ), arc: 0.2 },
+  ],
+  { spin: new Vector3(0, 8, 0) },
+);
+// An apple tossed forwards and up, in the air for 0.7 s.
+apple.launch(new Vector3(3, 0, 2.5), { ms: 700, spin: new Vector3(6, 0, 0) });
+```
+
+```ts
+// A stone thrown 4 m along flat ground (height 10) that bounces once and rolls to a stop, tumbling.
+const { Vector3 } = kcds.math;
+const groundZ = 10;
+const stone = kcds.world.Prop.spawn('gneiss_stone_a_small', new Vector3(100, 200, 11.5));
+const apple = kcds.world.Prop.spawn('apple', new Vector3(102, 200, 11.5));
+const from = stone.position;
+stone.followPath(
+  [
+    { ms: 500, position: new Vector3(from.x + 4, from.y, groundZ), arc: 1.2 },
+    { ms: 750, position: new Vector3(from.x + 5, from.y, groundZ), arc: 0.2 },
+  ],
+  { spin: new Vector3(0, 8, 0) },
+);
+// An apple tossed forwards and up, in the air for 0.7 s.
+apple.launch(new Vector3(3, 0, 2.5), { ms: 700, spin: new Vector3(6, 0, 0) });
+```
+
+```lua
+-- A stone thrown 4 m along flat ground (height 10) that bounces once and rolls to a stop, tumbling.
+local Vector3 = kcds.math.Vector3
+local groundZ = 10
+local stone = kcds.world.Prop.spawn("gneiss_stone_a_small", Vector3.new(100, 200, 11.5))
+local apple = kcds.world.Prop.spawn("apple", Vector3.new(102, 200, 11.5))
+local from = stone.position
+stone:followPath({
+  { ms = 500, position = Vector3.new(from.x + 4, from.y, groundZ), arc = 1.2 },
+  { ms = 750, position = Vector3.new(from.x + 5, from.y, groundZ), arc = 0.2 },
+}, { spin = Vector3.new(0, 8, 0) })
+-- An apple tossed forwards and up, in the air for 0.7 s.
+apple:launch(Vector3.new(3, 0, 2.5), { ms = 700, spin = Vector3.new(6, 0, 0) })
+```
+
+```cs
+// A stone thrown 4 m along flat ground (height 10) that bounces once and rolls to a stop, tumbling.
+var groundZ = 10.0;
+var stone = Prop.Spawn("gneiss_stone_a_small", new Vector3(100, 200, 11.5));
+var apple = Prop.Spawn("apple", new Vector3(102, 200, 11.5));
+var from = stone.Position;
+stone.FollowPath(new object[]
+{
+    new { ms = 500, position = new Vector3(from.X + 4, from.Y, groundZ), arc = 1.2 },
+    new { ms = 750, position = new Vector3(from.X + 5, from.Y, groundZ), arc = 0.2 },
+}, new { spin = new Vector3(0, 8, 0) });
+// An apple tossed forwards and up, in the air for 0.7 s.
+apple.Launch(new Vector3(3, 0, 2.5), new { ms = 700, spin = new Vector3(6, 0, 0) });
+```
+
+Other players see a rigid prop as the simulating game reports it, about ten times a second; since 1.1.2 their games
+glide it from one report to the next instead of jumping, a report behind.
 
 ### How a model collides
 
@@ -402,8 +491,10 @@ Events.On("propRest", (Prop prop, Vector3 position) =>
 });
 ```
 
-**Mass:** `mass` is in kilograms, 0 to 100,000. With 0, the default, the mesh's collision gives the mass. Most decoration has none, so a game asked to
-simulate it keeps it static and logs `its collision carries no mass`. Give such a prop a mass.
+**Mass:** `mass` is in kilograms, 0 to 100,000. With 0, the default, the mesh's collision gives the mass. Many meshes have none: the game's items
+(a stone, an apple) and most decoration collide as drawn, with no mass in their data. Since 1.1.2 the game simulating such a prop gives it a box of
+the mesh's size carrying `mass`, or, with 0, a mass of its size (as wood), and it falls, rolls and comes to rest as any rigid prop; its log says
+`its collision carries no mass; a box ... carries ... kg`. Before 1.1.2 it stayed static.
 
 **Moving it:**
 
@@ -596,6 +687,8 @@ shape it to fit that spot or keep it small.
 | `scale`                    | a number, or a per-axis `Vector3`; 0.01 to 100                                 |
 | `tint`                     | a colour `{ r, g, b, a }` from 0 to 1, or `null` for the models' own materials |
 | `validTint`, `invalidTint` | colours for `setValid(true)` and `setValid(false)`; green and red by default   |
+| `ring`                     | `false` leaves out the ring a tinted preview draws on the ground (since 1.1.2) |
+| `opaque`                   | `true` draws the models whole instead of faded (since 1.1.2)                   |
 
 **Read:** `id`, `player`, `valid`, `model`, `position`, `rotation`, `scale`, `hidden`.
 
