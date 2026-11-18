@@ -549,6 +549,8 @@ an example. Server scripts hear these unless marked (client), or (both) for both
 | `followStarted` (client)           | `target`                   | The local player's scripted follow started.       |
 | `followStopped` (client)           | `target, reason`           | The local player's follow ended.                  |
 | `gameResolutionChanged` (client)   | `width, height`            | The game's frame changed size.                    |
+| `localPlayerAimEnd` (client)       |                            | The local player stopped aiming.                  |
+| `localPlayerAimStart` (client)     |                            | The local player started aiming a bow, crossbow or gun, or works a siege engine (`LocalPlayer.aiming`). |
 | `localPlayerKnockedOut` (client)   |                            | The local player was knocked out (`LocalPlayer.knockedOut`). |
 | `localPlayerRevived` (client)      |                            | The local player, knocked out, was revived.       |
 | `locationDiscovered` (client)      | `locationId`               | The player discovered a map location.             |
