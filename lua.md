@@ -239,6 +239,18 @@ end, 5000)
 clearInterval(heartbeat)
 ```
 
+`os.clock()` is the seconds, with fractions, since the resource's Lua state started (its start or restart),
+on both sides. It never goes back, so the difference of two readings measures a charge time or a timeout.
+Before 1.1.2 it stopped at `-2147.483648` after about 36 minutes of a state; on those versions measure with
+the server's `performance.now()` (milliseconds) or count with `setInterval` in client scripts.
+
+```lua
+local started = os.clock()
+setTimeout(function()
+  print(string.format("waited %.2f s", os.clock() - started))
+end, 1500)
+```
+
 ## What Lua scripts cannot do
 
 - Lua's `io`, `package`, `debug`, `dofile` and `loadfile` are not there, and `os` keeps only `time`, `clock`,

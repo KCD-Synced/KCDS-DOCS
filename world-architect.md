@@ -298,9 +298,13 @@ With nothing chosen in Content, a press in the world uses the tool:
   what the cursor is on: a collision shape whose footprint holds it, your own building, prop, plant or person, or the
   level's own object (a tree, a bush, a building, a table in a house or a level entity), even when a thing of yours
   stands right beside it. Your lights, effects and sounds, which a press cannot touch, are picked within 4 m of it, and
-  a press on open ground picks your nearest thing within 12 m. The level's invisible collision (some buildings have their
-  own, which stays where the building was deleted) is picked and named **Invisible collision**: Delete takes it away
-  like any level object. Its details show where it stands; **Hidden in this game** (or Delete) hides it and takes its
+  a press on open ground picks your nearest thing within 12 m. Deleting or moving a building takes the level's collision
+  of it along, wherever it lies along the building (since 1.1.2: a long wall or a castle ring kept its collision before).
+  Deleting a door or a gate also takes the invisible clip in its opening that only people collide with (since 1.1.2: the
+  big gate of Raborsch left a wall you could not walk through).
+  The level's invisible collision that no shown building takes in (a wall of the level's own, or one left by a work from
+  before) is picked and named **Invisible collision**: Delete takes it away like any level object, and the move arrows
+  and Rotate move and turn it where it stands (since 1.1.2); it keeps its size, and **Export for server** takes it along. Its details show where it stands; **Hidden in this game** (or Delete) hides it and takes its
   collision away, in this game only (a plant drawn in the grass carpet, such as sticks or stones on the ground, takes
   the carpet within 0.6 m of it along). Undo, or the switch again, brings it back. Dragging a level object's arrow (or
   the Move tool), or turning it with Rotate, hides it and puts your own copy there, a prop of its mesh or a plant of its kind, turned as it was (or as you turn it).

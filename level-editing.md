@@ -53,6 +53,38 @@ fence.Restore();
 
 **Entities:** `kind: 'entity'` with a `guid` edits a level entity, and `position`, `rotation` and `scale` move it.
 
+**Collision:** hiding or moving a building takes the level's colliders at its place with it, wherever the collision
+lies along it. Since 1.1.2 `kind: 'collider'` with an `at` edits the level's invisible collision itself, the colliders
+the level stands at that place (`World.raycast`'s `levelObject` of kind `'collider'` names one that no shown building
+takes in): `hidden` takes it away, `position` and `rotation` move it, and it keeps its size.
+
+```js
+// A wall's collision moved 3 m up, leaving the wall drawn where it is: players walk under it.
+const { Vector3 } = kcds.math;
+const wallAt = new Vector3(2414.24, 2621.18, 205.11);
+kcds.world.LevelEdit.apply({ kind: 'collider', at: wallAt, position: new Vector3(wallAt.x, wallAt.y, wallAt.z + 3) });
+```
+
+```ts
+// A wall's collision moved 3 m up, leaving the wall drawn where it is: players walk under it.
+const { Vector3 } = kcds.math;
+const wallAt = new Vector3(2414.24, 2621.18, 205.11);
+kcds.world.LevelEdit.apply({ kind: 'collider', at: wallAt, position: new Vector3(wallAt.x, wallAt.y, wallAt.z + 3) });
+```
+
+```lua
+-- A wall's collision moved 3 m up, leaving the wall drawn where it is: players walk under it.
+local Vector3 = kcds.math.Vector3
+local wallAt = Vector3.new(2414.24, 2621.18, 205.11)
+kcds.world.LevelEdit.apply({ kind = "collider", at = wallAt, position = Vector3.new(wallAt.x, wallAt.y, wallAt.z + 3) })
+```
+
+```cs
+// A wall's collision moved 3 m up, leaving the wall drawn where it is: players walk under it.
+var wallAt = new Vector3(2414.24, 2621.18, 205.11);
+LevelEdit.Apply(new { kind = "collider", at = wallAt, position = new Vector3(wallAt.X, wallAt.Y, wallAt.Z + 3) });
+```
+
 **Story states:** the level keeps each state the story puts a place in (a yard before and after a siege, a forge broken
 and rebuilt) as layers, and the game shows one state of each place. `kind: 'layer'` with a layer's full `name` turns that
 layer off (`hidden: true`) or on for every player, with its buildings, their collision, its entities and lights, so you can
@@ -96,7 +128,10 @@ or wherever a move puts it. `LevelEdit.apply({ ...object, model: 'stump_fagus_sy
 **Collision:** a hidden brush takes its collision with it, including a building's colliders. In the villages, a house's outside,
 inside and distant copy stand in one place, and the level keeps their collision separately. Hiding any of those brushes removes
 every collider at exactly that place, so the house is gone for walking and for rays, until `restore()`. A moved house also takes its
-colliders, so no invisible walls stay behind, but it has no collision at its new place.
+colliders, so no invisible walls stay behind, but it has no collision at its new place. Since 1.1.2 a hidden or moved brush
+also takes the level's invisible clips inside its bounds: brushes drawn with a collision proxy material that only people collide
+with, such as the one in the opening of Raborsch's big gate. Without that, a deleted gate left a wall that players walked into
+while rays passed through. The clips come back with the brush.
 
 **Lifetime:** edits are in memory, so a restart restores the level. `LevelEdit.all()` and `LevelEdit.restoreAll()` list and undo
 them.

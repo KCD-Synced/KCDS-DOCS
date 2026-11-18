@@ -499,6 +499,73 @@ Any resource can read a registered type back: `Items.info('myres:sealed_letter')
 and `description` it was registered with, so a shop or an admin menu of another resource can show it by name. The
 game's own items have `null` there; their names are translated in each player's game.
 
+### Crowns as items
+
+The game's crowns have no item of their own: Sigismund's crown is part of his hair, and the two wreaths for a man's
+head are put on by no item. A type registered with `crown` (one of `'sigismund'`, `'wreath'` or `'twitchWreath'`, as
+[Player.crown](/docs/api/player) takes them) is one. It is always usable, its use action reads **Wear** unless you give
+a `useLabel`, and using it puts the crown on the player over their own hair or takes it off again; everyone sees it. A
+crown worn from an item comes off when the player no longer holds an item of that type, after dropping, selling or
+giving it away. `Items.info` has the type's `crown`.
+
+```js
+const { Items } = kcds.players;
+
+const crown = Items.register('regalia:sigismund_crown', {
+  name: "Sigismund's crown",
+  description: 'The crown of the King of Hungary.',
+  visual: 'loot_necklace_gem',
+  weight: 1.5,
+  price: 5000,
+  crown: 'sigismund',
+});
+player.giveItem(crown);
+```
+
+```ts
+const { Items } = kcds.players;
+
+const crown = Items.register('regalia:sigismund_crown', {
+  name: "Sigismund's crown",
+  description: 'The crown of the King of Hungary.',
+  visual: 'loot_necklace_gem',
+  weight: 1.5,
+  price: 5000,
+  crown: 'sigismund',
+});
+player.giveItem(crown);
+```
+
+```lua
+local Items = kcds.players.Items
+
+local crown = Items.register("regalia:sigismund_crown", {
+  name = "Sigismund's crown",
+  description = "The crown of the King of Hungary.",
+  visual = "loot_necklace_gem",
+  weight = 1.5,
+  price = 5000,
+  crown = "sigismund",
+})
+player:giveItem(crown)
+```
+
+```cs
+var crown = Items.Register("regalia:sigismund_crown", new
+{
+    name = "Sigismund's crown",
+    description = "The crown of the King of Hungary.",
+    visual = "loot_necklace_gem",
+    weight = 1.5,
+    price = 5000,
+    crown = "sigismund",
+});
+player.GiveItem(crown);
+```
+
+To give a player Sigismund's hair without his crown, set the hair and turn the hair's crown off:
+`player.setAppearance({ hair: 'm_hair_zikmund' })` and `player.hairCrown = false`.
+
 ## Changing the game's items
 
 `Items.override(item, { weight, price, max, ...stats })` changes an item for all players, where `max` is the most units
