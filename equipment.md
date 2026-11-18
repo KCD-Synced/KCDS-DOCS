@@ -130,6 +130,24 @@ slots and a pouch adds item slots.
 has selected (from 0), the one their weapon key draws. A body without a belt has only the first set: a weapon put in another one is left
 out, and the client log says `the outfit cannot use the slot`.
 
+**What fits in the sets together:** the body holds one weapon of each weapon slot across all four sets, as the game's weapon table
+gives it (`Items.info(item).weaponSlot`):
+
+| `weaponSlot` | Weapons                                                   | Goes in a set as |
+| ------------ | --------------------------------------------------------- | ---------------- |
+| `mainHand`   | sword, sabre, longsword, hunting sword, axe, mace, flail  | `primary`        |
+| `polearm`    | halberds and other polearms                               | `primary`        |
+| `ranged`     | bow, crossbows, handgonne                                 | `primary`        |
+| `offHand`    | shields                                                   | `secondary`      |
+| `dagger`     | daggers, worn apart from the sets                         | none             |
+| `torch`      | the torch, in a slot of its own                           | none             |
+
+So a longsword, a polearm and a bow can each have a set of their own, but two longswords, or a longsword and an axe, cannot: the game
+keeps the weapon of the later set and takes the other off, switching the selected set by itself. Since 1.1.2 `Inventory.set` refuses
+two equipped weapons of one slot with `invalidEquipment` and the conflict `{ rule: 'sameWeaponSlot', weaponSlot }`, and
+`Player.equip` of a weapon takes off the one of its slot. To switch between two weapons of one slot, change which row is `equipped`
+and the set's `primary` in one `Inventory.set`.
+
 **Arrows and bolts** are equipped in the set of the bow or crossbow that shoots them, as its `secondary`. That is what the game's own
 Equip does with arrows, and only then does the game count them as equipped: the inventory marks the bow and the arrows, and the HUD shows
 the bow with the number of arrows. Wearing the arrows (`equipped`) is not enough. The player draws the selected set with their weapon key.
