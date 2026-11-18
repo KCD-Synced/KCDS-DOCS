@@ -358,6 +358,11 @@ Events.On("playerHarm", object? (Player player, JsValue harm) =>
   physics, seen by all; `null` takes it away and `physicalProp` reads it.
 - `setPoseAnimation({ keys, blend, loop })` plays a key animation (joint turns over time) on top of the body's own
   animation, seen by all, until it is set to `null`; `poseAnimation` reads it.
+- `crown` puts one of the game's crowns on their head over their own hair, seen by all: `'sigismund'` (Sigismund's
+  crown without his hair), `'wreath'` or `'twitchWreath'` (the two wreaths for a man's head that no game item puts
+  on); `null` takes it off. It is drawn over a helmet or hood too. `hairCrown = false` draws a hair that carries a
+  crown, Sigismund's `m_hair_zikmund`, without it. An item registered with `crown` puts the crown on and takes it
+  off when used (see [Inventory and items](/docs/inventory)).
 - `clean()` and `soil()` change dirt and blood, and `grime` reads them.
 - `setGrimeRate(rate)` scales how fast walking and riding dirty them, as the game does it: 1 is the game's rate, `0`
   none, `3` three times as fast, up to 100. `grimeRate` reads it. It shows no status entry and lasts until they leave.
