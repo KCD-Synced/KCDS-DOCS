@@ -300,6 +300,8 @@ With nothing chosen in Content, a press in the world uses the tool:
   stands right beside it. Your lights, effects and sounds, which a press cannot touch, are picked within 4 m of it, and
   a press on open ground picks your nearest thing within 12 m. Deleting or moving a building takes the level's collision
   of it along, wherever it lies along the building (since 1.1.2: a long wall or a castle ring kept its collision before).
+  Deleting a door or a gate also takes the invisible clip in its opening that only people collide with (since 1.1.2: the
+  big gate of Raborsch left a wall you could not walk through).
   The level's invisible collision that no shown building takes in (a wall of the level's own, or one left by a work from
   before) is picked and named **Invisible collision**: Delete takes it away like any level object, and the move arrows
   and Rotate move and turn it where it stands (since 1.1.2); it keeps its size, and **Export for server** takes it along. Its details show where it stands; **Hidden in this game** (or Delete) hides it and takes its
