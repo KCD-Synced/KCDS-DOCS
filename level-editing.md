@@ -128,7 +128,10 @@ or wherever a move puts it. `LevelEdit.apply({ ...object, model: 'stump_fagus_sy
 **Collision:** a hidden brush takes its collision with it, including a building's colliders. In the villages, a house's outside,
 inside and distant copy stand in one place, and the level keeps their collision separately. Hiding any of those brushes removes
 every collider at exactly that place, so the house is gone for walking and for rays, until `restore()`. A moved house also takes its
-colliders, so no invisible walls stay behind, but it has no collision at its new place.
+colliders, so no invisible walls stay behind, but it has no collision at its new place. Since 1.1.2 a hidden or moved brush
+also takes the level's invisible clips inside its bounds: brushes drawn with a collision proxy material that only people collide
+with, such as the one in the opening of Raborsch's big gate. Without that, a deleted gate left a wall that players walked into
+while rays passed through. The clips come back with the brush.
 
 **Lifetime:** edits are in memory, so a restart restores the level. `LevelEdit.all()` and `LevelEdit.restoreAll()` list and undo
 them.
