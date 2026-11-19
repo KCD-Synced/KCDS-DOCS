@@ -179,6 +179,32 @@ Events.On("consoleCommand", (string command, string[] args) =>
 
 For a fuller setup, see [Trying code quickly](playground.md).
 
+## When the server says the script runtime was held
+
+All server resources share one script runtime. While one resource's code runs, every other resource and every
+server event waits, so a resource that computes for long makes the whole server late. When one piece of code
+holds the runtime for more than 200 ms, the server log says so as it ends, under the resource's name:
+
+```
+RESOURCE [shop] The script runtime was held for 2710 ms by shop (setInterval callback, every 60000 ms); every resource and server event waited
+```
+
+The part in brackets is what ran: an event handler (`resourceStart handler`, `playerJoin handler`), a timer
+(`setTimeout callback`), a message handler, an HTTP route, or a script being loaded (`loading server/main.js`).
+Each one counts only its own time. A resource that took a fair share of the same hold is named after it. A
+resource logs such a line at most every 10 seconds, and its next line counts the holds in between.
+
+Code that runs after an `await` is not started by a handler or a timer. When a hold has no handler or timer
+behind it, the log says so, and for the next 10 minutes the server times code after `await` as well. The next
+hold of that kind is then logged as `by shop (code after an await)`.
+
+The **Script time (last min)** column on the Resources tab of KCDS-Admin shows how long each resource's code
+ran in the last minute, and its slowest run of the last 10 minutes. Hover over it for the five slowest runs.
+
+To fix a hold, split the work into short pieces. For example, handle a long list a few hundred items at a
+time with `setTimeout(next, 0)` between the pieces, and on a timer update only what changed rather than
+everything.
+
 ## Common problems
 
 | Symptom                                                  | Likely cause                                                                                 |
