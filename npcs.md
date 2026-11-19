@@ -208,7 +208,8 @@ ends (`hold()` or done).
 own animation and stays seated. `npc.stopUsingObject()` gets it up again, and `npc.usingObject` says what it uses.
 `npcObjectUseStarted` fires when it sits, and `npcObjectUseEnded` when the use ends: `'stopped'`, `'blocked'` (it could
 not walk there), `'interrupted'` (another order, a hit, its death, or the object's removal) or `'refused'`. A seat takes
-one NPC at a time, and a player who comes later sees the NPC seated.
+one NPC at a time, and a player who comes later sees the NPC seated. Once seated or lying, the NPC is on the seat
+in every game, and when it gets up it stands where the game's own stand-up ends.
 
 ```js
 const bench = kcds.world.SmartObject.spawn({ blueprint: 'Bench/bench_2places_low', position: [10, 20, 30] });
@@ -263,7 +264,8 @@ Events.On("npcObjectUseStarted", (Npc npc) =>
 The level's own benches, chairs, ground seats and beds work too, and so do its work places: a smith forges at his
 anvil, an apothecary works at an alchemy table or a mortar until `stopUsingObject`.
 `kcds.world.SmartObject.levelPlaces(position, radius)` lists the ones near a point, nearest first, as
-`{ guid, kind, position, free }` with `kind` `'seat'`, `'bed'` or `'work'`, and `useObject` takes one:
+`{ guid, kind, position, rotation, free }` with `kind` `'seat'`, `'bed'` or `'work'` and `rotation` the place's
+facing as a quaternion, and `useObject` takes one:
 
 ```js
 const villager = kcds.characters.Npc.create({ position: { x: 1995, y: 2536, z: 120 } });

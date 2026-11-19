@@ -3,6 +3,13 @@
 Client scripts can ask their own game about the world and get the answer within a frame or two, with no trip to
 the server. This suits aiming, fishing, building, or pressing a key while looking at something.
 
+Every client resource of a player runs in one worker, and a question such as `World.raycast` waits for the game's
+next frame: while it waits, no other client script runs. Ask on a key or an event rather than from a fast timer.
+`Camera.getPose()` costs no wait (it reads the camera the game streams, as `Hud.worldToScreen` does), so a compass
+or another HUD may read it every few milliseconds. When a resource's questions hold the client scripts for more
+than 200 ms within a second, the player's client log names it and its calls, for example `my_hud held the client
+scripts for 640 ms in the last second waiting for the game (World.raycast ×38)`.
+
 ```js
 // client
 const { Key, Camera } = kcds.ui;

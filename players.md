@@ -111,6 +111,10 @@ An `id` is unique while the server runs and is never reused. `playerIndex` is th
 - `teleport(position, label?)`: moves them on their next frame
 - `spawn(position, rotation)`: used inside `playerSpawning` to choose where they appear when joining
 
+In a client script, `LocalPlayer`'s `position`, `rotation`, `velocity`, `gaze`, health, stamina, exhaustion, hunger
+and conditions come from the player's own game as it has them now, without the trip to the server and back that
+other players' values take. A HUD bar or a turn the script watches follows the game's own.
+
 **Drawing things on a body:** in a client script, another player's `position` moves in steps as network updates arrive,
 40 to 150 ms apart, while the game draws the body smoothly. For anything attached to the body, ask where the game is
 drawing it:
@@ -204,6 +208,66 @@ foot, on a horse and in a cart. In the left hand the body holds it as the game's
 held out; in the right hand it hangs from the hand. A rider carries it in the right hand, since the left holds the
 reins, and it goes back to the chosen hand on foot. Every player sees it, later joiners too, until it is set to
 `null`, the player leaves or the resource that lit it stops. A new call replaces the lantern.
+
+## Holding a hand at a point
+
+`player.setHandTarget(hand, options)` holds the `'right'` or `'left'` hand at a point: every player's game bends
+that player's arm (shoulder, elbow, hand) each frame so the hand's grip, the point held items sit at, is there, on
+top of whatever the body plays, walking and running too. The point is on the body's axes in metres (`x` to the
+right, `y` forward, `z` up) from the feet, or from a joint such as `'RightArm'` with `relativeTo`. The hand keeps
+the turn its animation gives it, so a cup stays upright, unless `rotation` gives one. `pole` is a point the elbow
+bends toward, `weight` (0 to 1) how much of the hold is applied, and `blend` the seconds it takes to reach the hold
+and to let go of it (0.2 by default). `firstPerson: { position, rotation }` is used instead only in the player's own
+first-person view, so an item can sit in view without changing what others see. `null` lets the hand go, and
+`player.handTargets` says where both hands are held. Everyone sees it, later joiners too.
+
+```js
+// The game's cup hold, with the mug raised in front of the chest, and higher in the player's own view.
+player.playAnimation('HoldItemRight', { tags: 'r_cup', loop: true });
+player.setHandTarget('right', {
+  position: { x: 0.15, y: 0.45, z: 1.35 },
+  firstPerson: { position: { x: 0.12, y: 0.5, z: 1.5 } },
+});
+// Later: let go.
+player.setHandTarget('right', null);
+```
+
+```ts
+// The game's cup hold, with the mug raised in front of the chest, and higher in the player's own view.
+player.playAnimation('HoldItemRight', { tags: 'r_cup', loop: true });
+player.setHandTarget('right', {
+  position: { x: 0.15, y: 0.45, z: 1.35 },
+  firstPerson: { position: { x: 0.12, y: 0.5, z: 1.5 } },
+});
+// Later: let go.
+player.setHandTarget('right', null);
+```
+
+```lua
+-- The game's cup hold, with the mug raised in front of the chest, and higher in the player's own view.
+player:playAnimation("HoldItemRight", { tags = "r_cup", loop = true })
+player:setHandTarget("right", {
+  position = { x = 0.15, y = 0.45, z = 1.35 },
+  firstPerson = { position = { x = 0.12, y = 0.5, z = 1.5 } },
+})
+-- Later: let go.
+player:setHandTarget("right", nil)
+```
+
+```cs
+// The game's cup hold, with the mug raised in front of the chest, and higher in the player's own view.
+player.PlayAnimation("HoldItemRight", new { tags = "r_cup", loop = true });
+player.SetHandTarget("right", new
+{
+    position = new { x = 0.15, y = 0.45, z = 1.35 },
+    firstPerson = new { position = new { x = 0.12, y = 0.5, z = 1.5 } },
+});
+// Later: let go.
+player.SetHandTarget("right", null);
+```
+
+To work out joints yourself, `kcds.characters.Animations.skeleton()` in a client script lists the local body's
+joints with their parents and rest pose.
 
 ## What the player's game supports
 
