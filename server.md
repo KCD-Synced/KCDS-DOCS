@@ -419,6 +419,10 @@ asked to verify anything, and `discordVerified` tells your resources who did ([I
 `KCDS_SERVER_PASSWORD`, 1 to 64 characters, admits only players who type it. The browser marks the server PASSWORD and asks before the first try. A player joining by address
 without it, or with a wrong one, sees "The gate is locked" with a password field, and joins once they enter the right one.
 
+Under the field, **Remember password** keeps it for that server (by its listing, or by the address joined), and the next join uses
+it without asking. The game keeps remembered passwords on the player's PC, encrypted for their Windows account. When you change the
+password, a player whose remembered one is refused is told so and asked for the new one as usual; the old one is forgotten.
+
 The password is checked before the whitelist and before your `playerConnecting` handlers, and `info.json` says `"password": true`.
 
 **How it is protected:** the game sends a SHA-256 proof made with the server's one-time handshake number, not the password, so a proof works for only that connection. The
