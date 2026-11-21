@@ -257,6 +257,10 @@ A hive becomes a server chest once a player first comes within 60 m. It then app
 `Stash.find(placedGuid)`, and scripts can change its stock like any other chest's. The level's other containers
 stay with the game.
 
+A server whose resources give the honey themselves (a beekeeper's job, say) sets `"beehiveHoney": false` in
+`server.json`. The hives are still the server's chests, so no player's game fills one by itself, but KCDS
+puts no honey in them and nothing grows back: they hold only what your scripts add.
+
 ## Horse saddlebags
 
 Each server horse has saddlebags held by the server. `horse.storage` is a `Stash` with the usual `getInventory`,
