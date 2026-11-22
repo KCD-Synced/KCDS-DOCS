@@ -21,8 +21,11 @@ Any of these can refuse a player, and the server browser tells them why. The pas
 `playerConnecting` handlers.
 
 1. **KCDS version.** It must match the server's. Whichever way they joined, a player on another version is told which one the server runs, such
-   as "This server runs KCDS 0.3.4.1. Your KCDS is another version: join with KCDS 0.3.4.1." The browser then offers the update, or says the
-   server is on an older version.
+   as "This server runs KCDS 0.3.4.1. Your KCDS is another version: join with KCDS 0.3.4.1." Since 1.2.0, when the server runs 1.2.0 or newer,
+   the dialog offers **Switch to <version>**: the game keeps running, the launcher downloads that version (only the files that differ from the
+   player's, verified like an update) into its own folder, the game swaps to it in the main menu and joins your server. Your server needs nothing
+   for it, and players keep their own install. A server on a version older than 1.2.0 gets the plain dialog: the browser offers the update, or
+   says the server is on an older version.
 2. **Level.** A server on `klaster` needs the game's DLC, and a player without it is told before anything loads.
 3. **Legal copy.** Their game proves to KCDS Master that its store owns the game, and brings a pass for this server ([A legal copy of the
    game](licence.md)). Without one they see "This copy cannot be verified". A player on the central ban list gets no pass.
