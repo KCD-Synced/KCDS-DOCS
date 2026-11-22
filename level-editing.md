@@ -121,7 +121,7 @@ LevelEdit.Apply(new { kind = "layer", name = "beforeSiege_cf5fd30a-16c1-49d6-be2
 LevelEdit.Apply(new { kind = "layer", name = "afterSiege_cc65bb6c-512f-48a7-acaa-9faa773dfc40", hidden = true });
 ```
 
-**Named story places** (since 1.1.5): a KCDS world runs no campaign, so a place the story changes stays as the level
+**Named story places** (since 1.2.0): a KCDS world runs no campaign, so a place the story changes stays as the level
 starts it. Suchdol village, for one, has no Sigismund's army camp. `LevelEdit.story(place, states)` puts a known place in
 the states you name, for every player: their layers on, the place's other states off. Call it again to change the place,
 and pass `null` to put it back as a KCDS world starts it. `LevelEdit.stories()` lists the places, their states and the
