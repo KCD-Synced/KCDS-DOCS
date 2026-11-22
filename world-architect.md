@@ -162,16 +162,22 @@ with **W A S D**; let go and the cursor is back. The editor opens while the worl
 | Tab            | Hides the side panels and the dock; again shows them      |
 | Ctrl+D         | Duplicates the selection beside it                        |
 | Shift + press  | Adds a thing to the group, or takes it out (Ctrl too)     |
-| Select drag    | A box: the things of yours in it become the group         |
+| Select drag    | A box: everything in it becomes the group (yours and the level's own) |
 | Ctrl+C, Ctrl+V | Copies the group; the copy hangs on the cursor until a press puts it down, on any map |
 | Ctrl+S         | Keeps the work now, and writes the save named in Saves      |
 | Escape         | Stops placing; pressed again, clears the selection        |
 
-**A group** (things picked with Shift or Ctrl and Select, or by dragging a box with Select over the things of yours you
-want: their places in the box; with Shift or Ctrl the box adds to the group) moves, turns and is deleted with its selection: Move or the X, Y and
+**A group** (things picked with Shift or Ctrl and Select, or by dragging a box with Select over what you want: everything
+whose place shows in the box, your things and the level's own buildings, walls, furniture, trees, bushes and the
+entities it names such as doors, beds and lights; with Shift or Ctrl the box adds to the group, each thing once) moves, turns and is deleted with its selection: Move or the X, Y and
 Z arrows shift all of it by the same amount (while you drag, the whole group is shown moving), Rotate turns all of it about the selection, and Delete takes it all away,
 each as one Undo step. Your props and plants and the level's own objects (buildings, trees, bushes) can be in one
 group.
+
+**Everything in a building**: with a building selected (the level's own or a house of yours), **Select everything
+inside** in Details makes the group the building and everything standing within its box: your things and the level's
+own furniture, doors, lights and plants. The building stays selected, so Move, Rotate or Delete takes the whole house
+with what is in it.
 
 **A copy goes to another map**: Ctrl+C keeps the copied group on this PC, so after Map → another map (Kutnohorsko to
 Trosecko, or a custom map) Ctrl+V puts it down there. The level's own buildings, props, trees and bushes in it become
