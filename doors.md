@@ -467,9 +467,10 @@ firstGate.Close(new { bar = false }); // closes without replacing the bar
 - **Bars:** `hasBar`, `barred`, `removeBar()`, and `placeBar()`, which leaves the gate shut.
 - **Gates that are part of the map:** the gates of Nebákov (`brush/nebakov_gate`), Semín (`brush/semine_gate` and
   `brush/semine_barn_gate`) and the lower gate of Trosky (`brush/trosky_lower_gate`) are drawn as part of the map,
-  not as objects of their own. They are gates too, with the states `closed` and `open`. Their leaves swing on their
-  hinges; a gate drawn as one model (Nebákov, Trosky) turns into the game's own opened model. Each player's game takes
-  the map's leaves out, collision included, and moves its own.
+  not as objects of their own. They are gates too, with the states `closed` and `open`, and stand as the map has them
+  until a resource sets one: Nebákov's and the Trosky gate closed, Semín's open (their leaves stand ajar). Leaves swing
+  on their hinges; a gate drawn as one model (Nebákov, Trosky) turns into the game's own opened model. Each player's
+  game takes the map's leaves out and moves its own; the gate's walls stand only while it is closed.
 - **Events:** `gateChanged`, `gateBarChanged`.
 
 Reference: [Gate](/docs/api/gate).
