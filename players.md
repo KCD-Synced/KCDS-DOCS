@@ -437,7 +437,9 @@ Events.On("playerHarm", object? (Player player, JsValue harm) =>
 
 A woman is put on the female skeleton, on her own screen and everyone else's, so she moves, holds weapons and rests her
 hands as a woman. She keeps what she wore and held. The game's rule keeping women from alchemy tables, the grindstone,
-horses, carrying bodies and pickpocketing does not apply to players.
+horses, carrying bodies and pickpocketing does not apply to players. The game's people do not remark on a woman in a
+dress as if she wore nothing on her legs (the game counts only hose as covering them); a woman with nothing on gets no
+such remark either.
 
 ## Removing players
 
