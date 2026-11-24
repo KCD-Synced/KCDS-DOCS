@@ -21,4 +21,8 @@ compass marks. `kcds.world.Travel.active` is true during fast travel.
 Map icons for everyone come from the server; see [Markers and blips](markers.md). `blip.legend = false` keeps a blip
 shown when its type is off in the map legend.
 
+A server's world shows none of the game's own map marks but town names. A blip of a type (say `HorseTrader`) shows
+on the map without bringing back the game's own points of that type, such as the single player's horse traders. To
+show the game's own points of a type as well, call `WorldMap.setMapCategory(type, true)`.
+
 Reference: [WorldMap](/docs/api/worldmap), [Compass](/docs/api/compass), [Travel](/docs/api/travel).
