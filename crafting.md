@@ -140,6 +140,77 @@ game's syntax, joined by `AND`:
 
 **Smithing** needs a `category` and a `workpiece`. `perk` is the perk that teaches it, and without one all smiths know it.
 
+The recipe book's tabs are the game's own: short swords, long swords, axes and other (and potions, poisons and herbs for
+alchemy), and each recipe goes on the tab of its `category`. The book shows every tab whatever your recipes hold. A client
+script can switch off the tabs your recipes leave empty each time the book opens, with
+[NativeElement.invoke](/docs/api/nativeelement) and the book's `SetEnableTabButton`:
+
+```js
+// client: all of this server's smithing recipes are in Other
+kcds.core.Events.on('nativeScreenOpened', (name) => {
+  if (name !== 'ApseCraftingList') {
+    return;
+  }
+  setTimeout(() => {
+    const list = kcds.ui.NativeUI.element('ApseCraftingList');
+    for (const tab of [0, 1, 2]) {
+      list.invoke('', 'SetEnableTabButton', [tab, false]);
+    }
+  }, 200);
+});
+```
+
+```ts
+// client: all of this server's smithing recipes are in Other
+kcds.core.Events.on('nativeScreenOpened', (name: string) => {
+  if (name !== 'ApseCraftingList') {
+    return;
+  }
+  setTimeout(() => {
+    const list = kcds.ui.NativeUI.element('ApseCraftingList');
+    for (const tab of [0, 1, 2]) {
+      list.invoke('', 'SetEnableTabButton', [tab, false]);
+    }
+  }, 200);
+});
+```
+
+```lua
+-- client: all of this server's smithing recipes are in Other
+kcds.core.Events.on("nativeScreenOpened", function(name)
+  if name ~= "ApseCraftingList" then
+    return
+  end
+  setTimeout(function()
+    local list = kcds.ui.NativeUI.element("ApseCraftingList")
+    for _, tab in ipairs({ 0, 1, 2 }) do
+      list:invoke("", "SetEnableTabButton", { tab, false })
+    end
+  end, 200)
+end)
+```
+
+```cs
+// client: all of this server's smithing recipes are in Other
+Events.On("nativeScreenOpened", (string name) =>
+{
+    if (name != "ApseCraftingList")
+    {
+        return;
+    }
+    Timers.SetTimeout(() =>
+    {
+        var list = NativeUI.Element("ApseCraftingList");
+        foreach (var tab in new[] { 0, 1, 2 })
+        {
+            list.Invoke("", "SetEnableTabButton", new object[] { tab, false });
+        }
+    }, 200);
+});
+```
+
+The tabs are numbered 0 short swords, 1 long swords, 2 axes, 3 other, 4 potions, 5 poisons and 6 herbs.
+
 **Pictures** are base64 PNGs with 8 bits per channel, not interlaced, up to 4096x4096. They are fitted to size with the
 aspect ratio kept and the rest transparent.
 
