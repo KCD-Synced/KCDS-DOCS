@@ -264,9 +264,12 @@ opens in the same light. While Freeze weather is on, the game's own weather does
 - **Collision:** your own invisible solid shapes, drawn in orange while this mode is open: a wall (6 by 0.3 by 3 m), a floor
   (4 by 4 m), a ramp (3 by 5 m, leaning 20 degrees, its low edge on the ground) or a box (2 m). They block players and
   horses.
-- **Props:** any object of the game's own catalogue (over 11,000 meshes) in seven folders: Furniture, Decorations,
-  Fixtures and lights, Tools, food, carts, Work props, Rocks and stones, and Building parts (walls, beams, roofs, stairs
-  and the like), and **Yours**: your own models (see below). A prop stands solid where you put it, turned with the angle
+- **Props:** any object of the game's own catalogue (over 11,000 meshes) in nine folders: Furniture, Decorations,
+  Fixtures and lights, Tools, food, carts, Work props, Rocks and stones, Building parts (walls, beams, roofs, stairs
+  and the like), Paving, roads, banks (the level designers' pieces: the stone pavement and garden curbs, road,
+  river bank and creek pieces), and Game doors (the game's own door leaves, 73 of them: placed at their hinge, the
+  server export hangs each as a working door that players open, close, lock and pick as the level's own, see
+  [Doors](doors.md)), and **Yours**: your own models (see below). A prop stands solid where you put it, turned with the angle
   snap; it moves with the arrows and is kept in the project and in saves, in this game only. Its **Material** row in
   Details draws it with one of your own materials instead of its own.
 - **Effects:** Lights, Sounds, and the game's particle effects (583): Fire and explosions, Smoke and dust, Weather and water
