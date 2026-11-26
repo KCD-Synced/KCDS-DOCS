@@ -618,6 +618,9 @@ prisoner.DetachProp(sack); // or its id
   between the feet, turned as the body faces (x to the right, y forward, z up). It follows where the body walks and turns, but not its animation, so it
   does not follow the hands or the head; for that, give their joint.
 - It goes when the player leaves. `detachProp(prop)` removes it sooner, and returns true if it was this player's.
+- NPCs and horses take the same options: `npc.attachProp(...)` and `horse.attachProp(...)` (since 1.2.3), such as a lantern in a
+  guard's hand or a sack on a pack horse. The prop goes when the NPC or horse is destroyed, and `detachProp(prop)` removes it sooner.
+  `prop.attachedBody` is the player, NPC or horse it hangs on; `prop.attachedTo` stays the player only.
 
 ### The game's brand
 

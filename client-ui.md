@@ -113,6 +113,10 @@ Parts include `Compass`, `Stats`, `QAMWeapon`, `QAMFood`, `Subtitles`, `InfoText
 `DialogLeft`, `DialogRight`, `Cursor`, `Crime`, `Wanted`, `Buffs`, `Trespassing` and `Vignette`; see
 [Hud](/docs/api/hud) for all. A part stays hidden while any resource hides it.
 
+`OpponentHealth` (since 1.2.3) is the opponent's health and how close their guard is to breaking, shown above the
+compass in a fight. Hide it when players should not see how hurt the other is:
+`kcds.ui.Hud.setHudPart('OpponentHealth', false)`.
+
 ### The crosshair while aiming
 
 `Cursor` holds the crosshair and the melee combat star together. Three of its parts can be set on their own:
