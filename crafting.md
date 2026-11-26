@@ -259,8 +259,8 @@ a level (`autolearnable="false"`), with a GUID of your own:
 
 When the resource starts, the server log says `recipe perks 6b1f3c2e-... -> 910001 added from perk_recipe__my_alchemy.xml`,
 and the recipe's `perks` lists the perk. Players' games load both files with the game's own tables at their next start,
-as they load [custom perks](custom-perks.md): a player who joins before that sees "This server has perks of its own.
-Restart the game to have them." From then on, `player.learnRecipe(id)` or `Crafting.grantKnowledge(player, 910001,
+as they load [custom perks](custom-perks.md): a player who joins before that sees "This server has game data of its
+own (perks, items or clothing). Restart the game to have them." From then on, `player.learnRecipe(id)` or `Crafting.grantKnowledge(player, 910001,
 536870911)` gives the perk, and the recipe is in their book with its name, usage text and steps. `Crafting.knowledge`
 reports it whole. The same works for a row of your own `AlchemyRecipe__<name>.xml`.
 

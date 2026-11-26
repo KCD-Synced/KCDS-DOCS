@@ -273,4 +273,47 @@ their full paths, such as `objects/kcds/furniture/chair_diff.dds`.
 
 `Audio.silenceEntity(entityId)` stops every sound on an entity in this game, the game's own included.
 
+## Game mods: items, clothing and hair
+
+A mod for the game, such as one from Nexus Mods with new clothes, hair or weapons, works on a KCDS server as a
+resource. Every player who joins receives it, and nobody installs anything by hand.
+
+1. Open the mod's `.pak` files (each is a zip archive) and copy what they hold, at the same paths, into your
+   resource's `replace/` folder.
+2. Keep the mod's table patches as they are: files named `<table>__<name>.xml` under `replace/Libs/Tables/`, such as
+   `Libs/Tables/item/item__mymod.xml` for its items and `Libs/Tables/Character/CharacterComponent__mymod.xml` for
+   its clothing and hair.
+3. Start the resource. The server log lists the mod's items:
+   `items mod_cloak_m01, mod_hood_m01 added from item__mymod.xml`.
+
+```text
+resources/
+  tailor/
+    package.json
+    replace/
+      Libs/Tables/item/item__tailor.xml
+      Libs/Tables/Character/CharacterComponent__tailor.xml
+      Objects/characters/tailor/cloak_m01.skin
+      Objects/characters/tailor/cloak_m01.mtl
+      Objects/characters/tailor/cloak_m01_diff.dds
+```
+
+The game reads its tables only when it starts. A player joining for the first time sees "This server has game data of
+its own (perks, items or clothing). Restart the game to have them." Their game keeps the server's table patches in
+`%LOCALAPPDATA%\KCDS\startup-tables\` and loads them with its own tables at every later start for that server. The
+models and textures arrive with the other `replace/` files when the player joins.
+
+On the server, the mod's items are like the game's own: `Inventory.add`, shops, stashes, the ground and
+`Player.equip` take them by name or GUID, and `Inventory.classes` lists them. A worn piece goes in the slot of its
+clothing's armour type, which the mod's `CharacterComponent` patch gives, or the game's clothing it derives from. A
+row with the GUID of one of the game's items changes that item for everyone, as the mod does.
+
+- Patches of the recipe and workpiece tables (`AlchemyRecipe__`, `BlacksmithRecipes__`, `BlacksmithWorkpieces__`)
+  need no restart: they load while the game runs; see [Crafting](crafting.md).
+- A mod that replaces a whole table (`item.xml` instead of `item__mymod.xml`) is not supported: ask its author for
+  a patch, or turn it into one.
+- Mods that change the game's code or scripts (`.dll` files, Lua) do not work through a resource.
+- The mod's own texts (its item names) come from its localisation files; an item whose name key no file holds
+  shows the key itself.
+
 Reference: [Audio](/docs/api/audio), [Assets](/docs/api/assets).
