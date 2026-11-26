@@ -65,12 +65,13 @@ simplest is a buff the perk holds while learned, `perk_buff__my_server.xml` (a b
 
 ## How players get it
 
-When a player joins, their game keeps every `perk*__*.xml` it receives, for that server, in
-`%LOCALAPPDATA%\KCDS\startup-tables\`. If these are not the patches the game started with, the player sees "This
-server has perks of its own. Restart the game to have them." After the restart the game loads them with its own
-tables, as it loads its own `perk__kcd2.xml`. A game started for a server (a join link, `--connect`) loads that
-server's perks; any other start loads those of the last server joined. A file outside `Libs/Tables/rpg/perk*__*.xml`
-takes effect at once, as any `replace/` file does.
+When a player joins, their game keeps every table patch (`Libs/Tables/<folder>/<table>__<name>.xml`) it receives,
+for that server, in `%LOCALAPPDATA%\KCDS\startup-tables\`. If these are not the patches the game started with, the
+player sees "This server has game data of its own (perks, items or clothing). Restart the game to have them." After
+the restart the game loads them with its own tables, as it loads its own `perk__kcd2.xml`. A game started for a server
+(a join link, `--connect`) loads that server's patches; any other start loads those of the last server joined. Any
+other `replace/` file takes effect at once. The same way brings a mod's items and clothing; see
+[Game mods](audio-and-assets.md#game-mods-items-clothing-and-hair).
 
 ## Its icon
 

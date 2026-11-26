@@ -423,6 +423,9 @@ with all inventory, stash and ground item calls. When no such item looks right, 
 catalogue instead, such as `model: 'manmade/common_furniture/bucket/bucket_a_a'`: the item lies on the ground as that
 mesh, shows it in shops, and `Items.model` returns it. The icon still comes from `visual`, or from `icon`.
 
+For items with models of their own, such as a mod's clothes or weapons, ship the mod's item table patch instead; see
+[Game mods](audio-and-assets.md#game-mods-items-clothing-and-hair).
+
 ```js
 const { Items } = kcds.players;
 

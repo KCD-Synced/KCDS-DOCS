@@ -668,6 +668,36 @@ Npc.SetPopulation(new { enabled = false }); // only your own NPCs
 Which ones is fixed by each placement, so every player and every start sees the same people, and a smaller share only
 takes people away. It counts the server's own people, not the game's own (`levelPeople`).
 
+`exclude` keeps places empty of the level's people (since 1.2.3): a list of up to 256 areas, as `Area` objects or their ids. A
+person whose placement lies inside one gets no body. With `levelPeople`, the game's own people placed there are hidden in every
+player's game. Lifting the exclusion brings them back.
+
+```js
+// Kuttenberg and Grund stay empty; the villages keep their people.
+Npc.setPopulation({ exclude: ['16b7ef9136cb4690', '6c0c8031c0a24813'] });
+Npc.setPopulation({ exclude: [] }); // everyone back
+```
+
+```ts
+// Kuttenberg and Grund stay empty; the villages keep their people.
+Npc.setPopulation({ exclude: ['16b7ef9136cb4690', '6c0c8031c0a24813'] });
+Npc.setPopulation({ exclude: [] }); // everyone back
+```
+
+```lua
+-- Kuttenberg and Grund stay empty; the villages keep their people.
+Npc.setPopulation({ exclude = { "16b7ef9136cb4690", "6c0c8031c0a24813" } })
+Npc.setPopulation({ exclude = {} }) -- everyone back
+```
+
+```cs
+// Kuttenberg and Grund stay empty; the villages keep their people.
+Npc.SetPopulation(new { exclude = new[] { "16b7ef9136cb4690", "6c0c8031c0a24813" } });
+Npc.SetPopulation(new { exclude = new string[0] }); // everyone back
+```
+
+`Area.taggedWith('settlement')` lists the towns and villages with their ids.
+
 The same settings can go in `people-population.json` in the resources folder, for example `{ "share": 50 }`. `Npc.placements()` lists the level's people, and
 `Npc.adopt(guid, options)` gives one to a script, after which it stays when players leave.
 
