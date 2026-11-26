@@ -673,18 +673,24 @@ person whose placement lies inside one gets no body. With `levelPeople`, the gam
 player's game. Lifting the exclusion brings them back.
 
 ```js
+const { Npc } = kcds.characters;
+
 // Kuttenberg and Grund stay empty; the villages keep their people.
 Npc.setPopulation({ exclude: ['16b7ef9136cb4690', '6c0c8031c0a24813'] });
 Npc.setPopulation({ exclude: [] }); // everyone back
 ```
 
 ```ts
+const { Npc } = kcds.characters;
+
 // Kuttenberg and Grund stay empty; the villages keep their people.
 Npc.setPopulation({ exclude: ['16b7ef9136cb4690', '6c0c8031c0a24813'] });
 Npc.setPopulation({ exclude: [] }); // everyone back
 ```
 
 ```lua
+local Npc = kcds.characters.Npc
+
 -- Kuttenberg and Grund stay empty; the villages keep their people.
 Npc.setPopulation({ exclude = { "16b7ef9136cb4690", "6c0c8031c0a24813" } })
 Npc.setPopulation({ exclude = {} }) -- everyone back
